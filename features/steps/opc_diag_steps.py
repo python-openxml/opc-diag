@@ -15,6 +15,7 @@ from helpers import OpcCommand, ref_pkg_path
 
 
 SUBCMD_BROWSE = 'browse'
+SUBCMD_DIFF = 'diff'
 SUBCMD_DIFF_ITEM = 'diff-item'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
@@ -72,6 +73,13 @@ def step_command_diff_slide_master(context):
     ).execute()
 
 
+@when('I issue a command to diff two packages')
+def step_command_diff_two_packages(context):
+    context.cmd = OpcCommand(
+        SUBCMD_DIFF, base_pkg_path, changed_pkg_path
+    ).execute()
+
+
 # then =====================================================
 
 @then('the content types diff appears on stdout')
@@ -96,6 +104,12 @@ def step_then_pkg_part_xml_appears_on_stdout(context):
 def step_then_pkg_rels_xml_appears_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('browse.pkg_rels.txt')
+
+
+@then('the package diff appears on stdout')
+def step_then_pkg_diff_appears_on_stdout(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('diff.txt')
 
 
 @then('the package rels diff appears on stdout')
