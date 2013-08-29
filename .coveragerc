@@ -1,0 +1,12 @@
+#
+# .coveragerc
+#
+# Configuration file for coverage.py
+#
+# Documentation at http://nedbatchelder.com/code/coverage/config.html
+#
+
+[run]
+branch = True
+omit =
+    tests/unitutil.py
