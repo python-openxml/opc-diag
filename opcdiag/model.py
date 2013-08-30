@@ -9,6 +9,8 @@
 
 """Package and package items model"""
 
+from opcdiag.phys_pkg import PhysPkg
+
 
 class Package(object):
     """
@@ -25,6 +27,11 @@ class Package(object):
         at *path*. The package can be either a zip archive (e.g. .docx file)
         or a directory containing an extracted package.
         """
+        phys_pkg = PhysPkg.read(path)
+        pkg_items = {}
+        for uri, blob in phys_pkg:
+            pkg_items[uri] = PkgItem(phys_pkg.root_uri, uri, blob)
+        return Package(pkg_items)
 
     def find_item_by_uri_tail(self, uri_tail):
         """
