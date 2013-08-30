@@ -11,7 +11,16 @@
 Objects that fulfill the view role in opc-diag, interfacing to the console
 """
 
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
+
+import sys
+
+
+def _write(text):
+    """
+    Write *text* to stdout
+    """
+    print(text, end='', file=sys.stdout)
 
 
 class OpcView(object):
@@ -26,3 +35,5 @@ class OpcView(object):
         Display the text value of pkg_item, adding a linefeed at the end to
         make the terminal happy.
         """
+        text = '%s\n' % pkg_item.text
+        _write(text)
