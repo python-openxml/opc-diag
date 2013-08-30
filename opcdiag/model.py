@@ -60,3 +60,24 @@ class PkgItem(object):
         self._blob = blob
         self._root_uri = root_uri
         self._uri = uri
+
+    @property
+    def is_content_types(self):
+        """
+        True if this item is the ``[Content_Types].xml`` item in the package,
+        False otherwise.
+        """
+
+    @property
+    def is_rels_item(self):
+        """
+        True if this item is a relationships item, i.e. its uri ends with
+        ``.rels``, False otherwise.
+        """
+
+    @property
+    def is_xml_part(self):
+        """
+        True if the URI of this item ends with '.xml', except if it is the
+        content types item. False otherwise.
+        """
