@@ -9,6 +9,10 @@
 
 """Command-line application controller for opc-diag"""
 
+from opcdiag.model import Package
+from opcdiag.presenter import ItemPresenter
+from opcdiag.view import OpcView
+
 
 class OpcController(object):
     """
@@ -22,3 +26,7 @@ class OpcController(object):
         Display pretty-printed XML contained in package item with URI ending
         with *uri_tail* in package at *pkg_path*.
         """
+        pkg = Package.read(pkg_path)
+        pkg_item = pkg.find_item_by_uri_tail(uri_tail)
+        item_presenter = ItemPresenter(pkg_item)
+        OpcView.pkg_item(item_presenter)

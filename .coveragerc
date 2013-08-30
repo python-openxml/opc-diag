@@ -9,4 +9,5 @@
 [run]
 branch = True
 omit =
+    opcdiag/view.py
     tests/unitutil.py
