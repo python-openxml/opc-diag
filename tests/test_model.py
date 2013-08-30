@@ -110,3 +110,14 @@ class DescribePackage(object):
         PkgItem_.assert_has_calls(expected_PkgItem_calls, any_order=True)
         Package_.assert_called_once_with(expected_items)
         assert isinstance(pkg, Package)
+
+    def it_can_find_one_of_its_items_by_uri_tail(self, pkg_item_):
+        # fixture ----------------------
+        pkg_items_ = {'head/tail': pkg_item_}
+        package = Package(pkg_items_)
+        # exercise ---------------------
+        pkg_item = package.find_item_by_uri_tail('tail')
+        # verify -----------------------
+        assert pkg_item == pkg_item_
+        with pytest.raises(KeyError):
+            package.find_item_by_uri_tail('head')

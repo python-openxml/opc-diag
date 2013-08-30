@@ -38,6 +38,17 @@ class Package(object):
         Return the first item in this package having a uri that ends with
         *uri_tail*. Raises |KeyError| if no matching item is found.
         """
+        for uri in self._uris:
+            if uri.endswith(uri_tail):
+                return self._pkg_items[uri]
+        raise KeyError("No item with name '%s'" % uri_tail)
+
+    @property
+    def _uris(self):
+        """
+        Return sorted list of item URIs in this package.
+        """
+        return sorted(self._pkg_items.keys())
 
 
 class PkgItem(object):
