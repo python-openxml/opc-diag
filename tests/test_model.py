@@ -121,3 +121,19 @@ class DescribePackage(object):
         assert pkg_item == pkg_item_
         with pytest.raises(KeyError):
             package.find_item_by_uri_tail('head')
+
+
+class DescribePkgItem(object):
+
+    @pytest.mark.parametrize(('uri', 'is_ct', 'is_rels', 'is_xml_part'), [
+        ('[Content_Types].xml', True,  False, False),
+        ('foo/bar.xml.rels',    False, True,  False),
+        ('foo/bar.xml',         False, False, True),
+        ('media/foobar.jpg',    False, False, False),
+    ])
+    def it_knows_what_kind_of_item_it_is(
+            self, uri, is_ct, is_rels, is_xml_part):
+        pkg_item = PkgItem(None, uri, None)
+        assert pkg_item.is_content_types is is_ct
+        assert pkg_item.is_rels_item is is_rels
+        assert pkg_item.is_xml_part is is_xml_part

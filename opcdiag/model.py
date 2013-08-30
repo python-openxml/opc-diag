@@ -12,6 +12,9 @@
 from opcdiag.phys_pkg import PhysPkg
 
 
+_CONTENT_TYPES_URI = '[Content_Types].xml'
+
+
 class Package(object):
     """
     Root of package graph and main model API class.
@@ -67,6 +70,7 @@ class PkgItem(object):
         True if this item is the ``[Content_Types].xml`` item in the package,
         False otherwise.
         """
+        return self._uri == _CONTENT_TYPES_URI
 
     @property
     def is_rels_item(self):
@@ -74,6 +78,7 @@ class PkgItem(object):
         True if this item is a relationships item, i.e. its uri ends with
         ``.rels``, False otherwise.
         """
+        return self._uri.endswith('.rels')
 
     @property
     def is_xml_part(self):
@@ -81,3 +86,4 @@ class PkgItem(object):
         True if the URI of this item ends with '.xml', except if it is the
         content types item. False otherwise.
         """
+        return self._uri.endswith('.xml') and not self.is_content_types
