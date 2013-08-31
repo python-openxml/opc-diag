@@ -16,6 +16,7 @@ from helpers import OpcCommand, ref_pkg_path
 
 SUBCMD_BROWSE = 'browse'
 URI_CONTENT_TYPES = '[Content_Types].xml'
+URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
 
 
@@ -26,6 +27,12 @@ pkg_paths = {'dir': base_dir_pkg_path, 'zip': base_zip_pkg_path}
 
 
 # when =====================================================
+
+@when('I issue a command to browse an XML part in a {pkg_type} package')
+def step_issue_command_to_browse_pkg_part(context, pkg_type):
+    context.cmd = OpcCommand(SUBCMD_BROWSE, pkg_paths[pkg_type],
+                             URI_CORE_PROPS).execute()
+
 
 @when('I issue a command to browse the content types of a {pkg_type} package')
 def step_issue_command_to_browse_content_types(context, pkg_type):
@@ -45,6 +52,12 @@ def step_issue_command_to_browse_pkg_rels(context, pkg_type):
 def step_then_content_types_appear_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('browse.content_types.txt')
+
+
+@then('the formatted package part XML appears on stdout')
+def step_then_pkg_part_xml_appears_on_stdout(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('browse.core_props.txt')
 
 
 @then('the formatted package rels XML appears on stdout')
