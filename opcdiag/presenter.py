@@ -16,6 +16,65 @@ import re
 from lxml import etree
 
 
+def prettify_nsdecls(xml):
+    """
+    Wrap and indent attributes on the root element so namespace declarations
+    don't run off the page in the text editor and can be more easily
+    inspected. Sort attributes such that the default namespace, if present,
+    appears first in the list, followed by other namespace declarations, and
+    then remaining attributes, both in alphabetical order.
+    """
+
+    def parse_attrs(rootline):
+        """
+        Return 3-tuple (head, attributes, tail) looking like
+        ('<p:sld', ['xmlns:p="html://..."', 'name="Office Theme>"'], '>').
+        """
+        attr_re = re.compile(r'([-a-zA-Z0-9_:.]+="[^"]*" *)')
+        substrs = [substr.strip() for substr in attr_re.split(rootline)
+                   if substr]
+        head = substrs[0]
+        attrs, tail = ((substrs[1:-1], substrs[-1]) if len(substrs) > 1
+                       else ([], ''))
+        return (head, attrs, tail)
+
+    def sequence_attrs(attributes):
+        """
+        Sort attributes alphabetically within the subgroups: default
+        namespace declaration, other namespace declarations, other
+        attributes.
+        """
+        def_nsdecls, nsdecls, attrs = [], [], []
+        for attr in attributes:
+            if attr.startswith('xmlns='):
+                def_nsdecls.append(attr)
+            elif attr.startswith('xmlns:'):
+                nsdecls.append(attr)
+            else:
+                attrs.append(attr)
+        return sorted(def_nsdecls) + sorted(nsdecls) + sorted(attrs)
+
+    def pretty_rootline(head, attrs, tail):
+        """
+        Return string containing prettified XML root line with *head* on the
+        first line, *attrs* indented on following lines, and *tail* indented
+        on the last line.
+        """
+        indent = 4 * ' '
+        newrootline = head
+        for attr in attrs:
+            newrootline += '\n%s%s' % (indent, attr)
+        newrootline += '\n%s%s' % (indent, tail) if tail else ''
+        return newrootline
+
+    lines = xml.splitlines()
+    rootline = lines[1]
+    head, attributes, tail = parse_attrs(rootline)
+    attributes = sequence_attrs(attributes)
+    lines[1] = pretty_rootline(head, attributes, tail)
+    return '\n'.join(lines)
+
+
 class ItemPresenter(object):
     """
     Base class and factory class for package item presenter classes; also
@@ -114,3 +173,11 @@ class XmlPartPresenter(ItemPresenter):
 
     def __init__(self, pkg_item):
         super(XmlPartPresenter, self).__init__(pkg_item)
+
+    @property
+    def text(self):
+        """
+        Return pretty-printed XML of this part with the namespace declarations
+        aligned and sorted to produce clear and minimal diffs.
+        """
+        return prettify_nsdecls(self.xml)

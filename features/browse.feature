@@ -23,7 +23,6 @@ Feature: Browse an OPC package item
     |   dir    |
 
 
-  @wip
   Scenario Outline: Browse a package part
       When I issue a command to browse an XML part in a <pkg_type> package
       Then the formatted package part XML appears on stdout

@@ -153,3 +153,33 @@ class DescribeRelsItemPresenter(object):
             '</Relationships>'
         )
         assert rels_presenter.text == expected_text
+
+
+class DescribeXmlPartPresenter(object):
+
+    def it_can_format_part_xml(self, ItemPresenter_xml_, xml_part_):
+        # fixture ----------------------
+        cases = (
+            # root w/no attrs is unchanged -----------------
+            (('<?xml?>\n'
+              '<foobar/>'),
+             ('<?xml?>\n'
+              '<foobar/>')),
+            # sort order: def_ns, nsdecls, attrs -----------
+            (('<?xml?>\n'
+              '<foobar foo="bar" xmlns:f="foo" xmlns:b="bar" xmlns="zoo" boo'
+              '="far"/>'),
+             ('<?xml?>\n'
+              '<foobar\n'
+              '    xmlns="zoo"\n'
+              '    xmlns:b="bar"\n'
+              '    xmlns:f="foo"\n'
+              '    boo="far"\n'
+              '    foo="bar"\n'
+              '    />')),
+        )
+        # verify -----------------------
+        for part_xml, expected_xml in cases:
+            ItemPresenter_xml_.return_value = part_xml
+            part_presenter = ItemPresenter(xml_part_)
+            assert part_presenter.text == expected_xml
