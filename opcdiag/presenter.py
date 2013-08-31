@@ -11,6 +11,8 @@
 
 from __future__ import unicode_literals
 
+import re
+
 from lxml import etree
 
 
@@ -87,6 +89,25 @@ class RelsItemPresenter(ItemPresenter):
 
     def __init__(self, pkg_item):
         super(RelsItemPresenter, self).__init__(pkg_item)
+
+    @property
+    def text(self):
+        """
+        Return the <Relationships ...> XML for this rels item formatted for
+        minimal diffs. The <Relationship> child elements are sorted to remove
+        arbitrary ordering between package saves. rId values are all set to
+        'x' so internal renumbering between saves doesn't affect the
+        ordering.
+        """
+        def anon(rel):
+            return re.sub(r' Id="[^"]+" ', r' Id="x" ', rel)
+
+        lines = self.xml.split('\n')
+        relationships = [l for l in lines if l.startswith('  <R')]
+        anon_rels = sorted([anon(r) for r in relationships])
+        out_lines = lines[:2] + anon_rels + lines[-1:]
+        out = '\n'.join(out_lines)
+        return out
 
 
 class XmlPartPresenter(ItemPresenter):

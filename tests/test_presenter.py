@@ -128,3 +128,28 @@ class DescribeContentTypesPresenter(object):
             '</Types>'
         )
         assert content_types_presenter.text == expected_text
+
+
+class DescribeRelsItemPresenter(object):
+
+    def it_can_format_rels_xml(self, ItemPresenter_xml_, rels_item_):
+        # fixture ----------------------
+        ItemPresenter_xml_.return_value = (
+            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+            '<Relationships>\n'
+            '  <Relationship Id="rId1" Type="xyz" Target="foo"/>\n'
+            '  <Relationship Id="rId2" Type="abc" Target="bar"/>\n'
+            '  <Relationship Id="rId3" Type="mno" Target="baz"/>\n'
+            '</Relationships>'
+        )
+        rels_presenter = ItemPresenter(rels_item_)
+        # verify -----------------------
+        expected_text = (
+            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+            '<Relationships>\n'
+            '  <Relationship Id="x" Type="abc" Target="bar"/>\n'
+            '  <Relationship Id="x" Type="mno" Target="baz"/>\n'
+            '  <Relationship Id="x" Type="xyz" Target="foo"/>\n'
+            '</Relationships>'
+        )
+        assert rels_presenter.text == expected_text
