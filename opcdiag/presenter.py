@@ -48,11 +48,30 @@ class ItemPresenter(object):
                "emPresenter")
         raise NotImplementedError(msg)
 
+    def xml(self):
+        """
+        Return pretty-printed XML (as unicode text) from this item's blob.
+        """
+
 
 class ContentTypesPresenter(ItemPresenter):
 
     def __init__(self, pkg_item):
         super(ContentTypesPresenter, self).__init__(pkg_item)
+
+    @property
+    def text(self):
+        """
+        Return the <Types ...> XML for this content types item formatted for
+        minimal diffs. The <Default> and <Override> child elements are sorted
+        to remove arbitrary ordering between package saves.
+        """
+        lines = self.xml.split('\n')
+        defaults = sorted([l for l in lines if l.startswith('  <D')])
+        overrides = sorted([l for l in lines if l.startswith('  <O')])
+        out_lines = lines[:2] + defaults + overrides + lines[-1:]
+        out = '\n'.join(out_lines)
+        return out
 
 
 class RelsItemPresenter(ItemPresenter):

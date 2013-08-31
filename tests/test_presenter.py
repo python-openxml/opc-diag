@@ -16,7 +16,7 @@ from opcdiag.presenter import ItemPresenter
 
 import pytest
 
-from .unitutil import instance_mock
+from .unitutil import instance_mock, property_mock
 
 
 @pytest.fixture
@@ -35,6 +35,11 @@ def content_types_item_(request):
     content_types_item_.is_rels_item = False
     content_types_item_.is_xml_part = False
     return content_types_item_
+
+
+@pytest.fixture
+def ItemPresenter_xml_(request):
+    return property_mock('opcdiag.presenter.ItemPresenter.xml', request)
 
 
 @pytest.fixture
@@ -74,3 +79,30 @@ class DescribeItemPresenter(object):
         item_presenter = object.__new__(ItemPresenter)
         with pytest.raises(NotImplementedError):
             item_presenter.text
+
+
+class DescribeContentTypesPresenter(object):
+
+    def it_can_format_cti_xml(self, ItemPresenter_xml_, content_types_item_):
+        # fixture ----------------------
+        ItemPresenter_xml_.return_value = (
+            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+            '<Types>\n'
+            '  <Default Extension="foo" ContentType="bar"/>\n'
+            '  <Override PartName="foobar" ContentType="barfoo"/>\n'
+            '  <Default Extension="bar" ContentType="foo"/>\n'
+            '  <Override PartName="barfoo" ContentType="foobar"/>\n'
+            '</Types>'
+        )
+        content_types_presenter = ItemPresenter(content_types_item_)
+        # verify -----------------------
+        expected_text = (
+            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+            '<Types>\n'
+            '  <Default Extension="bar" ContentType="foo"/>\n'
+            '  <Default Extension="foo" ContentType="bar"/>\n'
+            '  <Override PartName="barfoo" ContentType="foobar"/>\n'
+            '  <Override PartName="foobar" ContentType="barfoo"/>\n'
+            '</Types>'
+        )
+        assert content_types_presenter.text == expected_text
