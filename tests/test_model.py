@@ -9,6 +9,10 @@
 
 """Unit tests for model module"""
 
+from __future__ import unicode_literals
+
+from lxml import etree
+
 from opcdiag.model import Package, PkgItem
 from opcdiag.phys_pkg import PhysPkg
 
@@ -137,3 +141,8 @@ class DescribePkgItem(object):
         assert pkg_item.is_content_types is is_ct
         assert pkg_item.is_rels_item is is_rels
         assert pkg_item.is_xml_part is is_xml_part
+
+    def it_can_produce_an_etree_element_from_its_blob(self):
+        blob = '<root><child>foobar</child></root>'
+        pkg_item = PkgItem(None, None, blob)
+        assert isinstance(pkg_item.element, etree._Element)

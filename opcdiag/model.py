@@ -9,6 +9,8 @@
 
 """Package and package items model"""
 
+from lxml import etree
+
 from opcdiag.phys_pkg import PhysPkg
 
 
@@ -70,6 +72,7 @@ class PkgItem(object):
         Return an lxml.etree Element obtained by parsing the XML in this
         item's blob.
         """
+        return etree.fromstring(self._blob)
 
     @property
     def is_content_types(self):
