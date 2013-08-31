@@ -11,6 +11,8 @@
 
 from __future__ import unicode_literals
 
+from lxml import etree
+
 
 class ItemPresenter(object):
     """
@@ -48,10 +50,17 @@ class ItemPresenter(object):
                "emPresenter")
         raise NotImplementedError(msg)
 
+    @property
     def xml(self):
         """
-        Return pretty-printed XML (as unicode text) from this item's blob.
+        Return pretty-printed XML (as unicode text) from this package item's
+        blob.
         """
+        xml_bytes = etree.tostring(
+            self._pkg_item.element, encoding='UTF-8', pretty_print=True,
+            standalone=True).strip()
+        xml_text = xml_bytes.decode('utf-8')
+        return xml_text
 
 
 class ContentTypesPresenter(ItemPresenter):

@@ -65,6 +65,13 @@ class PkgItem(object):
         self._uri = uri
 
     @property
+    def element(self):
+        """
+        Return an lxml.etree Element obtained by parsing the XML in this
+        item's blob.
+        """
+
+    @property
     def is_content_types(self):
         """
         True if this item is the ``[Content_Types].xml`` item in the package,

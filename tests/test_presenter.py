@@ -11,6 +11,8 @@
 
 from __future__ import unicode_literals
 
+from lxml import etree
+
 from opcdiag.model import PkgItem
 from opcdiag.presenter import ItemPresenter
 
@@ -62,6 +64,19 @@ def xml_part_(request):
 
 class DescribeItemPresenter(object):
 
+    FOOBAR_XML = (
+        '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+        '<foobar>\n'
+        '  <foo val="bar"/>\n'
+        '  <bar val="foo"/>\n'
+        '</foobar>'
+    )
+
+    @pytest.fixture
+    def foobar_elm_(self):
+        foobar_xml_bytes = self.FOOBAR_XML.encode('utf-8')
+        return etree.fromstring(foobar_xml_bytes)
+
     def it_constructs_subclass_based_on_item_type(
             self, content_types_item_, rels_item_, xml_part_, binary_part_):
         cases = (
@@ -79,6 +94,13 @@ class DescribeItemPresenter(object):
         item_presenter = object.__new__(ItemPresenter)
         with pytest.raises(NotImplementedError):
             item_presenter.text
+
+    def it_can_pretty_format_the_xml_of_its_item(
+            self, content_types_item_, foobar_elm_):
+        """Note: tests integration with lxml.etree"""
+        content_types_item_.element = foobar_elm_
+        item_presenter = ItemPresenter(content_types_item_)
+        assert item_presenter.xml == self.FOOBAR_XML
 
 
 class DescribeContentTypesPresenter(object):
