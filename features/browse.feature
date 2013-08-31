@@ -11,3 +11,14 @@ Feature: Browse an OPC package item
     | pkg_type |
     |   zip    |
     |   dir    |
+
+
+  @wip
+  Scenario Outline: Browse the package rels item of a package
+      When I issue a command to browse the package rels of a <pkg_type> package
+      Then the formatted package rels XML appears on stdout
+
+  Examples: Package Types
+    | pkg_type |
+    |   zip    |
+    |   dir    |
