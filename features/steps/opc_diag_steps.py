@@ -15,6 +15,7 @@ from helpers import OpcCommand, ref_pkg_path
 
 
 SUBCMD_BROWSE = 'browse'
+SUBCMD_DIFF_ITEM = 'diff-item'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
@@ -24,6 +25,9 @@ URI_PKG_RELS = '_rels/.rels'
 base_dir_pkg_path = ref_pkg_path('source')
 base_zip_pkg_path = ref_pkg_path('base.pptx')
 pkg_paths = {'dir': base_dir_pkg_path, 'zip': base_zip_pkg_path}
+
+base_pkg_path = ref_pkg_path('base.pptx')
+changed_pkg_path = ref_pkg_path('changed.pptx')
 
 
 # when =====================================================
@@ -46,7 +50,20 @@ def step_issue_command_to_browse_pkg_rels(context, pkg_type):
                              URI_PKG_RELS).execute()
 
 
+@when('I issue a command to diff the content types between two packages')
+def step_command_diff_content_types(context):
+    context.cmd = OpcCommand(
+        SUBCMD_DIFF_ITEM, base_pkg_path, changed_pkg_path, URI_CONTENT_TYPES
+    ).execute()
+
+
 # then =====================================================
+
+@then('the content types diff appears on stdout')
+def step_then_content_types_diff_appears_on_stdout(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('diff-item.content_types.txt')
+
 
 @then('the formatted content types item appears on stdout')
 def step_then_content_types_appear_on_stdout(context):

@@ -1,0 +1,19 @@
+--- features/test_files/reference_pkgs/base/[Content_Types].xml
+
++++ features/test_files/reference_pkgs/changed/[Content_Types].xml
+
+@@ -1,11 +1,12 @@
+
+ <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+ <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+   <Default Extension="bin" ContentType="application/vnd.openxmlformats-officedocument.presentationml.printerSettings"/>
++  <Default Extension="foo" ContentType="application/foobar"/>
+   <Default Extension="jpeg" ContentType="image/jpeg"/>
+   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+   <Default Extension="xml" ContentType="application/xml"/>
+-  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+   <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
++  <Override PartName="/foo/bar.xml" ContentType="application/vnd.foobar+xml"/>
+   <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>
+   <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
+   <Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>
