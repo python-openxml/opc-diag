@@ -11,7 +11,7 @@
 
 import argparse
 
-from opcdiag.cli import Command, CommandController, main
+from opcdiag.cli import BrowseCommand, Command, CommandController, main
 from opcdiag.controller import OpcController
 
 import pytest
@@ -19,6 +19,11 @@ import pytest
 from mock import ANY, Mock
 
 from .unitutil import class_mock, instance_mock, loose_mock
+
+
+ARG_PKG_PATH = 'PKG_PATH'
+ARG_FILENAME = 'FILENAME'
+CMD_WORD_BROWSE = 'browse'
 
 
 @pytest.fixture
@@ -36,6 +41,11 @@ def args_(request, command_):
 @pytest.fixture
 def argv_(request):
     return instance_mock(list, request)
+
+
+@pytest.fixture
+def browse_argv_():
+    return [CMD_WORD_BROWSE, ARG_PKG_PATH, ARG_FILENAME]
 
 
 @pytest.fixture
@@ -86,10 +96,20 @@ def OpcController_(request, app_controller_):
 
 
 @pytest.fixture
+def parser():
+    return argparse.ArgumentParser()
+
+
+@pytest.fixture
 def parser_(request, args_):
     parser_ = instance_mock(argparse.ArgumentParser, request)
     parser_.parse_args.return_value = args_
     return parser_
+
+
+@pytest.fixture
+def subparsers(parser):
+    return parser.add_subparsers()
 
 
 class DescribeMain(object):
@@ -139,3 +159,16 @@ class DescribeCommandController(object):
         # verify -----------------------
         command_.validate.assert_called_once_with(args_)
         command_.execute.assert_called_once_with(args_, app_controller_)
+
+
+class DescribeBrowseCommand(object):
+
+    def it_should_add_a_browse_command_parser(
+            self, browse_argv_, parser, subparsers):
+        # exercise ---------------------
+        subparser = BrowseCommand.add_command_parser_to(subparsers)
+        args = parser.parse_args(browse_argv_)
+        # verify -----------------------
+        assert args.pkg_path == ARG_PKG_PATH
+        assert args.filename == ARG_FILENAME
+        assert isinstance(subparser, argparse.ArgumentParser)

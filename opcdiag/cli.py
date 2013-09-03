@@ -82,6 +82,25 @@ class Command(object):
         """
 
 
+class BrowseCommand(Command):
+
+    def __init__(self, parser):
+        super(BrowseCommand, self).__init__(parser)
+
+    @staticmethod
+    def add_command_parser_to(subparsers):
+        parser = subparsers.add_parser(
+            'browse',
+            help='List pretty-printed XML for a specified package part')
+        parser.add_argument(
+            'pkg_path', metavar='PKG_PATH',
+            help='Path to OPC package file')
+        parser.add_argument(
+            'filename', metavar='FILENAME',
+            help='Filename portion of the pack URI for the part to browse')
+        return parser
+
+
 def main(argv=None):
     command_controller = CommandController.new()
     command_controller.execute(argv)
