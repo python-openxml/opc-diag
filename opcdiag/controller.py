@@ -17,3 +17,8 @@ class OpcController(object):
     entity objects, delegating work to them, and using the appropriate view
     object to format the results to be displayed.
     """
+    def browse(self, pkg_path, uri_tail):
+        """
+        Display pretty-printed XML contained in package item with URI ending
+        with *uri_tail* in package at *pkg_path*.
+        """

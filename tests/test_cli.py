@@ -192,3 +192,12 @@ class DescribeBrowseCommand(object):
         browse_command.validate(args_)
         # verify -----------------------
         parser_.error.assert_called_once_with(ANY)
+
+    def it_can_dispatch_browse_command_to_app(self, args_, app_controller_):
+        # fixture ----------------------
+        browse_command = BrowseCommand(None)
+        # exercise ---------------------
+        browse_command.execute(args_, app_controller_)
+        # verify -----------------------
+        app_controller_.browse.assert_called_once_with(args_.pkg_path,
+                                                       args_.filename)

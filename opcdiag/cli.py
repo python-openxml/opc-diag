@@ -106,6 +106,9 @@ class BrowseCommand(Command):
             help='Filename portion of the pack URI for the part to browse')
         return parser
 
+    def execute(self, args, app_controller):
+        app_controller.browse(args.pkg_path, args.filename)
+
     def validate(self, args):
         try:
             msg = "PKG_PATH '%s' does not exist" % args.pkg_path
