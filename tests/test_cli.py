@@ -16,6 +16,8 @@ from opcdiag.controller import OpcController
 
 import pytest
 
+from mock import ANY, Mock
+
 from .unitutil import class_mock, instance_mock, loose_mock
 
 
@@ -45,8 +47,9 @@ def CommandController_(request, command_controller_):
 
 
 @pytest.fixture
-def Command_(request, parser_):
-    Command_ = class_mock('opcdiag.cli.Command', request)
+def Command_(request, command_cls_, parser_):
+    Command_ = class_mock('opcdiag.cli.Command', request, autospec=False)
+    Command_.__subclasses__ = Mock(return_value=[command_cls_])
     Command_.parser.return_value = parser_
     return Command_
 
@@ -57,8 +60,22 @@ def command_(request):
 
 
 @pytest.fixture
+def command_cls_(request, command_, command_parser_):
+    command_cls_ = loose_mock(request)
+    command_cls_.return_value = command_
+    command_cls_.add_command_parser_to.return_value = command_parser_
+    return command_cls_
+
+
+@pytest.fixture
 def command_controller_(request):
     return instance_mock(CommandController, request)
+
+
+@pytest.fixture
+def command_parser_(request):
+    command_parser_ = instance_mock(argparse.ArgumentParser, request)
+    return command_parser_
 
 
 @pytest.fixture
@@ -84,6 +101,20 @@ class DescribeMain(object):
         # verify -----------------------
         CommandController_.new.assert_called_once_with()
         command_controller_.execute.assert_called_once_with(argv_)
+
+
+class DescribeCommand(object):
+
+    def it_can_configure_the_command_line_parser(
+            self, Command_, command_cls_, command_, command_parser_):
+        # exercise ---------------------
+        parser = Command.parser()
+        # verify -----------------------
+        # return value of add_subparsers is a messy tuple, accept ANY
+        command_cls_.add_command_parser_to.assert_called_once_with(ANY)
+        command_cls_.assert_called_once_with(command_parser_)
+        command_parser_.set_defaults.assert_called_once_with(command=command_)
+        assert isinstance(parser, argparse.ArgumentParser)
 
 
 class DescribeCommandController(object):

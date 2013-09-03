@@ -6,7 +6,12 @@
 # Command-line interface for operations on one or more Open Packaging
 # Convention (OPC) files, such as .docx, .pptx, and .xlsx files.
 
+import argparse
+
 from opcdiag.controller import OpcController
+
+
+SUBCMD_HELP = "!!! this is the sub-command help string I haven't written yet"
 
 
 class CommandController(object):
@@ -57,6 +62,13 @@ class Command(object):
         with a subcommand parser for each of the commands that are a subclass
         of |Command|.
         """
+        parser = argparse.ArgumentParser()
+        subparsers = parser.add_subparsers(help=SUBCMD_HELP)
+        for command_cls in Command.__subclasses__():
+            command_parser = command_cls.add_command_parser_to(subparsers)
+            command = command_cls(command_parser)
+            command_parser.set_defaults(command=command)
+        return parser
 
     def execute(self, args, app_controller):
         """
