@@ -9,11 +9,26 @@
 
 """Test suite for the cli module."""
 
-from opcdiag.cli import CommandController, main
+import argparse
+
+from opcdiag.cli import Command, CommandController, main
+from opcdiag.controller import OpcController
 
 import pytest
 
-from .unitutil import class_mock, instance_mock
+from .unitutil import class_mock, instance_mock, loose_mock
+
+
+@pytest.fixture
+def app_controller_(request):
+    return instance_mock(OpcController, request)
+
+
+@pytest.fixture
+def args_(request, command_):
+    args_ = loose_mock(request)
+    args_.command = command_
+    return args_
 
 
 @pytest.fixture
@@ -30,8 +45,33 @@ def CommandController_(request, command_controller_):
 
 
 @pytest.fixture
+def Command_(request, parser_):
+    Command_ = class_mock('opcdiag.cli.Command', request)
+    Command_.parser.return_value = parser_
+    return Command_
+
+
+@pytest.fixture
+def command_(request):
+    return instance_mock(Command, request)
+
+
+@pytest.fixture
 def command_controller_(request):
     return instance_mock(CommandController, request)
+
+
+@pytest.fixture
+def OpcController_(request, app_controller_):
+    OpcController_ = class_mock('opcdiag.cli.OpcController', request)
+    OpcController_.return_value = app_controller_
+    return OpcController_
+
+
+@pytest.fixture
+def parser_(request, args_):
+    parser_ = instance_mock(argparse.ArgumentParser, request)
+    return parser_
 
 
 class DescribeMain(object):
@@ -43,3 +83,17 @@ class DescribeMain(object):
         # verify -----------------------
         CommandController_.new.assert_called_once_with()
         command_controller_.execute.assert_called_once_with(argv_)
+
+
+class DescribeCommandController(object):
+
+    def it_can_be_constructed_with_its_factory_method(
+            self, Command_, CommandController_, command_controller_, parser_,
+            OpcController_, app_controller_):
+        # exercise ---------------------
+        command_controller = CommandController.new()
+        # verify -----------------------
+        Command_.parser.assert_called_once_with()
+        OpcController_.assert_called_once_with()
+        CommandController_.assert_called_once_with(parser_, app_controller_)
+        assert command_controller is command_controller_

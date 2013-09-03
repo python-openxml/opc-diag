@@ -6,6 +6,8 @@
 # Command-line interface for operations on one or more Open Packaging
 # Convention (OPC) files, such as .docx, .pptx, and .xlsx files.
 
+from opcdiag.controller import OpcController
+
 
 class CommandController(object):
     """
@@ -25,11 +27,31 @@ class CommandController(object):
         fully configured parser and an instance of the application controller
         to dispatch parsed commands to.
         """
+        parser = Command.parser()
+        app_controller = OpcController()
+        return CommandController(parser, app_controller)
 
     def execute(self, argv=None):
         """
         Interpret the command indicated by the arguments in *argv* and
         execute it. If *argv* is |None|, ``sys.argv`` is used.
+        """
+
+
+class Command(object):
+    """
+    Base class for sub-commands
+    """
+    def __init__(self, parser):
+        super(Command, self).__init__()
+        self._parser = parser
+
+    @staticmethod
+    def parser():
+        """
+        Return an instance of :class:`argparse.ArgumentParser` configured
+        with a subcommand parser for each of the commands that are a subclass
+        of |Command|.
         """
 
 
