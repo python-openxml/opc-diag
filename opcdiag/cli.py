@@ -76,6 +76,8 @@ class Command(object):
         """
         Abstract method, each command must implement
         """
+        msg = 'execute() must be implemented by all subclasses of Command'
+        raise NotImplementedError(msg)
 
     def validate(self, args):
         """

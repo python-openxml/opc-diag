@@ -141,6 +141,11 @@ class DescribeCommand(object):
         with pytest.raises(NotImplementedError):
             command.validate(None)
 
+    def it_should_raise_if_execute_not_implemented_on_subclass(self):
+        command = Command(None)
+        with pytest.raises(NotImplementedError):
+            command.execute(None, None)
+
 
 class DescribeCommandController(object):
 
