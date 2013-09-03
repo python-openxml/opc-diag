@@ -80,6 +80,8 @@ class Command(object):
         Abstract method, each command must implement; just pass if there's
         nothing to validate.
         """
+        msg = 'validate() must be implemented by all subclasses of Command'
+        raise NotImplementedError(msg)
 
 
 class BrowseCommand(Command):

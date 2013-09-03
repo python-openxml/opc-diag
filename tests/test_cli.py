@@ -136,6 +136,11 @@ class DescribeCommand(object):
         command_parser_.set_defaults.assert_called_once_with(command=command_)
         assert isinstance(parser, argparse.ArgumentParser)
 
+    def it_should_raise_if_validate_not_implemented_on_subclass(self):
+        command = Command(None)
+        with pytest.raises(NotImplementedError):
+            command.validate(None)
+
 
 class DescribeCommandController(object):
 
