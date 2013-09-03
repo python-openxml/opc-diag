@@ -71,6 +71,7 @@ def OpcController_(request, app_controller_):
 @pytest.fixture
 def parser_(request, args_):
     parser_ = instance_mock(argparse.ArgumentParser, request)
+    parser_.parse_args.return_value = args_
     return parser_
 
 
@@ -97,3 +98,13 @@ class DescribeCommandController(object):
         OpcController_.assert_called_once_with()
         CommandController_.assert_called_once_with(parser_, app_controller_)
         assert command_controller is command_controller_
+
+    def it_can_execute_a_command_in_argv_form(
+            self, parser_, app_controller_, argv_, args_, command_):
+        # fixture ----------------------
+        command_controller = CommandController(parser_, app_controller_)
+        # exercise ---------------------
+        command_controller.execute(argv_)
+        # verify -----------------------
+        command_.validate.assert_called_once_with(args_)
+        command_.execute.assert_called_once_with(args_, app_controller_)

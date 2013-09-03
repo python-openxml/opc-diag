@@ -36,6 +36,10 @@ class CommandController(object):
         Interpret the command indicated by the arguments in *argv* and
         execute it. If *argv* is |None|, ``sys.argv`` is used.
         """
+        args = self._parser.parse_args(argv)
+        command = args.command
+        command.validate(args)
+        command.execute(args, self._app_controller)
 
 
 class Command(object):
@@ -52,6 +56,17 @@ class Command(object):
         Return an instance of :class:`argparse.ArgumentParser` configured
         with a subcommand parser for each of the commands that are a subclass
         of |Command|.
+        """
+
+    def execute(self, args, app_controller):
+        """
+        Abstract method, each command must implement
+        """
+
+    def validate(self, args):
+        """
+        Abstract method, each command must implement; just pass if there's
+        nothing to validate.
         """
 
 
