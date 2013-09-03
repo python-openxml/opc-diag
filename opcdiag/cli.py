@@ -7,6 +7,8 @@
 # Convention (OPC) files, such as .docx, .pptx, and .xlsx files.
 
 import argparse
+import os
+
 
 from opcdiag.controller import OpcController
 
@@ -101,6 +103,13 @@ class BrowseCommand(Command):
             'filename', metavar='FILENAME',
             help='Filename portion of the pack URI for the part to browse')
         return parser
+
+    def validate(self, args):
+        try:
+            msg = "PKG_PATH '%s' does not exist" % args.pkg_path
+            assert os.path.exists(args.pkg_path), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
 
 
 def main(argv=None):

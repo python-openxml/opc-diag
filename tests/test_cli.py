@@ -177,3 +177,13 @@ class DescribeBrowseCommand(object):
         assert args.pkg_path == ARG_PKG_PATH
         assert args.filename == ARG_FILENAME
         assert isinstance(subparser, argparse.ArgumentParser)
+
+    def it_should_trigger_parser_error_if_pkg_path_does_not_exist(
+            self, args_, parser_):
+        # fixture ----------------------
+        args_.pkg_path = 'foobar'
+        browse_command = BrowseCommand(parser_)
+        # exercise ---------------------
+        browse_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
