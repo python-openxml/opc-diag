@@ -19,14 +19,16 @@ URI_CONTENT_TYPES = '[Content_Types].xml'
 
 
 # commonly used paths ------------------
-base_pkg_path = ref_pkg_path('base.pptx')
+base_dir_pkg_path = ref_pkg_path('source')
+base_zip_pkg_path = ref_pkg_path('base.pptx')
+pkg_paths = {'dir': base_dir_pkg_path, 'zip': base_zip_pkg_path}
 
 
 # when =====================================================
 
-@when('I issue a command to browse the content types of a package')
-def step_issue_command_to_browse_content_types(context):
-    context.cmd = OpcCommand(SUBCMD_BROWSE, base_pkg_path,
+@when('I issue a command to browse the content types of a {pkg_type} package')
+def step_issue_command_to_browse_content_types(context, pkg_type):
+    context.cmd = OpcCommand(SUBCMD_BROWSE, pkg_paths[pkg_type],
                              URI_CONTENT_TYPES).execute()
 
 
