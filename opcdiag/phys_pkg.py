@@ -12,6 +12,14 @@
 import os
 
 
+class BlobCollection(dict):
+    """
+    Structures a set of blobs, like a set of files in an OPC package.
+    It can add and retrieve items by URI (relative path, roughly) and can
+    also retrieve items by uri_tail, the trailing portion of the URI.
+    """
+
+
 class PhysPkg(object):
     """
     Provides read and write services for packages on the filesystem. Suitable
@@ -28,6 +36,7 @@ class PhysPkg(object):
         """
         Generate a (uri, blob) 2-tuple for each of the items in the package.
         """
+        return iter(self._blobs.items())
 
     @staticmethod
     def read(path):

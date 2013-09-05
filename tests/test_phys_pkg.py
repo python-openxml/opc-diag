@@ -9,7 +9,7 @@
 
 """Unit tests for phys_pkg module"""
 
-from opcdiag.phys_pkg import DirPhysPkg, PhysPkg, ZipPhysPkg
+from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
 from .unitutil import relpath
 
@@ -25,3 +25,12 @@ class DescribePhysPkg(object):
         assert isinstance(pkg, ZipPhysPkg)
         pkg = PhysPkg.read(MINI_DIR_PKG_PATH)
         assert isinstance(pkg, DirPhysPkg)
+
+    def it_can_iterate_over_pkg_blobs(self):
+        # fixture ----------------------
+        blobs = BlobCollection((('foo', 'bar'), ('baz', 'zam')))
+        phys_pkg = PhysPkg(blobs, None)
+        # exercise ---------------------
+        actual_blobs = dict([item for item in phys_pkg])
+        # verify -----------------------
+        assert actual_blobs == blobs
