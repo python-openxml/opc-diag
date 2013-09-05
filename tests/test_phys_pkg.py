@@ -54,6 +54,21 @@ class DescribePhysPkg(object):
         assert actual_blobs == blobs
 
 
+class DescribeDirPhysPkg(object):
+
+    def it_can_construct_from_a_filesystem_package(self):
+        """
+        Note: integration test, allowing PhysPkg to hit the local filesystem.
+        """
+        # exercise ---------------------
+        dir_phys_pkg = DirPhysPkg.read(MINI_DIR_PKG_PATH)
+        # verify -----------------------
+        expected_blobs = {'uri_1': b'blob_1\n', 'uri_2': b'blob_2\n'}
+        assert dir_phys_pkg._blobs == expected_blobs
+        assert dir_phys_pkg._root_uri == ROOT_URI
+        assert isinstance(dir_phys_pkg, DirPhysPkg)
+
+
 class DescribeZipPhysPkg(object):
 
     def it_can_construct_from_a_filesystem_package(self):

@@ -70,7 +70,28 @@ class DirPhysPkg(PhysPkg):
         """
         Return a |BlobCollection| instance loaded from *pkg_dir*.
         """
-        return cls(None, None)
+        blobs = BlobCollection()
+        pfx_len = len(pkg_dir)+1
+        for filepath in cls._filepaths_in_dir(pkg_dir):
+            uri = filepath[pfx_len:]
+            with open(filepath, 'r') as f:
+                blob = f.read()
+            blobs[uri] = blob
+        root_uri = pkg_dir
+        return cls(blobs, root_uri)
+
+    @staticmethod
+    def _filepaths_in_dir(dirpath):
+        """
+        Return a sorted list of relative paths, one for each of the files
+        under *dirpath*, recursively visiting all subdirectories.
+        """
+        filepaths = []
+        for root, dirnames, filenames in os.walk(dirpath):
+            for filename in filenames:
+                filepath = os.path.join(root, filename)
+                filepaths.append(filepath)
+        return sorted(filepaths)
 
 
 class ZipPhysPkg(PhysPkg):
