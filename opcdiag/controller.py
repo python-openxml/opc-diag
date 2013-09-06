@@ -30,3 +30,12 @@ class OpcController(object):
         pkg_item = pkg.find_item_by_uri_tail(uri_tail)
         item_presenter = ItemPresenter(pkg_item)
         OpcView.pkg_item(item_presenter)
+
+    def diff_item(self, package_1_path, package_2_path, uri_tail):
+        """
+        Display the meaningful differences between the item identified by
+        *uri_tail* in the package at *package_1_path* and its counterpart in
+        the package at *package_2_path*. Each path can be either a standard
+        zip package (e.g. a .pptx file) or a directory containing an extracted
+        package.
+        """

@@ -139,6 +139,10 @@ class DiffItemCommand(Command):
             help='Filename portion of pack URI for item to browse')
         return parser
 
+    def execute(self, args, app_controller):
+        app_controller.diff_item(
+            args.pkg_1_path, args.pkg_2_path, args.filename)
+
     def validate(self, args):
         paths_that_should_exist = (
             (args.pkg_1_path, 'PKG_1_PATH'),

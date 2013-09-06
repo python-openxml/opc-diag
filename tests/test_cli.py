@@ -242,3 +242,12 @@ class DescribeDiffItemCommand(object):
         # verify -----------------------
         parser_.error.assert_called_once_with(ANY)
         assert err_frag in parser_.error.call_args[0][0]
+
+    def it_can_dispatch_diff_item_command_to_app(self, args_, app_controller_):
+        # fixture ----------------------
+        diff_item_command = DiffItemCommand(None)
+        # exercise ---------------------
+        diff_item_command.execute(args_, app_controller_)
+        # verify -----------------------
+        app_controller_.diff_item.assert_called_once_with(
+            args_.pkg_1_path, args_.pkg_2_path, args_.filename)
