@@ -9,6 +9,8 @@
 
 """Interface to a physical OPC package, either a zip archive or directory"""
 
+import os
+
 
 class PhysPkg(object):
     """
@@ -34,7 +36,42 @@ class PhysPkg(object):
         *path*, where *path* can be either a regular zip package or a
         directory containing an expanded package.
         """
+        if os.path.isdir(path):
+            return DirPhysPkg.read(path)
+        else:
+            return ZipPhysPkg.read(path)
 
     @property
     def root_uri(self):
         return self._root_uri  # pragma: no cover
+
+
+class DirPhysPkg(PhysPkg):
+    """
+    An OPC physical package that has been expanded into individual files in
+    a directory structure that mirrors the pack URI.
+    """
+    def __init__(self, blobs, root_uri):
+        super(DirPhysPkg, self).__init__(blobs, root_uri)
+
+    @classmethod
+    def read(cls, pkg_dir):
+        """
+        Return a |BlobCollection| instance loaded from *pkg_dir*.
+        """
+        return cls(None, None)
+
+
+class ZipPhysPkg(PhysPkg):
+    """
+    An OPC physical package in the typically encountered form, a zip archive.
+    """
+    def __init__(self, blobs, root_uri):
+        super(ZipPhysPkg, self).__init__(blobs, root_uri)
+
+    @classmethod
+    def read(cls, pkg_zip_path):
+        """
+        Return a |BlobCollection| instance loaded from *pkg_zip_path*.
+        """
+        return cls(None, None)
