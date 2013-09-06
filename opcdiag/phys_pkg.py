@@ -11,6 +11,8 @@
 
 import os
 
+from zipfile import ZipFile
+
 
 class BlobCollection(dict):
     """
@@ -83,4 +85,10 @@ class ZipPhysPkg(PhysPkg):
         """
         Return a |BlobCollection| instance loaded from *pkg_zip_path*.
         """
-        return cls(None, None)
+        blobs = BlobCollection()
+        zipf = ZipFile(pkg_zip_path, 'r')
+        for name in zipf.namelist():
+            blobs[name] = zipf.read(name)
+        zipf.close()
+        root_uri = os.path.splitext(pkg_zip_path)[0]
+        return cls(blobs, root_uri)
