@@ -117,6 +117,29 @@ class BrowseCommand(Command):
             self._parser.error(str(e))
 
 
+class DiffItemCommand(Command):
+
+    def __init__(self, parser):
+        super(DiffItemCommand, self).__init__(parser)
+
+    @staticmethod
+    def add_command_parser_to(subparsers):
+        parser = subparsers.add_parser(
+            'diff-item',
+            help='Show differences between a specified item in two OPC '
+                 'package files')
+        parser.add_argument(
+            'pkg_1_path', metavar='PKG_1_PATH',
+            help='first package')
+        parser.add_argument(
+            'pkg_2_path', metavar='PKG_2_PATH',
+            help='second package')
+        parser.add_argument(
+            'filename', metavar='FILENAME',
+            help='Filename portion of pack URI for item to browse')
+        return parser
+
+
 def main(argv=None):
     command_controller = CommandController.new()
     command_controller.execute(argv)
