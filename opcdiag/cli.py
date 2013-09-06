@@ -139,6 +139,18 @@ class DiffItemCommand(Command):
             help='Filename portion of pack URI for item to browse')
         return parser
 
+    def validate(self, args):
+        paths_that_should_exist = (
+            (args.pkg_1_path, 'PKG_1_PATH'),
+            (args.pkg_2_path, 'PKG_2_PATH'),
+        )
+        try:
+            for path, metavar in paths_that_should_exist:
+                msg = "%s '%s' does not exist" % (metavar, path)
+                assert os.path.exists(path), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
+
 
 def main(argv=None):
     command_controller = CommandController.new()

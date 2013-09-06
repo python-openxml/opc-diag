@@ -20,7 +20,7 @@ import pytest
 
 from mock import ANY, Mock
 
-from .unitutil import class_mock, instance_mock, loose_mock
+from .unitutil import class_mock, instance_mock, loose_mock, relpath
 
 
 ARG_PKG_PATH = 'PKG_PATH'
@@ -28,6 +28,8 @@ ARG_PKG_2_PATH = 'PKG_2_PATH'
 ARG_FILENAME = 'FILENAME'
 CMD_WORD_BROWSE = 'browse'
 CMD_WORD_DIFF_ITEM = 'diff-item'
+MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
+MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
 
 
 @pytest.fixture
@@ -224,3 +226,19 @@ class DescribeDiffItemCommand(object):
         assert args.pkg_2_path == ARG_PKG_2_PATH
         assert args.filename == ARG_FILENAME
         assert isinstance(subparser, argparse.ArgumentParser)
+
+    @pytest.mark.parametrize(('pkg_1_path', 'pkg_2_path', 'err_frag'), [
+        ('foobar', MINI_ZIP_PKG_PATH, 'PKG_1'),
+        (MINI_ZIP_PKG_PATH, 'foobar', 'PKG_2'),
+    ])
+    def it_should_trigger_parser_error_if_pkg_path_does_not_exist(
+            self, pkg_1_path, pkg_2_path, err_frag, args_, parser_):
+        # fixture ----------------------
+        args_.pkg_1_path = pkg_1_path
+        args_.pkg_2_path = pkg_2_path
+        diff_item_command = DiffItemCommand(parser_)
+        # exercise ---------------------
+        diff_item_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
+        assert err_frag in parser_.error.call_args[0][0]
