@@ -13,6 +13,7 @@ from __future__ import unicode_literals
 
 import re
 
+from difflib import unified_diff
 from lxml import etree
 
 
@@ -21,6 +22,19 @@ def diff(text_1, text_2, filename_1, filename_2):
     Return a ``diff`` style unified diff listing between *text_1* and
     *text_2*.
     """
+    lines_1 = text_1.split('\n')
+    lines_2 = text_2.split('\n')
+    diff_lines = unified_diff(lines_1, lines_2, filename_1, filename_2)
+    # this next bit is needed to work around Python 2.6 difflib bug that left
+    # in a trailing space after the filename if no date was provided. The
+    # filename lines look like: '--- filename \n' where regular lines look
+    # like '+foobar'. The space needs to be removed but the linefeed preserved.
+    trimmed_lines = []
+    for line in diff_lines:
+        if line.endswith(' \n'):
+            line = '%s\n' % line.rstrip()
+        trimmed_lines.append(line)
+    return '\n'.join(trimmed_lines)
 
 
 def prettify_nsdecls(xml):

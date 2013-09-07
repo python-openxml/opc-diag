@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 from lxml import etree
 
 from opcdiag.model import Package, PkgItem
-from opcdiag.presenter import DiffPresenter, ItemPresenter
+from opcdiag.presenter import DiffPresenter, diff, ItemPresenter
 
 import pytest
 
@@ -163,6 +163,37 @@ def xml_part_(request):
     xml_part_.is_rels_item = False
     xml_part_.is_xml_part = True
     return xml_part_
+
+
+class DescribeDiff(object):
+
+    def it_calculates_a_diff_between_two_texts(self):
+        """Integrates with difflib"""
+        # fixture ----------------------
+        text = 'foobar\nnoobar\nzoobar'
+        text_2 = 'foobar\ngoobar\nnoobar'
+        filename, filename_2 = 'filename', 'filename_2'
+        expected_diff_text = (
+            '--- filename\n'
+            '\n'
+            '+++ filename_2\n'
+            '\n'
+            '@@ -1,3 +1,3 @@\n'
+            '\n'
+            ' foobar\n'
+            '+goobar\n'
+            ' noobar\n'
+            '-zoobar'
+        )
+        # exercise ---------------------
+        diff_text = diff(text, text_2, filename, filename_2)
+        print("actual diff text:")
+        for line in diff_text.splitlines():
+            print("'%s'" % line)
+        print("\nexpected diff text:")
+        for line in expected_diff_text.splitlines():
+            print("'%s'" % line)
+        assert diff_text == expected_diff_text
 
 
 class DescribeDiffPresenter(object):
