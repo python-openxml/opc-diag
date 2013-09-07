@@ -57,6 +57,13 @@ def step_command_diff_content_types(context):
     ).execute()
 
 
+@when('I issue a command to diff the package rels between two packages')
+def step_command_diff_pkg_rels_item(context):
+    context.cmd = OpcCommand(
+        SUBCMD_DIFF_ITEM, base_pkg_path, changed_pkg_path, URI_PKG_RELS
+    ).execute()
+
+
 # then =====================================================
 
 @then('the content types diff appears on stdout')
@@ -81,3 +88,9 @@ def step_then_pkg_part_xml_appears_on_stdout(context):
 def step_then_pkg_rels_xml_appears_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('browse.pkg_rels.txt')
+
+
+@then('the package rels diff appears on stdout')
+def step_then_pkg_rels_diff_appears_on_stdout(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('diff-item.pkg_rels.txt')

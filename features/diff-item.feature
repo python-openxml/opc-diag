@@ -6,3 +6,7 @@ Feature: diff an OPC package item
   Scenario: diff the content types item between two packages
       When I issue a command to diff the content types between two packages
       Then the content types diff appears on stdout
+
+  Scenario: diff the package rels item between two packages
+      When I issue a command to diff the package rels between two packages
+      Then the package rels diff appears on stdout
