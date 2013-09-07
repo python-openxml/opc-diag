@@ -37,6 +37,17 @@ class ItemPresenter(object):
         super(ItemPresenter, self).__init__()
         self._pkg_item = pkg_item
 
+    @property
+    def text(self):
+        """
+        Raise |NotImplementedError|; all subclasses must implement a ``text``
+        property, returning a text representation of the package item,
+        generally a formatted version of the item contents.
+        """
+        msg = ("'.text' property must be implemented by all subclasses of It"
+               "emPresenter")
+        raise NotImplementedError(msg)
+
 
 class ContentTypesPresenter(ItemPresenter):
 

@@ -68,3 +68,9 @@ class DescribeItemPresenter(object):
         for pkg_item, expected_type_name in cases:
             item_presenter = ItemPresenter(pkg_item)
             assert type(item_presenter).__name__ == expected_type_name
+
+    def it_should_raise_if_text_property_not_implemented_on_subclass(
+            self, binary_part_):
+        item_presenter = object.__new__(ItemPresenter)
+        with pytest.raises(NotImplementedError):
+            item_presenter.text
