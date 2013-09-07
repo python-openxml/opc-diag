@@ -11,6 +11,8 @@
 
 from __future__ import unicode_literals
 
+import sys
+
 from lxml import etree
 
 from opcdiag.model import Package, PkgItem
@@ -146,3 +148,9 @@ class DescribePkgItem(object):
         blob = '<root><child>foobar</child></root>'
         pkg_item = PkgItem(None, None, blob)
         assert isinstance(pkg_item.element, etree._Element)
+
+    def it_can_calculate_its_effective_path(self):
+        pkg_item = PkgItem('root_uri', 'uri', None)
+        expected_path = ('root_uri\\uri' if sys.platform.startswith('win')
+                         else 'root_uri/uri')
+        assert pkg_item.path == expected_path

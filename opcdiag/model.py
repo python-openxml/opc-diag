@@ -9,6 +9,8 @@
 
 """Package and package items model"""
 
+import os
+
 from lxml import etree
 
 from opcdiag.phys_pkg import PhysPkg
@@ -104,3 +106,5 @@ class PkgItem(object):
         Return the path of this item as though it were extracted into a
         directory at its package path.
         """
+        uri_part = os.path.normpath(self._uri)
+        return os.path.join(self._root_uri, uri_part)
