@@ -10,3 +10,7 @@ Feature: diff an OPC package item
   Scenario: diff the package rels item between two packages
       When I issue a command to diff the package rels between two packages
       Then the package rels diff appears on stdout
+
+  Scenario: diff the slide master XML part between two packages
+      When I issue a command to diff the slide master between two packages
+      Then the slide master diff appears on stdout

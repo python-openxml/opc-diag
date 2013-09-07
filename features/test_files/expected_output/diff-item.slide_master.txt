@@ -1,0 +1,24 @@
+--- features/test_files/reference_pkgs/base/ppt/slideMasters/slideMaster1.xml
+
++++ features/test_files/reference_pkgs/changed/ppt/slideMasters/slideMaster1.xml
+
+@@ -26,7 +26,7 @@
+
+       </p:grpSpPr>
+       <p:sp>
+         <p:nvSpPr>
+-          <p:cNvPr id="2" name="Title Placeholder 1"/>
++          <p:cNvPr id="2" name="Foobar Placeholder 666"/>
+           <p:cNvSpPr>
+             <a:spLocks noGrp="1"/>
+           </p:cNvSpPr>
+@@ -85,7 +85,7 @@
+
+             <a:pPr lvl="0"/>
+             <a:r>
+               <a:rPr lang="en-US" smtClean="0"/>
+-              <a:t>Click to edit Master text styles</a:t>
++              <a:t>Click to foobar Master bazwah styles</a:t>
+             </a:r>
+           </a:p>
+           <a:p>

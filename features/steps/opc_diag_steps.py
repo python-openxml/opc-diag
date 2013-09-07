@@ -19,6 +19,7 @@ SUBCMD_DIFF_ITEM = 'diff-item'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
+URI_SLIDE_MASTER = 'ppt/slideMasters/slideMaster1.xml'
 
 
 # commonly used paths ------------------
@@ -64,6 +65,13 @@ def step_command_diff_pkg_rels_item(context):
     ).execute()
 
 
+@when('I issue a command to diff the slide master between two packages')
+def step_command_diff_slide_master(context):
+    context.cmd = OpcCommand(
+        SUBCMD_DIFF_ITEM, base_pkg_path, changed_pkg_path, URI_SLIDE_MASTER
+    ).execute()
+
+
 # then =====================================================
 
 @then('the content types diff appears on stdout')
@@ -94,3 +102,9 @@ def step_then_pkg_rels_xml_appears_on_stdout(context):
 def step_then_pkg_rels_diff_appears_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('diff-item.pkg_rels.txt')
+
+
+@then('the slide master diff appears on stdout')
+def step_then_slide_master_diff_appears_on_stdout(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('diff-item.slide_master.txt')
