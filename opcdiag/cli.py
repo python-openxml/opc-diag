@@ -134,6 +134,18 @@ class DiffCommand(Command):
             help='second package to compare')
         return parser
 
+    def validate(self, args):
+        paths_that_should_exist = (
+            (args.pkg_1_path, 'PKG_1_PATH'),
+            (args.pkg_2_path, 'PKG_2_PATH'),
+        )
+        try:
+            for path, metavar in paths_that_should_exist:
+                msg = "%s '%s' does not exist" % (metavar, path)
+                assert os.path.exists(path), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
+
 
 class DiffItemCommand(Command):
 

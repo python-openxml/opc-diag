@@ -233,6 +233,22 @@ class DescribeDiffCommand(object):
         assert args.pkg_2_path == ARG_PKG_2_PATH
         assert isinstance(subparser, argparse.ArgumentParser)
 
+    @pytest.mark.parametrize(('pkg_1_path', 'pkg_2_path', 'err_frag'), [
+        ('foobar', MINI_ZIP_PKG_PATH, 'PKG_1'),
+        (MINI_ZIP_PKG_PATH, 'foobar', 'PKG_2'),
+    ])
+    def it_should_trigger_parser_error_if_pkg_path_does_not_exist(
+            self, pkg_1_path, pkg_2_path, err_frag, args_, parser_):
+        # fixture ----------------------
+        args_.pkg_1_path = pkg_1_path
+        args_.pkg_2_path = pkg_2_path
+        diff_command = DiffCommand(parser_)
+        # exercise ---------------------
+        diff_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
+        assert err_frag in parser_.error.call_args[0][0]
+
 
 class DescribeDiffItemCommand(object):
 
