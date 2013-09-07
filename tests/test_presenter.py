@@ -18,7 +18,11 @@ from opcdiag.presenter import DiffPresenter, ItemPresenter
 
 import pytest
 
-from .unitutil import class_mock, instance_mock, property_mock
+from mock import call, PropertyMock
+
+from .unitutil import (
+    class_mock, function_mock, instance_mock, loose_mock, property_mock
+)
 
 
 URI_TAIL = 'uri_tail'
@@ -48,8 +52,63 @@ def DiffPresenter_(request):
 
 
 @pytest.fixture
+def diff_(request, diff_text_):
+    diff_ = function_mock('opcdiag.presenter.diff', request)
+    diff_.return_value = diff_text_
+    return diff_
+
+
+@pytest.fixture
+def diff_text_(request):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def filename_(request):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def filename_2_(request):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def ItemPresenter_(request, item_presenter_, item_presenter_2_):
+    ItemPresenter_ = class_mock('opcdiag.presenter.ItemPresenter', request)
+    ItemPresenter_.side_effect = (item_presenter_, item_presenter_2_)
+    return ItemPresenter_
+
+
+@pytest.fixture
 def ItemPresenter_xml_(request):
     return property_mock('opcdiag.presenter.ItemPresenter.xml', request)
+
+
+@pytest.fixture
+def item_presenter_(request, filename_, item_presenter_text_):
+    item_presenter_ = instance_mock(ItemPresenter, request)
+    item_presenter_.filename = filename_
+    type(item_presenter_).text = item_presenter_text_
+    return item_presenter_
+
+
+@pytest.fixture
+def item_presenter_2_(request, filename_2_, item_presenter_2_text_):
+    item_presenter_2_ = instance_mock(ItemPresenter, request)
+    item_presenter_2_.filename = filename_2_
+    type(item_presenter_2_).text = item_presenter_2_text_
+    return item_presenter_2_
+
+
+@pytest.fixture
+def item_presenter_text_(request, text_):
+    return PropertyMock(name=request.fixturename, return_value=text_)
+
+
+@pytest.fixture
+def item_presenter_2_text_(request, text_2_):
+    return PropertyMock(name=request.fixturename, return_value=text_2_)
 
 
 @pytest.fixture
@@ -88,6 +147,16 @@ def rels_item_(request):
 
 
 @pytest.fixture
+def text_(request):
+    return 'text_'
+
+
+@pytest.fixture
+def text_2_(request):
+    return 'text_2_'
+
+
+@pytest.fixture
 def xml_part_(request):
     xml_part_ = instance_mock(PkgItem, request)
     xml_part_.is_content_types = False
@@ -108,6 +177,21 @@ class DescribeDiffPresenter(object):
         package_2_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
         DiffPresenter_._pkg_item_diff.assert_called_once_with(
             pkg_item_, pkg_item_2_)
+
+    def it_can_diff_two_package_items(
+            self, pkg_item_, pkg_item_2_, ItemPresenter_,
+            item_presenter_text_, item_presenter_2_text_, diff_, text_,
+            text_2_, filename_, filename_2_, diff_text_):
+        # exercise ---------------------
+        item_diff = DiffPresenter._pkg_item_diff(pkg_item_, pkg_item_2_)
+        # expected values --------------
+        expected_ItemPresenter_calls = [call(pkg_item_), call(pkg_item_2_)]
+        # verify -----------------------
+        ItemPresenter_.assert_has_calls(expected_ItemPresenter_calls)
+        item_presenter_text_.assert_called_once_with()
+        item_presenter_2_text_.assert_called_once_with()
+        diff_.assert_called_once_with(text_, text_2_, filename_, filename_2_)
+        assert item_diff is diff_text_
 
 
 class DescribeItemPresenter(object):

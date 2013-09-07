@@ -16,6 +16,13 @@ import re
 from lxml import etree
 
 
+def diff(text_1, text_2, filename_1, filename_2):
+    """
+    Return a ``diff`` style unified diff listing between *text_1* and
+    *text_2*.
+    """
+
+
 def prettify_nsdecls(xml):
     """
     Wrap and indent attributes on the root element so namespace declarations
@@ -95,6 +102,13 @@ class DiffPresenter(object):
         Return a diff between the text of *pkg_item_1* and that of
         *pkg_item_2*.
         """
+        item_presenter_1 = ItemPresenter(pkg_item_1)
+        item_presenter_2 = ItemPresenter(pkg_item_2)
+        text_1 = item_presenter_1.text
+        text_2 = item_presenter_2.text
+        filename_1 = item_presenter_1.filename
+        filename_2 = item_presenter_2.filename
+        return diff(text_1, text_2, filename_1, filename_2)
 
 
 class ItemPresenter(object):
@@ -121,6 +135,13 @@ class ItemPresenter(object):
     def __init__(self, pkg_item):
         super(ItemPresenter, self).__init__()
         self._pkg_item = pkg_item
+
+    @property
+    def filename(self):
+        """
+        Effective path for this package item, normalized to always use
+        forward slashes as the path separator.
+        """
 
     @property
     def text(self):
