@@ -12,7 +12,8 @@
 import argparse
 
 from opcdiag.cli import (
-    BrowseCommand, Command, CommandController, DiffItemCommand, main
+    BrowseCommand, Command, CommandController, DiffCommand, DiffItemCommand,
+    main
 )
 from opcdiag.controller import OpcController
 
@@ -27,6 +28,7 @@ ARG_PKG_PATH = 'PKG_PATH'
 ARG_PKG_2_PATH = 'PKG_2_PATH'
 ARG_FILENAME = 'FILENAME'
 CMD_WORD_BROWSE = 'browse'
+CMD_WORD_DIFF = 'diff'
 CMD_WORD_DIFF_ITEM = 'diff-item'
 MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
 MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
@@ -92,6 +94,11 @@ def command_controller_(request):
 def command_parser_(request):
     command_parser_ = instance_mock(argparse.ArgumentParser, request)
     return command_parser_
+
+
+@pytest.fixture
+def diff_argv_():
+    return [CMD_WORD_DIFF, ARG_PKG_PATH, ARG_PKG_2_PATH]
 
 
 @pytest.fixture
@@ -212,6 +219,19 @@ class DescribeBrowseCommand(object):
         # verify -----------------------
         app_controller_.browse.assert_called_once_with(args_.pkg_path,
                                                        args_.filename)
+
+
+class DescribeDiffCommand(object):
+
+    def it_should_add_a_diff_command_parser(
+            self, subparsers, parser, diff_argv_):
+        # exercise ---------------------
+        subparser = DiffCommand.add_command_parser_to(subparsers)
+        args = parser.parse_args(diff_argv_)
+        # verify -----------------------
+        assert args.pkg_1_path == ARG_PKG_PATH
+        assert args.pkg_2_path == ARG_PKG_2_PATH
+        assert isinstance(subparser, argparse.ArgumentParser)
 
 
 class DescribeDiffItemCommand(object):
