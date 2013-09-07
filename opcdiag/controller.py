@@ -10,7 +10,7 @@
 """Command-line application controller for opc-diag"""
 
 from opcdiag.model import Package
-from opcdiag.presenter import ItemPresenter
+from opcdiag.presenter import DiffPresenter, ItemPresenter
 from opcdiag.view import OpcView
 
 
@@ -39,3 +39,7 @@ class OpcController(object):
         zip package (e.g. a .pptx file) or a directory containing an extracted
         package.
         """
+        package_1 = Package.read(package_1_path)
+        package_2 = Package.read(package_2_path)
+        diff = DiffPresenter.named_item_diff(package_1, package_2, uri_tail)
+        OpcView.item_diff(diff)

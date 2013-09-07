@@ -75,6 +75,18 @@ def prettify_nsdecls(xml):
     return '\n'.join(lines)
 
 
+class DiffPresenter(object):
+    """
+    Forms diffs between packages and their elements.
+    """
+    @staticmethod
+    def named_item_diff(package_1, package_2, uri_tail):
+        """
+        Return a diff between the text of the item identified by *uri_tail*
+        in *package_1* and that of its counterpart in *package_2*.
+        """
+
+
 class ItemPresenter(object):
     """
     Base class and factory class for package item presenter classes; also

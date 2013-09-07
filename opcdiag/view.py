@@ -28,6 +28,11 @@ class OpcView(object):
     Interfaces to the console by formatting command results for proper
     display.
     """
+    @staticmethod
+    def item_diff(diff):
+        """
+        Display *diff*, a standard unified_diff string, on stdout.
+        """
 
     @staticmethod
     def pkg_item(pkg_item):

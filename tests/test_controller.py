@@ -15,11 +15,21 @@ from opcdiag.presenter import ItemPresenter
 
 import pytest
 
+from mock import call
+
 from .unitutil import class_mock, instance_mock
 
 
 PKG_PATH = 'pkg_path'
+PKG_2_PATH = 'pkg_2_path'
 URI_TAIL = 'uri_tail'
+
+
+@pytest.fixture
+def DiffPresenter_(request, item_diff_):
+    DiffPresenter_ = class_mock('opcdiag.controller.DiffPresenter', request)
+    DiffPresenter_.named_item_diff.return_value = item_diff_
+    return DiffPresenter_
 
 
 @pytest.fixture
@@ -27,6 +37,12 @@ def ItemPresenter_(request, item_presenter_):
     ItemPresenter_ = class_mock('opcdiag.controller.ItemPresenter', request)
     ItemPresenter_.return_value = item_presenter_
     return ItemPresenter_
+
+
+@pytest.fixture
+def item_diff_(request):
+    item_diff_ = instance_mock(str, request)
+    return item_diff_
 
 
 @pytest.fixture
@@ -42,9 +58,9 @@ def OpcView_(request):
 
 
 @pytest.fixture
-def Package_(request, package_):
+def Package_(request, package_, package_2_):
     Package_ = class_mock('opcdiag.controller.Package', request)
-    Package_.read.return_value = package_
+    Package_.read.side_effect = (package_, package_2_)
     return Package_
 
 
@@ -56,9 +72,22 @@ def package_(request, pkg_item_):
 
 
 @pytest.fixture
+def package_2_(request, pkg_item_2_):
+    package_2_ = instance_mock(Package, request)
+    package_2_.find_item_by_uri_tail.return_value = pkg_item_2_
+    return package_2_
+
+
+@pytest.fixture
 def pkg_item_(request):
     pkg_item_ = instance_mock(PkgItem, request)
     return pkg_item_
+
+
+@pytest.fixture
+def pkg_item_2_(request):
+    pkg_item_2_ = instance_mock(PkgItem, request)
+    return pkg_item_2_
 
 
 class DescribeOpcController(object):
@@ -73,3 +102,16 @@ class DescribeOpcController(object):
         package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
         ItemPresenter_.assert_called_once_with(pkg_item_)
         OpcView_.pkg_item.assert_called_once_with(item_presenter_)
+
+    def it_can_execute_a_diff_item_command(
+            self, Package_, package_, package_2_, DiffPresenter_, item_diff_,
+            OpcView_):
+        # exercise ---------------------
+        OpcController().diff_item(PKG_PATH, PKG_2_PATH, URI_TAIL)
+        # expected values --------------
+        expected_Package_read_calls = [call(PKG_PATH), call(PKG_2_PATH)]
+        # verify -----------------------
+        Package_.read.assert_has_calls(expected_Package_read_calls)
+        DiffPresenter_.named_item_diff.assert_called_once_with(
+            package_, package_2_, URI_TAIL)
+        OpcView_.item_diff.assert_called_once_with(item_diff_)
