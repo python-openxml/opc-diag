@@ -134,6 +134,9 @@ class DiffCommand(Command):
             help='second package to compare')
         return parser
 
+    def execute(self, args, app_controller):
+        app_controller.diff_pkg(args.pkg_1_path, args.pkg_2_path)
+
     def validate(self, args):
         paths_that_should_exist = (
             (args.pkg_1_path, 'PKG_1_PATH'),
