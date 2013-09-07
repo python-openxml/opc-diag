@@ -33,6 +33,10 @@ class OpcView(object):
         """
         Display *diff*, a standard unified_diff string, on stdout.
         """
+        text = ''
+        if diff:
+            text += '%s\n' % diff
+        _write(text)
 
     @staticmethod
     def pkg_item(pkg_item):
