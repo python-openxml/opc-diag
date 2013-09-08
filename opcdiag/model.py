@@ -63,6 +63,12 @@ class Package(object):
         return rels_items
 
     @property
+    def xml_parts(self):
+        """
+        Return list of XML parts in this package, sorted by partname.
+        """
+
+    @property
     def _uris(self):
         """
         Return sorted list of item URIs in this package.

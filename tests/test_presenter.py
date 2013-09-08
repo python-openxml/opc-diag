@@ -115,10 +115,11 @@ def item_presenter_2_text_(request, text_2_):
 
 
 @pytest.fixture
-def package_(request, pkg_item_, rels_items_):
+def package_(request, pkg_item_, rels_items_, xml_parts_):
     package_ = instance_mock(Package, request)
     package_.find_item_by_uri_tail.return_value = pkg_item_
     package_.rels_items = rels_items_
+    package_.xml_parts = xml_parts_
     return package_
 
 
@@ -199,6 +200,12 @@ def uri_2_(request):
 
 
 @pytest.fixture
+def xml_parts_(request):
+    xml_parts_ = instance_mock(list, request)
+    return xml_parts_
+
+
+@pytest.fixture
 def xml_part_(request):
     xml_part_ = instance_mock(PkgItem, request)
     xml_part_.is_content_types = False
@@ -275,6 +282,16 @@ class DescribeDiffPresenter(object):
         DiffPresenter_._pkg_item_diffs.assert_called_once_with(
             rels_items_, package_2_)
         assert rels_diffs is pkg_item_diffs_
+
+    def it_can_gather_xml_part_diffs_between_two_packages(
+            self, package_, package_2_, DiffPresenter_, xml_parts_,
+            pkg_item_diffs_):
+        # exercise ---------------------
+        xml_part_diffs = DiffPresenter.xml_part_diffs(package_, package_2_)
+        # verify -----------------------
+        DiffPresenter_._pkg_item_diffs.assert_called_once_with(
+            xml_parts_, package_2_)
+        assert xml_part_diffs is pkg_item_diffs_
 
     def it_can_diff_a_list_of_pkg_items_against_another_package(
             self, pkg_items_, package_2_, uri_, uri_2_, DiffPresenter_,

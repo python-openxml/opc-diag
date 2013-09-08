@@ -127,6 +127,8 @@ class DiffPresenter(object):
         counterpart in *package_2*. Parts are compared in alphabetical order
         by partname (pack URI).
         """
+        package_1_xml_parts = package_1.xml_parts
+        return DiffPresenter._pkg_item_diffs(package_1_xml_parts, package_2)
 
     @staticmethod
     def _pkg_item_diff(pkg_item_1, pkg_item_2):
