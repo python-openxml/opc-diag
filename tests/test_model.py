@@ -25,6 +25,9 @@ from mock import call
 from .unitutil import class_mock, instance_mock
 
 
+DIRPATH = 'dirpath'
+
+
 @pytest.fixture
 def blob_(request):
     return instance_mock(str, request)
@@ -33,6 +36,11 @@ def blob_(request):
 @pytest.fixture
 def blob_2_(request):
     return instance_mock(str, request)
+
+
+@pytest.fixture
+def blob_collection_(request, uri_, uri_2_, blob_, blob_2_):
+    return {uri_: blob_, uri_2_: blob_2_}
 
 
 @pytest.fixture
@@ -70,16 +78,18 @@ def PkgItem_(request, pkg_item_, pkg_item_2_):
 
 
 @pytest.fixture
-def pkg_item_(request):
+def pkg_item_(request, blob_):
     pkg_item_ = instance_mock(PkgItem, request)
+    pkg_item_.blob = blob_
     pkg_item_.is_rels_item = True
     pkg_item_.is_xml_part = True
     return pkg_item_
 
 
 @pytest.fixture
-def pkg_item_2_(request):
+def pkg_item_2_(request, blob_2_):
     pkg_item_2_ = instance_mock(PkgItem, request)
+    pkg_item_2_.blob = blob_2_
     pkg_item_2_.is_rels_item = False
     pkg_item_2_.is_xml_part = False
     return pkg_item_2_
@@ -91,6 +101,11 @@ def pkg_item_3_(request):
     pkg_item_3_.is_rels_item = True
     pkg_item_3_.is_xml_part = True
     return pkg_item_3_
+
+
+@pytest.fixture
+def pkg_item_dict_(request, uri_, uri_2_, pkg_item_, pkg_item_2_):
+    return {uri_: pkg_item_, uri_2_: pkg_item_2_}
 
 
 @pytest.fixture
@@ -167,6 +182,16 @@ class DescribePackage(object):
         xml_parts = package.xml_parts
         # verify -----------------------
         assert xml_parts == [pkg_item_3_, pkg_item_]
+
+    def it_can_save_an_expanded_version_of_itself_to_a_directory(
+            self, pkg_item_dict_, PhysPkg_, blob_collection_):
+        # fixture ----------------------
+        package = Package(pkg_item_dict_)
+        # exercise ---------------------
+        package.save_to_dir(DIRPATH)
+        # verify -----------------------
+        PhysPkg_.write_to_dir.assert_called_once_with(
+            blob_collection_, DIRPATH)
 
 
 class DescribePkgItem(object):

@@ -13,7 +13,7 @@ import os
 
 from lxml import etree
 
-from opcdiag.phys_pkg import PhysPkg
+from opcdiag.phys_pkg import BlobCollection, PhysPkg
 
 
 _CONTENT_TYPES_URI = '[Content_Types].xml'
@@ -69,6 +69,7 @@ class Package(object):
         the directory exists, it is deleted (recursively) before being
         recreated.
         """
+        PhysPkg.write_to_dir(self._blobs, dirpath)
 
     @property
     def xml_parts(self):
@@ -81,6 +82,17 @@ class Package(object):
             if pkg_item.is_xml_part:
                 xml_parts.append(pkg_item)
         return xml_parts
+
+    @property
+    def _blobs(self):
+        """
+        A |BlobCollection| instance containing a snapshot of the blobs in the
+        package.
+        """
+        blobs = BlobCollection()
+        for uri, pkg_item in self._pkg_items.items():
+            blobs[uri] = pkg_item.blob
+        return blobs
 
     @property
     def _uris(self):
@@ -99,6 +111,14 @@ class PkgItem(object):
         self._blob = blob
         self._root_uri = root_uri
         self._uri = uri
+
+    @property
+    def blob(self):
+        """
+        The binary contents of this package item, frequently but not always
+        XML text.
+        """
+        return self._blob  # pragma: no cover
 
     @property
     def element(self):

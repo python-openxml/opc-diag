@@ -56,6 +56,15 @@ class PhysPkg(object):
     def root_uri(self):
         return self._root_uri  # pragma: no cover
 
+    @staticmethod
+    def write_to_dir(blobs, dirpath):
+        """
+        Write the contents of the |BlobCollection| instance *blobs* to a
+        directory at *dirpath*. If a directory already exists at *dirpath*,
+        it is deleted before being recreated. If a file exists at *dirpath*,
+        |ValueError| is raised, to prevent unintentional overwriting.
+        """
+
 
 class DirPhysPkg(PhysPkg):
     """
