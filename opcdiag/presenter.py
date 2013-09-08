@@ -85,6 +85,16 @@ class DiffPresenter(object):
         Return a diff between the text of the item identified by *uri_tail*
         in *package_1* and that of its counterpart in *package_2*.
         """
+        pkg_item_1 = package_1.find_item_by_uri_tail(uri_tail)
+        pkg_item_2 = package_2.find_item_by_uri_tail(uri_tail)
+        return DiffPresenter._pkg_item_diff(pkg_item_1, pkg_item_2)
+
+    @staticmethod
+    def _pkg_item_diff(pkg_item_1, pkg_item_2):
+        """
+        Return a diff between the text of *pkg_item_1* and that of
+        *pkg_item_2*.
+        """
 
 
 class ItemPresenter(object):

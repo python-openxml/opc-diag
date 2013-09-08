@@ -13,12 +13,15 @@ from __future__ import unicode_literals
 
 from lxml import etree
 
-from opcdiag.model import PkgItem
-from opcdiag.presenter import ItemPresenter
+from opcdiag.model import Package, PkgItem
+from opcdiag.presenter import DiffPresenter, ItemPresenter
 
 import pytest
 
-from .unitutil import instance_mock, property_mock
+from .unitutil import class_mock, instance_mock, property_mock
+
+
+URI_TAIL = 'uri_tail'
 
 
 @pytest.fixture
@@ -40,8 +43,39 @@ def content_types_item_(request):
 
 
 @pytest.fixture
+def DiffPresenter_(request):
+    return class_mock('opcdiag.presenter.DiffPresenter', request)
+
+
+@pytest.fixture
 def ItemPresenter_xml_(request):
     return property_mock('opcdiag.presenter.ItemPresenter.xml', request)
+
+
+@pytest.fixture
+def package_(request, pkg_item_):
+    package_ = instance_mock(Package, request)
+    package_.find_item_by_uri_tail.return_value = pkg_item_
+    return package_
+
+
+@pytest.fixture
+def package_2_(request, pkg_item_2_):
+    package_2_ = instance_mock(Package, request)
+    package_2_.find_item_by_uri_tail.return_value = pkg_item_2_
+    return package_2_
+
+
+@pytest.fixture
+def pkg_item_(request):
+    pkg_item_ = instance_mock(PkgItem, request)
+    return pkg_item_
+
+
+@pytest.fixture
+def pkg_item_2_(request):
+    pkg_item_2_ = instance_mock(PkgItem, request)
+    return pkg_item_2_
 
 
 @pytest.fixture
@@ -60,6 +94,20 @@ def xml_part_(request):
     xml_part_.is_rels_item = False
     xml_part_.is_xml_part = True
     return xml_part_
+
+
+class DescribeDiffPresenter(object):
+
+    def it_can_diff_a_named_item_between_two_packages(
+            self, package_, package_2_, DiffPresenter_, pkg_item_,
+            pkg_item_2_):
+        # exercise ---------------------
+        DiffPresenter.named_item_diff(package_, package_2_, URI_TAIL)
+        # verify -----------------------
+        package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
+        package_2_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
+        DiffPresenter_._pkg_item_diff.assert_called_once_with(
+            pkg_item_, pkg_item_2_)
 
 
 class DescribeItemPresenter(object):
