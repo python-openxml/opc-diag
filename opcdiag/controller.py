@@ -14,6 +14,9 @@ from opcdiag.presenter import DiffPresenter, ItemPresenter
 from opcdiag.view import OpcView
 
 
+_CONTENT_TYPES_URI = '[Content_Types].xml'
+
+
 class OpcController(object):
     """
     Mediate between the command-line interface and the package model
@@ -51,3 +54,10 @@ class OpcController(object):
         standard zip package (e.g. .pptx file) or a directory containing an
         extracted package.
         """
+        package_1 = Package.read(package_1_path)
+        package_2 = Package.read(package_2_path)
+        content_types_diff = DiffPresenter.named_item_diff(
+            package_1, package_2, _CONTENT_TYPES_URI)
+        rels_diffs = DiffPresenter.rels_diffs(package_1, package_2)
+        xml_part_diffs = DiffPresenter.xml_part_diffs(package_1, package_2)
+        OpcView.package_diff(content_types_diff, rels_diffs, xml_part_diffs)

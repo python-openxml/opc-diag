@@ -39,6 +39,13 @@ class OpcView(object):
         _write(text)
 
     @staticmethod
+    def package_diff(content_types_diff, rels_diffs, xml_part_diffs):
+        """
+        Write to stdout a consolidated diff between two packages, including
+        its *content_types_diff*, any *rels_diffs*, and any *xml_part_diffs*.
+        """
+
+    @staticmethod
     def pkg_item(pkg_item):
         """
         Display the text value of pkg_item, adding a linefeed at the end to

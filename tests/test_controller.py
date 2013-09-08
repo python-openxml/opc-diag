@@ -22,13 +22,16 @@ from .unitutil import class_mock, instance_mock
 
 PKG_PATH = 'pkg_path'
 PKG_2_PATH = 'pkg_2_path'
+URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_TAIL = 'uri_tail'
 
 
 @pytest.fixture
-def DiffPresenter_(request, item_diff_):
+def DiffPresenter_(request, item_diff_, rels_diffs_, xml_part_diffs_):
     DiffPresenter_ = class_mock('opcdiag.controller.DiffPresenter', request)
     DiffPresenter_.named_item_diff.return_value = item_diff_
+    DiffPresenter_.rels_diffs.return_value = rels_diffs_
+    DiffPresenter_.xml_part_diffs.return_value = xml_part_diffs_
     return DiffPresenter_
 
 
@@ -90,6 +93,18 @@ def pkg_item_2_(request):
     return pkg_item_2_
 
 
+@pytest.fixture
+def rels_diffs_(request):
+    rels_diffs_ = instance_mock(list, request)
+    return rels_diffs_
+
+
+@pytest.fixture
+def xml_part_diffs_(request):
+    xml_part_diffs_ = instance_mock(list, request)
+    return xml_part_diffs_
+
+
 class DescribeOpcController(object):
 
     def it_can_execute_a_browse_command(
@@ -102,6 +117,23 @@ class DescribeOpcController(object):
         package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
         ItemPresenter_.assert_called_once_with(pkg_item_)
         OpcView_.pkg_item.assert_called_once_with(item_presenter_)
+
+    def it_can_execute_a_diff_pkg_command(
+            self, Package_, DiffPresenter_, package_, package_2_,
+            item_diff_, rels_diffs_, xml_part_diffs_, OpcView_):
+        # exercise ---------------------
+        OpcController().diff_pkg(PKG_PATH, PKG_2_PATH)
+        # expected values --------------
+        expected_Package_read_calls = [call(PKG_PATH), call(PKG_2_PATH)]
+        Package_.read.assert_has_calls(expected_Package_read_calls)
+        DiffPresenter_.named_item_diff.assert_called_once_with(
+            package_, package_2_, URI_CONTENT_TYPES)
+        DiffPresenter_.rels_diffs.assert_called_once_with(
+            package_, package_2_)
+        DiffPresenter_.xml_part_diffs.assert_called_once_with(
+            package_, package_2_)
+        OpcView_.package_diff.assert_called_once_with(
+            item_diff_, rels_diffs_, xml_part_diffs_)
 
     def it_can_execute_a_diff_item_command(
             self, Package_, package_, package_2_, DiffPresenter_, item_diff_,
