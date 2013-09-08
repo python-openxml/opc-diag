@@ -207,6 +207,13 @@ class ExtractCommand(Command):
             help='Path to directory into which to extract package items')
         return parser
 
+    def validate(self, args):
+        try:
+            msg = "PKG_PATH '%s' does not exist" % args.pkg_path
+            assert os.path.exists(args.pkg_path), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
+
 
 def main(argv=None):
     command_controller = CommandController.new()

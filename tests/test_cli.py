@@ -317,3 +317,14 @@ class DescribeExtractCommand(object):
         assert args.pkg_path == ARG_PKG_PATH
         assert args.dirpath == ARG_DIRPATH
         assert isinstance(subparser, argparse.ArgumentParser)
+
+    def it_should_trigger_parser_error_if_pkg_path_does_not_exist(
+            self, args_, parser_):
+        # fixture ----------------------
+        args_.pkg_path = 'foobar'
+        extract_command = ExtractCommand(parser_)
+        # exercise ---------------------
+        extract_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
+        assert 'PKG_PATH' in parser_.error.call_args[0][0]
