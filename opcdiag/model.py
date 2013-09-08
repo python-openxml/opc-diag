@@ -55,6 +55,12 @@ class Package(object):
         """
         Return list of rels items in this package, sorted by pack URI.
         """
+        rels_items = []
+        for uri in self._uris:
+            pkg_item = self._pkg_items[uri]
+            if pkg_item.is_rels_item:
+                rels_items.append(pkg_item)
+        return rels_items
 
     @property
     def _uris(self):

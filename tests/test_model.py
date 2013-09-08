@@ -72,13 +72,22 @@ def PkgItem_(request, pkg_item_, pkg_item_2_):
 @pytest.fixture
 def pkg_item_(request):
     pkg_item_ = instance_mock(PkgItem, request)
+    pkg_item_.is_rels_item = True
     return pkg_item_
 
 
 @pytest.fixture
 def pkg_item_2_(request):
     pkg_item_2_ = instance_mock(PkgItem, request)
+    pkg_item_2_.is_rels_item = False
     return pkg_item_2_
+
+
+@pytest.fixture
+def pkg_item_3_(request):
+    pkg_item_3_ = instance_mock(PkgItem, request)
+    pkg_item_3_.is_rels_item = True
+    return pkg_item_3_
 
 
 @pytest.fixture
@@ -127,6 +136,20 @@ class DescribePackage(object):
         assert pkg_item == pkg_item_
         with pytest.raises(KeyError):
             package.find_item_by_uri_tail('head')
+
+    def it_can_provide_a_list_of_rels_items_in_the_package(
+            self, pkg_item_, pkg_item_2_, pkg_item_3_):
+        # fixture ----------------------
+        pkg_items = {
+            'foo/bar.rels': pkg_item_,    # should be sorted second
+            'joe/bob.xml':  pkg_item_2_,  # should be skipped
+            'bar/foo.rels': pkg_item_3_,  # should be sorted first
+        }
+        package = Package(pkg_items)
+        # exercise ---------------------
+        rels_items = package.rels_items
+        # verify -----------------------
+        assert rels_items == [pkg_item_3_, pkg_item_]
 
 
 class DescribePkgItem(object):
