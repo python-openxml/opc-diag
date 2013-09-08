@@ -9,14 +9,20 @@
 
 """Acceptance test steps for opc-diag package."""
 
-from behave import then, when
+import os
+import shutil
 
-from helpers import OpcCommand, ref_pkg_path
+from behave import given, then, when
+
+from helpers import (
+    assertPackagesMatch, OpcCommand, ref_pkg_path, scratch_path
+)
 
 
 SUBCMD_BROWSE = 'browse'
 SUBCMD_DIFF = 'diff'
 SUBCMD_DIFF_ITEM = 'diff-item'
+SUBCMD_EXTRACT = 'extract'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
@@ -30,6 +36,15 @@ pkg_paths = {'dir': base_dir_pkg_path, 'zip': base_zip_pkg_path}
 
 base_pkg_path = ref_pkg_path('base.pptx')
 changed_pkg_path = ref_pkg_path('changed.pptx')
+extract_dir = scratch_path('extracted')
+
+
+# given ====================================================
+
+@given('a target directory that does not exist')
+def step_remove_target_directory(context):
+    if os.path.exists(extract_dir):
+        shutil.rmtree(extract_dir)
 
 
 # when =====================================================
@@ -80,6 +95,13 @@ def step_command_diff_two_packages(context):
     ).execute()
 
 
+@when('I issue a command to extract a package')
+def step_command_extract_package(context):
+    context.cmd = OpcCommand(
+        SUBCMD_EXTRACT, base_pkg_path, extract_dir
+    ).execute()
+
+
 # then =====================================================
 
 @then('the content types diff appears on stdout')
@@ -110,6 +132,13 @@ def step_then_pkg_rels_xml_appears_on_stdout(context):
 def step_then_pkg_diff_appears_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('diff.txt')
+
+
+@then('the package items appear in the target directory')
+def step_then_pkg_appears_in_target_dir(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_empty()
+    assertPackagesMatch(base_pkg_path, extract_dir)
 
 
 @then('the package rels diff appears on stdout')

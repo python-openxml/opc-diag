@@ -14,6 +14,8 @@ from __future__ import unicode_literals
 import os
 import subprocess
 
+from step_data import Manifest
+
 
 def absjoin(*paths):
     return os.path.abspath(os.path.join(*paths))
@@ -24,8 +26,24 @@ def ref_pkg_path(filename):
     return os.path.relpath(absjoin(ref_pkg_dir, filename))
 
 
+def scratch_path(name):
+    return os.path.relpath(absjoin(scratch_dir, name))
+
+
 thisdir = os.path.split(__file__)[0]
+scratch_dir = absjoin(thisdir, '../_scratch')
 test_file_dir = absjoin(thisdir, '../test_files')
+
+
+def assertPackagesMatch(path1, path2):
+    """
+    Raise |AssertionError| if manifest of package at *path1* does not exactly
+    match that of package at *path2*.
+    """
+    manifest1, manifest2 = Manifest(path1), Manifest(path2)
+    msg = ("Package manifests don't match\n\n%s" %
+           manifest1.diff(manifest2, path1, path2))
+    assert manifest1 == manifest2, msg
 
 
 class OpcCommand(object):
