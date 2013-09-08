@@ -214,6 +214,9 @@ class ExtractCommand(Command):
         except AssertionError as e:
             self._parser.error(str(e))
 
+    def execute(self, args, app_controller):
+        app_controller.extract_package(args.pkg_path, args.dirpath)
+
 
 def main(argv=None):
     command_controller = CommandController.new()

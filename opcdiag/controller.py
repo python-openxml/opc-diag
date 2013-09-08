@@ -61,3 +61,9 @@ class OpcController(object):
         rels_diffs = DiffPresenter.rels_diffs(package_1, package_2)
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_1, package_2)
         OpcView.package_diff(content_types_diff, rels_diffs, xml_part_diffs)
+
+    def extract_package(self, package_path, extract_dirpath):
+        """
+        Extract the contents of the package at *package_path* to individual
+        files in a directory at *extract_dirpath*.
+        """

@@ -328,3 +328,13 @@ class DescribeExtractCommand(object):
         # verify -----------------------
         parser_.error.assert_called_once_with(ANY)
         assert 'PKG_PATH' in parser_.error.call_args[0][0]
+
+    def it_can_dispatch_a_extract_command_to_the_app(
+            self, args_, app_controller_):
+        # fixture ----------------------
+        extract_command = ExtractCommand(None)
+        # exercise ---------------------
+        extract_command.execute(args_, app_controller_)
+        # verify -----------------------
+        app_controller_.extract_package.assert_called_once_with(
+            args_.pkg_path, args_.dirpath)
