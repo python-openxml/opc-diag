@@ -20,6 +20,7 @@ from mock import call
 from .unitutil import class_mock, instance_mock
 
 
+DIRPATH = 'dirpath'
 PKG_PATH = 'pkg_path'
 PKG_2_PATH = 'pkg_2_path'
 URI_CONTENT_TYPES = '[Content_Types].xml'
@@ -147,3 +148,10 @@ class DescribeOpcController(object):
         DiffPresenter_.named_item_diff.assert_called_once_with(
             package_, package_2_, URI_TAIL)
         OpcView_.item_diff.assert_called_once_with(item_diff_)
+
+    def it_can_execute_an_extract_package_command(self, Package_, package_):
+        # exercise ---------------------
+        OpcController().extract_package(PKG_PATH, DIRPATH)
+        # verify -----------------------
+        Package_.read.assert_called_once_with(PKG_PATH)
+        package_.save_to_dir.assert_called_once_with(DIRPATH)

@@ -67,3 +67,5 @@ class OpcController(object):
         Extract the contents of the package at *package_path* to individual
         files in a directory at *extract_dirpath*.
         """
+        package = Package.read(package_path)
+        package.save_to_dir(extract_dirpath)

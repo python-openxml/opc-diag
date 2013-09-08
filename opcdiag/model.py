@@ -62,6 +62,14 @@ class Package(object):
                 rels_items.append(pkg_item)
         return rels_items
 
+    def save_to_dir(self, dirpath):
+        """
+        Save each of the items in this package as a file in a directory at
+        *dirpath*, using the pack URI as the relative path of each file. If
+        the directory exists, it is deleted (recursively) before being
+        recreated.
+        """
+
     @property
     def xml_parts(self):
         """
