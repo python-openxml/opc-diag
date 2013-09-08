@@ -67,6 +67,12 @@ class Package(object):
         """
         Return list of XML parts in this package, sorted by partname.
         """
+        xml_parts = []
+        for uri in self._uris:
+            pkg_item = self._pkg_items[uri]
+            if pkg_item.is_xml_part:
+                xml_parts.append(pkg_item)
+        return xml_parts
 
     @property
     def _uris(self):

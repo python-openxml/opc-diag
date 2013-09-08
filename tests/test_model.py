@@ -73,6 +73,7 @@ def PkgItem_(request, pkg_item_, pkg_item_2_):
 def pkg_item_(request):
     pkg_item_ = instance_mock(PkgItem, request)
     pkg_item_.is_rels_item = True
+    pkg_item_.is_xml_part = True
     return pkg_item_
 
 
@@ -80,6 +81,7 @@ def pkg_item_(request):
 def pkg_item_2_(request):
     pkg_item_2_ = instance_mock(PkgItem, request)
     pkg_item_2_.is_rels_item = False
+    pkg_item_2_.is_xml_part = False
     return pkg_item_2_
 
 
@@ -87,6 +89,7 @@ def pkg_item_2_(request):
 def pkg_item_3_(request):
     pkg_item_3_ = instance_mock(PkgItem, request)
     pkg_item_3_.is_rels_item = True
+    pkg_item_3_.is_xml_part = True
     return pkg_item_3_
 
 
@@ -150,6 +153,20 @@ class DescribePackage(object):
         rels_items = package.rels_items
         # verify -----------------------
         assert rels_items == [pkg_item_3_, pkg_item_]
+
+    def it_can_provide_a_list_of_xml_parts_in_the_package(
+            self, pkg_item_, pkg_item_2_, pkg_item_3_):
+        # fixture ----------------------
+        pkg_items = {
+            'foobar': pkg_item_,    # should be sorted second
+            'joebob': pkg_item_2_,  # should be skipped
+            'barfoo': pkg_item_3_,  # should be sorted first
+        }
+        package = Package(pkg_items)
+        # exercise ---------------------
+        xml_parts = package.xml_parts
+        # verify -----------------------
+        assert xml_parts == [pkg_item_3_, pkg_item_]
 
 
 class DescribePkgItem(object):
