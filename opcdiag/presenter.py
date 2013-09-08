@@ -114,9 +114,11 @@ class DiffPresenter(object):
     def rels_diffs(package_1, package_2):
         """
         Return a list of diffs between the rels items in *package_1* against
-        their counterpart in *package_2*. Rels items are compared in
+        their counterparts in *package_2*. Rels items are compared in
         alphabetical order by pack URI.
         """
+        package_1_rels_items = package_1.rels_items
+        return DiffPresenter._pkg_item_diffs(package_1_rels_items, package_2)
 
     @staticmethod
     def xml_part_diffs(package_1, package_2):
@@ -139,6 +141,13 @@ class DiffPresenter(object):
         filename_1 = item_presenter_1.filename
         filename_2 = item_presenter_2.filename
         return diff(text_1, text_2, filename_1, filename_2)
+
+    @staticmethod
+    def _pkg_item_diffs(pkg_items, package_2):
+        """
+        Return a list of diffs, one for each item in *pkg_items* that differs
+        from its counterpart in *package_2*.
+        """
 
 
 class ItemPresenter(object):

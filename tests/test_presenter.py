@@ -47,8 +47,10 @@ def content_types_item_(request):
 
 
 @pytest.fixture
-def DiffPresenter_(request):
-    return class_mock('opcdiag.presenter.DiffPresenter', request)
+def DiffPresenter_(request, rels_diffs_):
+    DiffPresenter_ = class_mock('opcdiag.presenter.DiffPresenter', request)
+    DiffPresenter_._pkg_item_diffs.return_value = rels_diffs_
+    return DiffPresenter_
 
 
 @pytest.fixture
@@ -112,9 +114,10 @@ def item_presenter_2_text_(request, text_2_):
 
 
 @pytest.fixture
-def package_(request, pkg_item_):
+def package_(request, pkg_item_, rels_items_):
     package_ = instance_mock(Package, request)
     package_.find_item_by_uri_tail.return_value = pkg_item_
+    package_.rels_items = rels_items_
     return package_
 
 
@@ -138,12 +141,24 @@ def pkg_item_2_(request):
 
 
 @pytest.fixture
+def rels_diffs_(request):
+    rels_diffs_ = instance_mock(list, request)
+    return rels_diffs_
+
+
+@pytest.fixture
 def rels_item_(request):
     rels_item_ = instance_mock(PkgItem, request)
     rels_item_.is_content_types = False
     rels_item_.is_rels_item = True
     rels_item_.is_xml_part = False
     return rels_item_
+
+
+@pytest.fixture
+def rels_items_(request):
+    rels_items_ = instance_mock(list, request)
+    return rels_items_
 
 
 @pytest.fixture
@@ -223,6 +238,16 @@ class DescribeDiffPresenter(object):
         item_presenter_2_text_.assert_called_once_with()
         diff_.assert_called_once_with(text_, text_2_, filename_, filename_2_)
         assert item_diff is diff_text_
+
+    def it_can_gather_rels_diffs_between_two_packages(
+            self, package_, package_2_, DiffPresenter_, rels_items_,
+            rels_diffs_):
+        # exercise ---------------------
+        rels_diffs = DiffPresenter.rels_diffs(package_, package_2_)
+        # verify -----------------------
+        DiffPresenter_._pkg_item_diffs.assert_called_once_with(
+            rels_items_, package_2_)
+        assert rels_diffs is rels_diffs_
 
 
 class DescribeItemPresenter(object):

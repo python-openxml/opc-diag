@@ -51,6 +51,12 @@ class Package(object):
         raise KeyError("No item with name '%s'" % uri_tail)
 
     @property
+    def rels_items(self):
+        """
+        Return list of rels items in this package, sorted by pack URI.
+        """
+
+    @property
     def _uris(self):
         """
         Return sorted list of item URIs in this package.
