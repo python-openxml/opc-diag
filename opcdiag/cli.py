@@ -189,6 +189,25 @@ class DiffItemCommand(Command):
             self._parser.error(str(e))
 
 
+class ExtractCommand(Command):
+
+    def __init__(self, parser):
+        super(ExtractCommand, self).__init__(parser)
+
+    @staticmethod
+    def add_command_parser_to(subparsers):
+        parser = subparsers.add_parser(
+            'extract',
+            help='Extract all items in a package to a directory')
+        parser.add_argument(
+            'pkg_path', metavar='PKG_PATH',
+            help='Path to package')
+        parser.add_argument(
+            'dirpath', metavar='DIRPATH',
+            help='Path to directory into which to extract package items')
+        return parser
+
+
 def main(argv=None):
     command_controller = CommandController.new()
     command_controller.execute(argv)
