@@ -148,6 +148,14 @@ class DiffPresenter(object):
         Return a list of diffs, one for each item in *pkg_items* that differs
         from its counterpart in *package_2*.
         """
+        diffs = []
+        for pkg_item in pkg_items:
+            uri = pkg_item.uri
+            pkg_item_2 = package_2.find_item_by_uri_tail(uri)
+            diff = DiffPresenter._pkg_item_diff(pkg_item, pkg_item_2)
+            if diff:
+                diffs.append(diff)
+        return diffs
 
 
 class ItemPresenter(object):

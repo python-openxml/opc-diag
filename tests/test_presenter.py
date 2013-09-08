@@ -47,9 +47,10 @@ def content_types_item_(request):
 
 
 @pytest.fixture
-def DiffPresenter_(request, rels_diffs_):
+def DiffPresenter_(request, pkg_item_diffs_):
     DiffPresenter_ = class_mock('opcdiag.presenter.DiffPresenter', request)
-    DiffPresenter_._pkg_item_diffs.return_value = rels_diffs_
+    DiffPresenter_._pkg_item_diff.side_effect = pkg_item_diffs_
+    DiffPresenter_._pkg_item_diffs.return_value = pkg_item_diffs_
     return DiffPresenter_
 
 
@@ -122,28 +123,44 @@ def package_(request, pkg_item_, rels_items_):
 
 
 @pytest.fixture
-def package_2_(request, pkg_item_2_):
+def package_2_(request, pkg_item_, pkg_item_2_):
     package_2_ = instance_mock(Package, request)
-    package_2_.find_item_by_uri_tail.return_value = pkg_item_2_
+    package_2_.find_item_by_uri_tail.side_effect = (pkg_item_2_, pkg_item_)
     return package_2_
 
 
 @pytest.fixture
-def pkg_item_(request):
+def pkg_item_(request, uri_):
     pkg_item_ = instance_mock(PkgItem, request)
+    pkg_item_.uri = uri_
     return pkg_item_
 
 
 @pytest.fixture
-def pkg_item_2_(request):
+def pkg_item_2_(request, uri_2_):
     pkg_item_2_ = instance_mock(PkgItem, request)
+    pkg_item_2_.uri = uri_2_
     return pkg_item_2_
 
 
 @pytest.fixture
-def rels_diffs_(request):
-    rels_diffs_ = instance_mock(list, request)
-    return rels_diffs_
+def pkg_items_(request, pkg_item_, pkg_item_2_):
+    return [pkg_item_, pkg_item_2_]
+
+
+@pytest.fixture
+def pkg_item_diff_(request):
+    return 'diff_'
+
+
+@pytest.fixture
+def pkg_item_diff_2_(request):
+    return 'diff_2_'
+
+
+@pytest.fixture
+def pkg_item_diffs_(request, pkg_item_diff_, pkg_item_diff_2_):
+    return [pkg_item_diff_, pkg_item_diff_2_]
 
 
 @pytest.fixture
@@ -169,6 +186,16 @@ def text_(request):
 @pytest.fixture
 def text_2_(request):
     return 'text_2_'
+
+
+@pytest.fixture
+def uri_(request):
+    return '/word/document.xml'
+
+
+@pytest.fixture
+def uri_2_(request):
+    return '/_rels/.rels'
 
 
 @pytest.fixture
@@ -241,13 +268,26 @@ class DescribeDiffPresenter(object):
 
     def it_can_gather_rels_diffs_between_two_packages(
             self, package_, package_2_, DiffPresenter_, rels_items_,
-            rels_diffs_):
+            pkg_item_diffs_):
         # exercise ---------------------
         rels_diffs = DiffPresenter.rels_diffs(package_, package_2_)
         # verify -----------------------
         DiffPresenter_._pkg_item_diffs.assert_called_once_with(
             rels_items_, package_2_)
-        assert rels_diffs is rels_diffs_
+        assert rels_diffs is pkg_item_diffs_
+
+    def it_can_diff_a_list_of_pkg_items_against_another_package(
+            self, pkg_items_, package_2_, uri_, uri_2_, DiffPresenter_,
+            pkg_item_, pkg_item_2_, pkg_item_diff_, pkg_item_diff_2_):
+        # exercise ---------------------
+        diffs = DiffPresenter._pkg_item_diffs(pkg_items_, package_2_)
+        # verify -----------------------
+        assert package_2_.find_item_by_uri_tail.call_args_list == [
+            call(uri_), call(uri_2_)
+        ]
+        assert DiffPresenter_._pkg_item_diff.call_args_list == [
+            call(pkg_item_, pkg_item_2_), call(pkg_item_2_, pkg_item_)]
+        assert diffs == [pkg_item_diff_, pkg_item_diff_2_]
 
 
 class DescribeItemPresenter(object):

@@ -114,3 +114,10 @@ class PkgItem(object):
         """
         uri_part = os.path.normpath(self._uri)
         return os.path.join(self._root_uri, uri_part)
+
+    @property
+    def uri(self):
+        """
+        The pack URI of this package item, e.g. ``'/word/document.xml'``.
+        """
+        return self._uri  # pragma: no cover
