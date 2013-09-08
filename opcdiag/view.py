@@ -44,6 +44,11 @@ class OpcView(object):
         Write to stdout a consolidated diff between two packages, including
         its *content_types_diff*, any *rels_diffs*, and any *xml_part_diffs*.
         """
+        diff_blocks = [content_types_diff] if content_types_diff else []
+        diff_blocks.extend(rels_diffs)
+        diff_blocks.extend(xml_part_diffs)
+        text = '%s\n' % '\n\n'.join(diff_blocks) if diff_blocks else ''
+        _write(text)
 
     @staticmethod
     def pkg_item(pkg_item):
