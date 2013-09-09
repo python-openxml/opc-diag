@@ -70,6 +70,13 @@ class PhysPkg(object):
             PhysPkg._write_blob_to_dir(dirpath, uri, blob)
 
     @staticmethod
+    def write_to_zip(blobs, pkg_zip_path):
+        """
+        Write "files" in |BlobCollection| instance *blobs* to a zip archive
+        at *pkg_zip_path*.
+        """
+
+    @staticmethod
     def _clear_or_make_dir(dirpath):
         """
         Create a new, empty directory at *dirpath*, removing and recreating

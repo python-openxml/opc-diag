@@ -26,6 +26,7 @@ from .unitutil import class_mock, instance_mock
 
 
 DIRPATH = 'dirpath'
+PACKAGE_PATH = 'package_path'
 
 
 @pytest.fixture
@@ -182,6 +183,16 @@ class DescribePackage(object):
         xml_parts = package.xml_parts
         # verify -----------------------
         assert xml_parts == [pkg_item_3_, pkg_item_]
+
+    def it_can_save_itself_to_a_zip(
+            self, pkg_item_dict_, PhysPkg_, blob_collection_):
+        # fixture ----------------------
+        package = Package(pkg_item_dict_)
+        # exercise ---------------------
+        package.save(PACKAGE_PATH)
+        # verify -----------------------
+        PhysPkg_.write_to_zip.assert_called_once_with(
+            blob_collection_, PACKAGE_PATH)
 
     def it_can_save_an_expanded_version_of_itself_to_a_directory(
             self, pkg_item_dict_, PhysPkg_, blob_collection_):

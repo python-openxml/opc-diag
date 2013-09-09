@@ -66,6 +66,7 @@ class Package(object):
         """
         Save this package to a zip archive at *path*.
         """
+        PhysPkg.write_to_zip(self._blobs, path)
 
     def save_to_dir(self, dirpath):
         """
