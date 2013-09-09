@@ -204,6 +204,18 @@ class DescribePackage(object):
         PhysPkg_.write_to_dir.assert_called_once_with(
             blob_collection_, DIRPATH)
 
+    def it_can_change_one_of_its_items_to_another(
+            self, pkg_item_, pkg_item_2_):
+        # fixture ----------------------
+        pkg_items = {'uri': pkg_item_}
+        package = Package(pkg_items)
+        pkg_item_2_.uri = 'uri'
+        pkg_item_2_.blob = 'new blob'
+        # exercise ---------------------
+        package.substitute_item(pkg_item_2_)
+        # verify -----------------------
+        assert pkg_item_.blob == 'new blob'
+
 
 class DescribePkgItem(object):
 

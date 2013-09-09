@@ -82,6 +82,8 @@ class Package(object):
         Locate the item in this package that corresponds with *src_pkg_item*
         and replace its blob with that from *src_pkg_item*.
         """
+        tgt_pkg_item = self._pkg_items[src_pkg_item.uri]
+        tgt_pkg_item.blob = src_pkg_item.blob
 
     @property
     def xml_parts(self):
@@ -131,6 +133,10 @@ class PkgItem(object):
         XML text.
         """
         return self._blob  # pragma: no cover
+
+    @blob.setter
+    def blob(self, value):
+        self._blob = value  # pragma: no cover
 
     @property
     def element(self):
