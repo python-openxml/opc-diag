@@ -64,6 +64,25 @@ class PhysPkg(object):
         it is deleted before being recreated. If a file exists at *dirpath*,
         |ValueError| is raised, to prevent unintentional overwriting.
         """
+        PhysPkg._clear_or_make_dir(dirpath)
+        for uri, blob in blobs.items():
+            PhysPkg._write_blob_to_dir(dirpath, uri, blob)
+
+    @staticmethod
+    def _clear_or_make_dir(dirpath):
+        """
+        Create a new, empty directory at *dirpath*, removing and recreating
+        any directory found there. Raises |ValueError| if *dirpath* exists
+        but is not a directory.
+        """
+
+    @staticmethod
+    def _write_blob_to_dir(dirpath, uri, blob):
+        """
+        Write *blob* to a file under *dirpath*, where the segments of *uri*
+        that precede the filename are created, as required, as intermediate
+        directories.
+        """
 
 
 class DirPhysPkg(PhysPkg):

@@ -15,12 +15,41 @@ from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
 import pytest
 
+from mock import call
+
 from .unitutil import class_mock, instance_mock, relpath
 
 
+DIRPATH = 'DIRPATH'
 MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
 MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
 ROOT_URI = relpath('test_files/mini_pkg')
+
+
+@pytest.fixture
+def blob_(request):
+    return instance_mock(str, request)
+
+
+@pytest.fixture
+def blob_2_(request):
+    return instance_mock(str, request)
+
+
+@pytest.fixture
+def PhysPkg_(request):
+    PhysPkg_ = class_mock('opcdiag.phys_pkg.PhysPkg', request)
+    return PhysPkg_
+
+
+@pytest.fixture
+def uri_(request):
+    return instance_mock(str, request)
+
+
+@pytest.fixture
+def uri_2_(request):
+    return instance_mock(str, request)
 
 
 @pytest.fixture
@@ -52,6 +81,18 @@ class DescribePhysPkg(object):
         actual_blobs = dict([item for item in phys_pkg])
         # verify -----------------------
         assert actual_blobs == blobs
+
+    def it_can_write_a_blob_collection_to_a_directory(
+            self, uri_, uri_2_, blob_, blob_2_, PhysPkg_):
+        # fixture ----------------------
+        blobs = BlobCollection(((uri_, blob_), (uri_2_, blob_2_)))
+        # exercise ---------------------
+        PhysPkg.write_to_dir(blobs, DIRPATH)
+        # verify -----------------------
+        PhysPkg_._clear_or_make_dir.assert_called_once_with(DIRPATH)
+        PhysPkg_._write_blob_to_dir.assert_has_calls(
+            (call(DIRPATH, uri_, blob_), call(DIRPATH, uri_2_, blob_2_)),
+            any_order=True)
 
 
 class DescribeDirPhysPkg(object):
