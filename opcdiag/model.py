@@ -62,6 +62,11 @@ class Package(object):
                 rels_items.append(pkg_item)
         return rels_items
 
+    def save(self, path):
+        """
+        Save this package to a zip archive at *path*.
+        """
+
     def save_to_dir(self, dirpath):
         """
         Save each of the items in this package as a file in a directory at

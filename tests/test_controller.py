@@ -21,6 +21,7 @@ from .unitutil import class_mock, instance_mock
 
 
 DIRPATH = 'dirpath'
+NEW_PKG_PATH = 'new_pkg_path'
 PKG_PATH = 'pkg_path'
 PKG_2_PATH = 'pkg_2_path'
 URI_CONTENT_TYPES = '[Content_Types].xml'
@@ -155,3 +156,10 @@ class DescribeOpcController(object):
         # verify -----------------------
         Package_.read.assert_called_once_with(PKG_PATH)
         package_.save_to_dir.assert_called_once_with(DIRPATH)
+
+    def it_can_execute_a_repackage_command(self, Package_, package_):
+        # exercise ---------------------
+        OpcController().repackage(PKG_PATH, NEW_PKG_PATH)
+        # verify -----------------------
+        Package_.read.assert_called_once_with(PKG_PATH)
+        package_.save.assert_called_once_with(NEW_PKG_PATH)

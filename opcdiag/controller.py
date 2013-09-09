@@ -75,3 +75,5 @@ class OpcController(object):
         Write the contents of the package found at *package_path* to a new
         zip package at *new_package_path*.
         """
+        package = Package.read(package_path)
+        package.save(new_package_path)
