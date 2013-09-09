@@ -13,7 +13,7 @@ import argparse
 
 from opcdiag.cli import (
     BrowseCommand, Command, CommandController, DiffCommand, DiffItemCommand,
-    ExtractCommand, RepackageCommand, main
+    ExtractCommand, RepackageCommand, SubstituteCommand, main
 )
 from opcdiag.controller import OpcController
 
@@ -29,11 +29,15 @@ ARG_PKG_PATH = 'PKG_PATH'
 ARG_PKG_2_PATH = 'PKG_2_PATH'
 ARG_FILENAME = 'FILENAME'
 ARG_NEW_PACKAGE = 'NEW_PACKAGE'
+ARG_SRC_PKG_PATH = 'SRC_PKG_PATH'
+ARG_TGT_PKG_PATH = 'TGT_PKG_PATH'
+ARG_RESULT_PKG_PATH = 'RESULT_PKG_PATH'
 CMD_WORD_BROWSE = 'browse'
 CMD_WORD_DIFF = 'diff'
 CMD_WORD_DIFF_ITEM = 'diff-item'
 CMD_WORD_EXTRACT = 'extract'
 CMD_WORD_REPACKAGE = 'repackage'
+CMD_WORD_SUBSTITUTE = 'substitute'
 MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
 MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
 
@@ -142,6 +146,12 @@ def repackage_argv_():
 @pytest.fixture
 def subparsers(parser):
     return parser.add_subparsers()
+
+
+@pytest.fixture
+def substitute_argv_():
+    return [CMD_WORD_SUBSTITUTE, ARG_FILENAME, ARG_SRC_PKG_PATH,
+            ARG_TGT_PKG_PATH, ARG_RESULT_PKG_PATH]
 
 
 class DescribeMain(object):
@@ -380,3 +390,18 @@ class DescribeRepackageCommand(object):
         # verify -----------------------
         app_controller_.repackage.assert_called_once_with(
             args_.dirpath, args_.new_package)
+
+
+class DescribeSubstituteCommand(object):
+
+    def it_should_add_a_substitute_command_parser(
+            self, substitute_argv_, parser, subparsers):
+        # exercise ---------------------
+        subparser = SubstituteCommand.add_command_parser_to(subparsers)
+        args = parser.parse_args(substitute_argv_)
+        # verify -----------------------
+        assert args.filename == ARG_FILENAME
+        assert args.src_pkg_path == ARG_SRC_PKG_PATH
+        assert args.tgt_pkg_path == ARG_TGT_PKG_PATH
+        assert args.result_pkg_path == ARG_RESULT_PKG_PATH
+        assert isinstance(subparser, argparse.ArgumentParser)

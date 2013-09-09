@@ -247,6 +247,31 @@ class RepackageCommand(Command):
         app_controller.repackage(args.dirpath, args.new_package)
 
 
+class SubstituteCommand(Command):
+
+    def __init__(self, parser):
+        super(SubstituteCommand, self).__init__(parser)
+
+    @staticmethod
+    def add_command_parser_to(subparsers):
+        parser = subparsers.add_parser(
+            'substitute',
+            help='Substitute a part from one package into another')
+        parser.add_argument(
+            'filename', metavar='FILENAME',
+            help='Filename portion of partname for part to substitute')
+        parser.add_argument(
+            'src_pkg_path', metavar='SRC_PKG_PATH',
+            help='package from which to source part identified by FILENAME')
+        parser.add_argument(
+            'tgt_pkg_path', metavar='TGT_PKG_PATH',
+            help='package from which to get all remaining parts')
+        parser.add_argument(
+            'result_pkg_path', metavar='RESULT_PKG_PATH',
+            help='path at which to store resulting package file')
+        return parser
+
+
 def main(argv=None):
     command_controller = CommandController.new()
     command_controller.execute(argv)
