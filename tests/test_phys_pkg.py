@@ -9,6 +9,9 @@
 
 """Unit tests for phys_pkg module"""
 
+import os
+import shutil
+
 from zipfile import ZipFile
 
 from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
@@ -21,6 +24,9 @@ from .unitutil import class_mock, instance_mock, relpath
 
 
 DIRPATH = 'DIRPATH'
+DELETEME_DIR = relpath('test_files/deleteme')
+FOOBAR_DIR = relpath('test_files/deleteme/foobar_dir')
+FOOBAR_FILEPATH = relpath('test_files/deleteme/foobar_dir/foobar_file')
 MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
 MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
 ROOT_URI = relpath('test_files/mini_pkg')
@@ -93,6 +99,35 @@ class DescribePhysPkg(object):
         PhysPkg_._write_blob_to_dir.assert_has_calls(
             (call(DIRPATH, uri_, blob_), call(DIRPATH, uri_2_, blob_2_)),
             any_order=True)
+
+    def it_can_create_a_new_empty_directory(self):
+        """Note: tests integration with filesystem"""
+        # case: created if does not exist
+        # ------------------------------
+        if os.path.exists(DELETEME_DIR):
+            shutil.rmtree(DELETEME_DIR)
+        PhysPkg._clear_or_make_dir(FOOBAR_DIR)
+        assert os.path.exists(FOOBAR_DIR)
+
+        # case: re-created if exists
+        # ------------------------------
+        if os.path.exists(DELETEME_DIR):
+            shutil.rmtree(DELETEME_DIR)
+        os.makedirs(FOOBAR_DIR)
+        with open(FOOBAR_FILEPATH, 'w') as f:
+            f.write('foobar file')
+        PhysPkg._clear_or_make_dir(FOOBAR_DIR)
+        assert os.path.exists(FOOBAR_DIR)
+        assert not os.path.exists(FOOBAR_FILEPATH)
+
+        # case: raises if dirpath is file
+        # ------------------------------
+        shutil.rmtree(DELETEME_DIR)
+        os.makedirs(DELETEME_DIR)
+        with open(FOOBAR_DIR, 'w') as f:
+            f.write('foobar file at FOOBAR_DIR path')
+        with pytest.raises(ValueError):
+            PhysPkg._clear_or_make_dir(FOOBAR_DIR)
 
 
 class DescribeDirPhysPkg(object):

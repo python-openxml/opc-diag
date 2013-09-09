@@ -10,6 +10,7 @@
 """Interface to a physical OPC package, either a zip archive or directory"""
 
 import os
+import shutil
 
 from zipfile import ZipFile
 
@@ -75,6 +76,15 @@ class PhysPkg(object):
         any directory found there. Raises |ValueError| if *dirpath* exists
         but is not a directory.
         """
+        # raise if *dirpath* is a file
+        if os.path.exists(dirpath) and not os.path.isdir(dirpath):
+            tmpl = "target path '%s' is not a directory"
+            raise ValueError(tmpl % dirpath)
+        # remove any existing directory tree at *dirpath*
+        if os.path.exists(dirpath):
+            shutil.rmtree(dirpath)
+        # create dir at dirpath, as well as any intermediate-level dirs
+        os.makedirs(dirpath)
 
     @staticmethod
     def _write_blob_to_dir(dirpath, uri, blob):
