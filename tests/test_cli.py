@@ -13,7 +13,7 @@ import argparse
 
 from opcdiag.cli import (
     BrowseCommand, Command, CommandController, DiffCommand, DiffItemCommand,
-    ExtractCommand, main
+    ExtractCommand, RepackageCommand, main
 )
 from opcdiag.controller import OpcController
 
@@ -28,10 +28,12 @@ ARG_DIRPATH = 'DIRPATH'
 ARG_PKG_PATH = 'PKG_PATH'
 ARG_PKG_2_PATH = 'PKG_2_PATH'
 ARG_FILENAME = 'FILENAME'
+ARG_NEW_PACKAGE = 'NEW_PACKAGE'
 CMD_WORD_BROWSE = 'browse'
 CMD_WORD_DIFF = 'diff'
 CMD_WORD_DIFF_ITEM = 'diff-item'
 CMD_WORD_EXTRACT = 'extract'
+CMD_WORD_REPACKAGE = 'repackage'
 MINI_DIR_PKG_PATH = relpath('test_files/mini_pkg')
 MINI_ZIP_PKG_PATH = relpath('test_files/mini_pkg.zip')
 
@@ -130,6 +132,11 @@ def parser_(request, args_):
     parser_ = instance_mock(argparse.ArgumentParser, request)
     parser_.parse_args.return_value = args_
     return parser_
+
+
+@pytest.fixture
+def repackage_argv_():
+    return [CMD_WORD_REPACKAGE, ARG_DIRPATH, ARG_NEW_PACKAGE]
 
 
 @pytest.fixture
@@ -338,3 +345,16 @@ class DescribeExtractCommand(object):
         # verify -----------------------
         app_controller_.extract_package.assert_called_once_with(
             args_.pkg_path, args_.dirpath)
+
+
+class DescribeRepackageCommand(object):
+
+    def it_should_add_a_repackage_command_parser(
+            self, repackage_argv_, parser, subparsers):
+        # exercise ---------------------
+        subparser = RepackageCommand.add_command_parser_to(subparsers)
+        args = parser.parse_args(repackage_argv_)
+        # verify -----------------------
+        assert args.dirpath == ARG_DIRPATH
+        assert args.new_package == ARG_NEW_PACKAGE
+        assert isinstance(subparser, argparse.ArgumentParser)

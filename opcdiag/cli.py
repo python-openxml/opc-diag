@@ -218,6 +218,25 @@ class ExtractCommand(Command):
         app_controller.extract_package(args.pkg_path, args.dirpath)
 
 
+class RepackageCommand(Command):
+
+    def __init__(self, parser):
+        super(RepackageCommand, self).__init__(parser)
+
+    @staticmethod
+    def add_command_parser_to(subparsers):
+        parser = subparsers.add_parser(
+            'repackage',
+            help='Build an OPC package from the contents of a directory')
+        parser.add_argument(
+            'dirpath', metavar='DIRPATH',
+            help='Directory containing expanded package files')
+        parser.add_argument(
+            'new_package', metavar='NEW_PACKAGE',
+            help='Path at which to save new package file')
+        return parser
+
+
 def main(argv=None):
     command_controller = CommandController.new()
     command_controller.execute(argv)
