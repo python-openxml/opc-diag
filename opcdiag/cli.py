@@ -236,6 +236,13 @@ class RepackageCommand(Command):
             help='Path at which to save new package file')
         return parser
 
+    def validate(self, args):
+        try:
+            msg = "DIRPATH '%s' not found or not a directory" % args.dirpath
+            assert os.path.isdir(args.dirpath), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
+
 
 def main(argv=None):
     command_controller = CommandController.new()

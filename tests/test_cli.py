@@ -358,3 +358,15 @@ class DescribeRepackageCommand(object):
         assert args.dirpath == ARG_DIRPATH
         assert args.new_package == ARG_NEW_PACKAGE
         assert isinstance(subparser, argparse.ArgumentParser)
+
+    def it_should_trigger_parser_error_if_dirpath_not_a_directory(
+            self, args_, parser_):
+        # fixture ----------------------
+        args_.dirpath = 'foobar'
+        repackage_command = RepackageCommand(parser_)
+        # exercise ---------------------
+        repackage_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
+        assert 'DIRPATH' in parser_.error.call_args[0][0]
+        assert 'foobar' in parser_.error.call_args[0][0]
