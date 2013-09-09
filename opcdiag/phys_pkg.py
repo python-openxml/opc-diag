@@ -12,7 +12,7 @@
 import os
 import shutil
 
-from zipfile import ZipFile
+from zipfile import ZIP_DEFLATED, ZipFile
 
 
 class BlobCollection(dict):
@@ -75,6 +75,11 @@ class PhysPkg(object):
         Write "files" in |BlobCollection| instance *blobs* to a zip archive
         at *pkg_zip_path*.
         """
+        zipf = ZipFile(pkg_zip_path, 'w', ZIP_DEFLATED)
+        for uri in sorted(blobs.keys()):
+            blob = blobs[uri]
+            zipf.writestr(uri, blob)
+        zipf.close()
 
     @staticmethod
     def _clear_or_make_dir(dirpath):

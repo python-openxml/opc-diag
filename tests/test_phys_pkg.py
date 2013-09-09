@@ -12,7 +12,7 @@
 import os
 import shutil
 
-from zipfile import ZipFile
+from zipfile import ZIP_DEFLATED, ZipFile
 
 from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
@@ -87,6 +87,28 @@ class DescribePhysPkg(object):
         actual_blobs = dict([item for item in phys_pkg])
         # verify -----------------------
         assert actual_blobs == blobs
+
+    def it_can_write_a_blob_collection_to_a_zip(self, tmpdir):
+        # fixture ----------------------
+        uri, uri_2 = 'foo/bar.xml', 'foo/_rels/bar.xml.rels'
+        blob, blob_2 = b'blob', b'blob_2'
+        blobs_in = {uri: blob, uri_2: blob_2}
+        zip_path = str(tmpdir.join('foobar.xml'))
+        # exercise ---------------------
+        PhysPkg.write_to_zip(blobs_in, zip_path)
+        # verify -----------------------
+        assert os.path.isfile(zip_path)
+        zipf = ZipFile(zip_path, 'r')
+        blobs_out = dict([(name, zipf.read(name)) for name in zipf.namelist()])
+        zipf.close()
+        assert blobs_out == blobs_in
+
+    def it_should_close_zip_file_after_use(self, ZipFile_, zip_file_):
+        # exercise ---------------------
+        PhysPkg.write_to_zip({}, 'foobar')
+        # verify -----------------------
+        ZipFile_.assert_called_once_with('foobar', 'w', ZIP_DEFLATED)
+        zip_file_.close.assert_called_with()
 
     def it_can_write_a_blob_collection_to_a_directory(
             self, uri_, uri_2_, blob_, blob_2_, PhysPkg_):
