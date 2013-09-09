@@ -93,6 +93,15 @@ class PhysPkg(object):
         that precede the filename are created, as required, as intermediate
         directories.
         """
+        # In general, uri will contain forward slashes as segment separators.
+        # This next line converts them to backslashes on Windows.
+        item_relpath = os.path.normpath(uri)
+        fullpath = os.path.join(dirpath, item_relpath)
+        dirpath, filename = os.path.split(fullpath)
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        with open(fullpath, 'wb') as f:
+            f.write(blob)
 
 
 class DirPhysPkg(PhysPkg):
@@ -111,8 +120,8 @@ class DirPhysPkg(PhysPkg):
         blobs = BlobCollection()
         pfx_len = len(pkg_dir)+1
         for filepath in cls._filepaths_in_dir(pkg_dir):
-            uri = filepath[pfx_len:]
-            with open(filepath, 'r') as f:
+            uri = filepath[pfx_len:].replace('\\', '/')
+            with open(filepath, 'rb') as f:
                 blob = f.read()
             blobs[uri] = blob
         root_uri = pkg_dir

@@ -129,6 +129,21 @@ class DescribePhysPkg(object):
         with pytest.raises(ValueError):
             PhysPkg._clear_or_make_dir(FOOBAR_DIR)
 
+    def it_can_write_a_blob_to_a_file_in_a_directory(self, tmpdir):
+        """Note: tests integration with filesystem"""
+        # fixture ----------------------
+        uri = 'foo/bar.xml'
+        blob = b'blob'
+        dirpath = str(tmpdir)
+        filepath = os.path.join(dirpath, 'foo', 'bar.xml')
+        # exercise ---------------------
+        PhysPkg._write_blob_to_dir(str(tmpdir), uri, blob)
+        # verify -----------------------
+        assert os.path.isfile(filepath)
+        with open(filepath, 'rb') as f:
+            actual_blob = f.read()
+        assert actual_blob == blob
+
 
 class DescribeDirPhysPkg(object):
 
