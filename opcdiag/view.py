@@ -65,3 +65,8 @@ class OpcView(object):
         Display a confirmation method detailing the package item substitution
         that was executed.
         """
+        msg = ("substituted '%s' from '%s' into '%s' and saved the result as"
+               " '%s'\n" %
+               (uri, src_pkg_path, tgt_pkg_path, new_pkg_path))
+        msg = msg.replace('\\', '/')  # normalize directory separator
+        _write(msg)
