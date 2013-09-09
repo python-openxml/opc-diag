@@ -24,6 +24,7 @@ DIRPATH = 'dirpath'
 NEW_PKG_PATH = 'new_pkg_path'
 PKG_PATH = 'pkg_path'
 PKG_2_PATH = 'pkg_2_path'
+PKG_3_PATH = 'pkg_3_path'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_TAIL = 'uri_tail'
 
@@ -163,3 +164,17 @@ class DescribeOpcController(object):
         # verify -----------------------
         Package_.read.assert_called_once_with(PKG_PATH)
         package_.save.assert_called_once_with(NEW_PKG_PATH)
+
+    def it_can_execute_a_substitute_command(
+            self, Package_, package_, package_2_, pkg_item_, OpcView_):
+        # exercise ---------------------
+        OpcController().substitute(
+            URI_TAIL, PKG_PATH, PKG_2_PATH, PKG_3_PATH)
+        # expected values --------------
+        expected_Package_read_calls = [call(PKG_PATH), call(PKG_2_PATH)]
+        Package_.read.assert_has_calls(expected_Package_read_calls)
+        package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
+        package_2_.substitute_item.assert_called_once_with(pkg_item_)
+        package_2_.save.assert_called_once_with(PKG_3_PATH)
+        OpcView_.substitute.assert_called_once_with(
+            pkg_item_.uri, PKG_PATH, PKG_2_PATH, PKG_3_PATH)

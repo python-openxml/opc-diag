@@ -77,6 +77,12 @@ class Package(object):
         """
         PhysPkg.write_to_dir(self._blobs, dirpath)
 
+    def substitute_item(self, src_pkg_item):
+        """
+        Locate the item in this package that corresponds with *src_pkg_item*
+        and replace its blob with that from *src_pkg_item*.
+        """
+
     @property
     def xml_parts(self):
         """

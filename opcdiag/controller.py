@@ -86,3 +86,10 @@ class OpcController(object):
         identifying which package item(s) in the source package are causing a
         "repair needed" error when loading the target package in MS Office.
         """
+        package_1 = Package.read(src_pkg_path)
+        package_2 = Package.read(tgt_pkg_path)
+        pkg_item = package_1.find_item_by_uri_tail(uri_tail)
+        package_2.substitute_item(pkg_item)
+        package_2.save(new_pkg_path)
+        OpcView.substitute(pkg_item.uri, src_pkg_path, tgt_pkg_path,
+                           new_pkg_path)

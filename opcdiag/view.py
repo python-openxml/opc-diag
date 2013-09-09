@@ -58,3 +58,10 @@ class OpcView(object):
         """
         text = '%s\n' % pkg_item.text
         _write(text)
+
+    @staticmethod
+    def substitute(uri, src_pkg_path, tgt_pkg_path, new_pkg_path):
+        """
+        Display a confirmation method detailing the package item substitution
+        that was executed.
+        """
