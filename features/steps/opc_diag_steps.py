@@ -15,8 +15,10 @@ import shutil
 from behave import given, then, when
 
 from helpers import (
-    assertPackagesMatch, OpcCommand, ref_pkg_path, scratch_path
+    assertManifestsMatch, assertPackagesMatch, OpcCommand, ref_pkg_path,
+    scratch_path
 )
+from step_data import Manifest
 
 
 SUBCMD_BROWSE = 'browse'
@@ -24,6 +26,7 @@ SUBCMD_DIFF = 'diff'
 SUBCMD_DIFF_ITEM = 'diff-item'
 SUBCMD_EXTRACT = 'extract'
 SUBCMD_REPACKAGE = 'repackage'
+SUBCMD_SUBSTITUTE = 'substitute'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
@@ -112,6 +115,14 @@ def step_command_repackage_expanded_pkg_dir(context):
     ).execute()
 
 
+@when('I issue a command to substitute a package item')
+def step_command_substitute_pkg_item(context):
+    context.cmd = OpcCommand(
+        SUBCMD_SUBSTITUTE, URI_SLIDE_MASTER, changed_pkg_path, base_pkg_path,
+        scratch_pkg_path
+    ).execute()
+
+
 # then =====================================================
 
 @then('a zip package with matching contents appears at the path I specified')
@@ -162,6 +173,18 @@ def step_then_pkg_appears_in_target_dir(context):
 def step_then_pkg_rels_diff_appears_on_stdout(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_matches('diff-item.pkg_rels.txt')
+
+
+@then('the resulting package contains the substituted item')
+def step_then_resulting_pkg_contains_substituted_item(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_matches('substitute.txt')
+    subst_sha = Manifest(changed_pkg_path)[URI_SLIDE_MASTER]
+    expected_manifest = Manifest(base_pkg_path)
+    expected_manifest[URI_SLIDE_MASTER] = subst_sha
+    actual_manifest = Manifest(scratch_pkg_path)
+    assertManifestsMatch(
+        actual_manifest, expected_manifest, 'actual', 'expected')
 
 
 @then('the slide master diff appears on stdout')

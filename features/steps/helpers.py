@@ -35,6 +35,16 @@ scratch_dir = absjoin(thisdir, '../_scratch')
 test_file_dir = absjoin(thisdir, '../test_files')
 
 
+def assertManifestsMatch(manifest1, manifest2, name1, name2):
+    """
+    Raise |AssertionError| if *manifest1* does not exactly match *manifest2*.
+    *name1* and *name2* appear in the diff printed if the assertion fails.
+    """
+    msg = ("Package manifests don't match\n\n%s" %
+           manifest1.diff(manifest2, name1, name2))
+    assert manifest1 == manifest2, msg
+
+
 def assertPackagesMatch(path1, path2):
     """
     Raise |AssertionError| if manifest of package at *path1* does not exactly

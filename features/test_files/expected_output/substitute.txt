@@ -1,0 +1,1 @@
+substituted 'ppt/slideMasters/slideMaster1.xml' from 'features/test_files/reference_pkgs/changed.pptx' into 'features/test_files/reference_pkgs/base.pptx' and saved the result as 'features/_scratch/test_out.pptx'
