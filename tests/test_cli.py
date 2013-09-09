@@ -405,3 +405,19 @@ class DescribeSubstituteCommand(object):
         assert args.tgt_pkg_path == ARG_TGT_PKG_PATH
         assert args.result_pkg_path == ARG_RESULT_PKG_PATH
         assert isinstance(subparser, argparse.ArgumentParser)
+
+    @pytest.mark.parametrize(('src_pkg_path', 'tgt_pkg_path', 'err_frag'), [
+        ('foobar', MINI_ZIP_PKG_PATH, 'SRC_PKG'),
+        (MINI_ZIP_PKG_PATH, 'foobar', 'TGT_PKG'),
+    ])
+    def it_should_trigger_parser_error_if_pkg_path_does_not_exist(
+            self, src_pkg_path, tgt_pkg_path, err_frag, args_, parser_):
+        # fixture ----------------------
+        args_.src_pkg_path = src_pkg_path
+        args_.tgt_pkg_path = tgt_pkg_path
+        substitute_command = SubstituteCommand(parser_)
+        # exercise ---------------------
+        substitute_command.validate(args_)
+        # verify -----------------------
+        parser_.error.assert_called_once_with(ANY)
+        assert err_frag in parser_.error.call_args[0][0]

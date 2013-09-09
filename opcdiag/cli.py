@@ -271,6 +271,18 @@ class SubstituteCommand(Command):
             help='path at which to store resulting package file')
         return parser
 
+    def validate(self, args):
+        paths_that_should_exist = (
+            (args.src_pkg_path, 'SRC_PKG_PATH'),
+            (args.tgt_pkg_path, 'TGT_PKG_PATH'),
+        )
+        try:
+            for path, metavar in paths_that_should_exist:
+                msg = "%s '%s' does not exist" % (metavar, path)
+                assert os.path.exists(path), msg
+        except AssertionError as e:
+            self._parser.error(str(e))
+
 
 def main(argv=None):
     command_controller = CommandController.new()
