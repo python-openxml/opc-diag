@@ -77,3 +77,12 @@ class OpcController(object):
         """
         package = Package.read(package_path)
         package.save(new_package_path)
+
+    def substitute(self, uri_tail, src_pkg_path, tgt_pkg_path, new_pkg_path):
+        """
+        Substitute the package item identified by *uri_tail* from the package
+        at *src_pkg_path* into the package at *tgt_pkg_path* and save the
+        resulting package at *new_pkg_path*. This can be handy for
+        identifying which package item(s) in the source package are causing a
+        "repair needed" error when loading the target package in MS Office.
+        """

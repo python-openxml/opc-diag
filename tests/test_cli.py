@@ -421,3 +421,14 @@ class DescribeSubstituteCommand(object):
         # verify -----------------------
         parser_.error.assert_called_once_with(ANY)
         assert err_frag in parser_.error.call_args[0][0]
+
+    def it_can_dispatch_a_substitute_command_to_the_app(
+            self, args_, app_controller_):
+        # fixture ----------------------
+        substitute_command = SubstituteCommand(None)
+        # exercise ---------------------
+        substitute_command.execute(args_, app_controller_)
+        # verify -----------------------
+        app_controller_.substitute.assert_called_once_with(
+            args_.filename, args_.src_pkg_path, args_.tgt_pkg_path,
+            args_.result_pkg_path)

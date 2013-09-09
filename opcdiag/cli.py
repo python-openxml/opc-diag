@@ -283,6 +283,11 @@ class SubstituteCommand(Command):
         except AssertionError as e:
             self._parser.error(str(e))
 
+    def execute(self, args, app_controller):
+        app_controller.substitute(
+            args.filename, args.src_pkg_path, args.tgt_pkg_path,
+            args.result_pkg_path)
+
 
 def main(argv=None):
     command_controller = CommandController.new()
