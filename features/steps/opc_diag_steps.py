@@ -23,6 +23,7 @@ SUBCMD_BROWSE = 'browse'
 SUBCMD_DIFF = 'diff'
 SUBCMD_DIFF_ITEM = 'diff-item'
 SUBCMD_EXTRACT = 'extract'
+SUBCMD_REPACKAGE = 'repackage'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_CORE_PROPS = 'docProps/core.xml'
 URI_PKG_RELS = '_rels/.rels'
@@ -36,7 +37,9 @@ pkg_paths = {'dir': base_dir_pkg_path, 'zip': base_zip_pkg_path}
 
 base_pkg_path = ref_pkg_path('base.pptx')
 changed_pkg_path = ref_pkg_path('changed.pptx')
+expanded_dir = ref_pkg_path('source')
 extract_dir = scratch_path('extracted')
+scratch_pkg_path = scratch_path('test_out.pptx')
 
 
 # given ====================================================
@@ -102,7 +105,21 @@ def step_command_extract_package(context):
     ).execute()
 
 
+@when('I issue a command to repackage an expanded package directory')
+def step_command_repackage_expanded_pkg_dir(context):
+    context.cmd = OpcCommand(
+        SUBCMD_REPACKAGE, expanded_dir, scratch_pkg_path
+    ).execute()
+
+
 # then =====================================================
+
+@then('a zip package with matching contents appears at the path I specified')
+def step_then_matching_zip_pkg_appears_at_specified_path(context):
+    context.cmd.assert_stderr_empty()
+    context.cmd.assert_stdout_empty()
+    assertPackagesMatch(expanded_dir, scratch_pkg_path)
+
 
 @then('the content types diff appears on stdout')
 def step_then_content_types_diff_appears_on_stdout(context):
