@@ -69,3 +69,9 @@ class OpcController(object):
         """
         package = Package.read(package_path)
         package.save_to_dir(extract_dirpath)
+
+    def repackage(self, package_path, new_package_path):
+        """
+        Write the contents of the package found at *package_path* to a new
+        zip package at *new_package_path*.
+        """

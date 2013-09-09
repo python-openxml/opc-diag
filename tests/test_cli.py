@@ -336,7 +336,7 @@ class DescribeExtractCommand(object):
         parser_.error.assert_called_once_with(ANY)
         assert 'PKG_PATH' in parser_.error.call_args[0][0]
 
-    def it_can_dispatch_a_extract_command_to_the_app(
+    def it_can_dispatch_an_extract_command_to_the_app(
             self, args_, app_controller_):
         # fixture ----------------------
         extract_command = ExtractCommand(None)
@@ -370,3 +370,13 @@ class DescribeRepackageCommand(object):
         parser_.error.assert_called_once_with(ANY)
         assert 'DIRPATH' in parser_.error.call_args[0][0]
         assert 'foobar' in parser_.error.call_args[0][0]
+
+    def it_can_dispatch_a_repackage_command_to_the_app(
+            self, args_, app_controller_):
+        # fixture ----------------------
+        repackage_command = RepackageCommand(None)
+        # exercise ---------------------
+        repackage_command.execute(args_, app_controller_)
+        # verify -----------------------
+        app_controller_.repackage.assert_called_once_with(
+            args_.dirpath, args_.new_package)

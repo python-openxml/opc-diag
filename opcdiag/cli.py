@@ -243,6 +243,9 @@ class RepackageCommand(Command):
         except AssertionError as e:
             self._parser.error(str(e))
 
+    def execute(self, args, app_controller):
+        app_controller.repackage(args.dirpath, args.new_package)
+
 
 def main(argv=None):
     command_controller = CommandController.new()
