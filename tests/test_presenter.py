@@ -252,6 +252,11 @@ class DescribeItemPresenter(object):
             item_presenter = ItemPresenter(pkg_item)
             assert type(item_presenter).__name__ == expected_type_name
 
+    def it_provides_a_normalized_path_string_for_the_pkg_item(self, pkg_item_):
+        pkg_item_.path = 'foo\\bar'
+        item_presenter = ItemPresenter(pkg_item_)
+        assert item_presenter.filename == 'foo/bar'
+
     def it_should_raise_if_text_property_not_implemented_on_subclass(
             self, binary_part_):
         item_presenter = object.__new__(ItemPresenter)

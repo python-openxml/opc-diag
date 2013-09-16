@@ -156,6 +156,7 @@ class ItemPresenter(object):
         Effective path for this package item, normalized to always use
         forward slashes as the path separator.
         """
+        return self._pkg_item.path.replace('\\', '/')
 
     @property
     def text(self):

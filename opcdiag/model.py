@@ -97,3 +97,10 @@ class PkgItem(object):
         content types item. False otherwise.
         """
         return self._uri.endswith('.xml') and not self.is_content_types
+
+    @property
+    def path(self):
+        """
+        Return the path of this item as though it were extracted into a
+        directory at its package path.
+        """
