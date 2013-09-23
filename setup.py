@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import os
 import re
 import sys
@@ -11,52 +12,38 @@ from setuptools import setup
 
 MAIN_PKG = 'opcdiag'
 
-thisdir = os.path.dirname(__file__)
 
-history_path = os.path.join(thisdir, 'HISTORY.rst')
-init_py_path = os.path.join(thisdir, MAIN_PKG, '__init__.py')
-license_path = os.path.join(thisdir, 'LICENSE')
-readme_path = os.path.join(thisdir, 'README.rst')
+def _read_from_file(relpath):
+    """
+    Return the text contained in the file at *relpath* as unicode.
+    """
+    thisdir = os.path.dirname(__file__)
+    path = os.path.join(thisdir, relpath)
+    with codecs.open(path, encoding='utf8') as f:
+        text = f.read()
+    return text
 
-with open(history_path) as f:
-    history = f.read()
-with open(license_path) as f:
-    license = f.read()
-with open(readme_path) as f:
-    readme = f.read()
-with open(init_py_path) as f:
-    version = re.search("__version__ = '([^']+)'", f.read()).group(1)
 
 NAME = 'opc-diag'
-VERSION = version
+
 DESCRIPTION = (
     'Browse and diff Microsoft Office .docx, .xlsx, and .pptx files.'
 )
-
-LONG_DESCRIPTION = '%s\n\n%s' % (readme, history)
 
 KEYWORDS = 'opc open xml diff docx pptx xslx office'
 AUTHOR = 'Steve Canny'
 AUTHOR_EMAIL = 'python-opc@googlegroups.com'
 URL = 'https://github.com/python-openxml/opc-diag'
-LICENSE = license
 
 MODULES = ['ez_setup']
-PACKAGES = ['opcdiag']
+PACKAGES = [MAIN_PKG]
 
-ENTRY_POINTS = {
-    'console_scripts': [
-        'opc = opcdiag.cli:main'
-    ]
-}
+ENTRY_POINTS = {'console_scripts': ['opc = opcdiag.cli:main']}
 
-INSTALL_REQUIRES = []
-# argparse is only included in Python 2.7 and later
-if sys.hexversion < 0x02070000:
+INSTALL_REQUIRES = ['lxml >= 3.0']
+if sys.hexversion < 0x02070000:  # argparse only included from Python 2.7
     INSTALL_REQUIRES.append('argparse >= 1.2')
-INSTALL_REQUIRES.append('lxml >= 3.0')
 
-TEST_SUITE = 'tests'
 TESTS_REQUIRE = [
     'behave >= 1.2.3',
     'mock >= 1.0.1',
@@ -79,6 +66,25 @@ CLASSIFIERS = [
     'Topic :: Office/Business :: Office Suites',
     'Topic :: Software Development :: Libraries'
 ]
+
+
+# ---------------------------------------------------------------------------
+# Everything below is calculated and shouldn't normally need editing
+# ---------------------------------------------------------------------------
+
+# read version from main package __init__.py
+init_py = _read_from_file(os.path.join(MAIN_PKG, '__init__.py'))
+VERSION = re.search("__version__ = '([^']+)'", init_py).group(1)
+
+# license is documented in LICENSE file
+LICENSE = _read_from_file('LICENSE')
+
+# compile PyPI page text from README and HISTORY
+read_me = _read_from_file('README.rst')
+history = _read_from_file('HISTORY.rst')
+LONG_DESCRIPTION = '%s\n\n%s' % (read_me, history)
+
+TEST_SUITE = 'tests'
 
 params = {
     'name':             NAME,
