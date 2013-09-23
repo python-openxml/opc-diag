@@ -44,13 +44,14 @@ class CommandController(object):
         Interpret the command indicated by the arguments in *argv* and
         execute it. If *argv* is |None|, ``sys.argv`` is used.
         """
-        args = self._parser.parse_args(argv)
-        # this try block is required to work around Python 3.3 bug in argparse
-        try:
-            command = args.command
-        except AttributeError:
+        # print help and exit if no args
+        arg_count = len(argv if argv else sys.argv)
+        if arg_count < 2:
             self._parser.print_help()
             sys.exit(1)
+
+        args = self._parser.parse_args(argv)
+        command = args.command
         command.validate(args)
         command.execute(args, self._app_controller)
 

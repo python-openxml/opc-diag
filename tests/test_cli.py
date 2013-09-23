@@ -206,6 +206,7 @@ class DescribeCommandController(object):
             self, parser_, app_controller_, argv_, args_, command_):
         # fixture ----------------------
         command_controller = CommandController(parser_, app_controller_)
+        argv_.__len__.return_value = 2
         # exercise ---------------------
         command_controller.execute(argv_)
         # verify -----------------------
