@@ -2,6 +2,7 @@
 
 import os
 import re
+import sys
 
 from ez_setup import use_setuptools
 use_setuptools()
@@ -49,9 +50,11 @@ ENTRY_POINTS = {
     ]
 }
 
-INSTALL_REQUIRES = [
-    'lxml >= 3.0',
-]
+INSTALL_REQUIRES = []
+# argparse is only included in Python 2.7 and later
+if sys.hexversion < 0x02070000:
+    INSTALL_REQUIRES.append('argparse >= 1.2')
+INSTALL_REQUIRES.append('lxml >= 3.0')
 
 TEST_SUITE = 'tests'
 TESTS_REQUIRE = [
