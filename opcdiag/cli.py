@@ -8,6 +8,7 @@
 
 import argparse
 import os
+import sys
 
 
 from opcdiag.controller import OpcController
@@ -44,7 +45,12 @@ class CommandController(object):
         execute it. If *argv* is |None|, ``sys.argv`` is used.
         """
         args = self._parser.parse_args(argv)
-        command = args.command
+        # this try block is required to work around Python 3.3 bug in argparse
+        try:
+            command = args.command
+        except AttributeError:
+            self._parser.print_help()
+            sys.exit(1)
         command.validate(args)
         command.execute(args, self._app_controller)
 
