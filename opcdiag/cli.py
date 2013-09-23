@@ -14,9 +14,6 @@ import sys
 from opcdiag.controller import OpcController
 
 
-SUBCMD_HELP = "!!! this is the sub-command help string I haven't written yet"
-
-
 class CommandController(object):
     """
     Orchestrates processing of commands in the form of a list of arguments
@@ -71,8 +68,14 @@ class Command(object):
         with a subcommand parser for each of the commands that are a subclass
         of |Command|.
         """
-        parser = argparse.ArgumentParser()
-        subparsers = parser.add_subparsers(help=SUBCMD_HELP)
+        desc = (
+            'Browse and diff Microsoft Office .docx, .xlsx, and .pptx files.'
+        )
+        epilog = "'opc <command> --help' lists command-specific help"
+        parser = argparse.ArgumentParser(
+            prog='opc', description=desc, epilog=epilog
+        )
+        subparsers = parser.add_subparsers(title='available commands')
         for command_cls in Command.__subclasses__():
             command_parser = command_cls.add_command_parser_to(subparsers)
             command = command_cls(command_parser)
