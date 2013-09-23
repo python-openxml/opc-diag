@@ -7,4 +7,4 @@
 # This module is part of opc-diag and is released under the MIT License:
 # http://www.opensource.org/licenses/mit-license.php
 
-__version__ = '0.9.0b1'  # pragma: no cover
+__version__ = '0.9.6'  # pragma: no cover
