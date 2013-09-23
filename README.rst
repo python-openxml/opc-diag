@@ -11,9 +11,9 @@ Its primary use is by developers of software that generates and/or
 manipulates Microsoft Office documents.
 
 A typical use would be diff-ing a Word file from before and after an operation,
-say inserting picture, to identify the specific changes Word made to the XML.
-This is handy when one is developing software to do the same without Word's
-help::
+say inserting a paragraph, to identify the specific changes Word made to the
+XML. This is handy when one is developing software to do the same without
+Word's help::
 
    $ opc diff before.docx after.docx
 
