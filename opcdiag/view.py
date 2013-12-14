@@ -20,7 +20,8 @@ def _write(text):
     """
     Write *text* to stdout
     """
-    print(text, end='', file=sys.stdout)
+    bytes_out = text.encode('utf-8')
+    print(bytes_out, end='', file=sys.stdout)
 
 
 class OpcView(object):
