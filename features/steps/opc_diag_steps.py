@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-#
-# opc_diag_steps.py
-#
-# Copyright (C) 2012, 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
+# encoding: utf-8
 
-"""Acceptance test steps for opc-diag package."""
+"""
+Acceptance test steps for opc-diag package
+"""
 
 import os
 import shutil
@@ -18,7 +13,7 @@ from helpers import (
     assertManifestsMatch, assertPackagesMatch, OpcCommand, ref_pkg_path,
     scratch_path
 )
-from step_data import Manifest
+from step_data import Manifest, _Manifest
 
 
 SUBCMD_BROWSE = 'browse'
@@ -166,7 +161,85 @@ def step_then_pkg_diff_appears_on_stdout(context):
 def step_then_pkg_appears_in_target_dir(context):
     context.cmd.assert_stderr_empty()
     context.cmd.assert_stdout_empty()
-    assertPackagesMatch(base_pkg_path, extract_dir)
+    actual_manifest = Manifest(extract_dir)
+    expected_sha1_list = [
+        ('b7377d13b945fd27216d02d50277a350c8c4aea6',
+         '[Content_Types].xml'),
+        ('11a0facc96d560bf07b4691f0526b09229264e20',
+         '_rels/.rels'),
+        ('c1ae3715531e49808610f18c4810704f70be3767',
+         'docProps/app.xml'),
+        ('775edccda43956b1e55c8fe668ba817934ee17c8',
+         'docProps/core.xml'),
+        ('585be5da0832f70b4e71f66f5784cc8acbcc8e88',
+         'docProps/thumbnail.jpeg'),
+        ('85ff3c93403fee9d07d1f52b08e03e1ad8614343',
+         'ppt/_rels/presentation.xml.rels'),
+        ('21bbd2e84efc65591a76e8a7811c79ce65a7f389',
+         'ppt/presProps.xml'),
+        ('8281415d72c1f9f43e2e0b1cdc4a346e7a0545b3',
+         'ppt/presentation.xml'),
+        ('b0feb4cc107c9b2d135b1940560cf8f045ffb746',
+         'ppt/printerSettings/printerSettings1.bin'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout1.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout10.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout11.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout2.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout3.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout4.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout5.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout6.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout7.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout8.xml.rels'),
+        ('fbccb1d0db1ad72bea6b96449d5033ee7ad3ee3c',
+         'ppt/slideLayouts/_rels/slideLayout9.xml.rels'),
+        ('ec99dfcf6812f8bd0c9e0a2363d38301e8104803',
+         'ppt/slideLayouts/slideLayout1.xml'),
+        ('8fa04dcb314de8c2321eaec153e6b85263c52fd8',
+         'ppt/slideLayouts/slideLayout10.xml'),
+        ('7531300ef5c76a217f330d3748c82ce484bcb037',
+         'ppt/slideLayouts/slideLayout11.xml'),
+        ('7fba92ff7c76a5050fd9c0acbbdc98600def0264',
+         'ppt/slideLayouts/slideLayout2.xml'),
+        ('ca2c475ce40be637eb271846fbcee05121d61054',
+         'ppt/slideLayouts/slideLayout3.xml'),
+        ('4ceb2a6391cc08f6883515ecfb117dfe6733daae',
+         'ppt/slideLayouts/slideLayout4.xml'),
+        ('4764ea1d5afd93497b4e3bf665cd5b09f6684f62',
+         'ppt/slideLayouts/slideLayout5.xml'),
+        ('3768f6b561eecdfb4530c6a2a939ed4e822f07f5',
+         'ppt/slideLayouts/slideLayout6.xml'),
+        ('ef830f1b546e799c3ae5a8c3df399d5e3346e70a',
+         'ppt/slideLayouts/slideLayout7.xml'),
+        ('749ba47dc5497c6bd0d8b0b034e648e47c336491',
+         'ppt/slideLayouts/slideLayout8.xml'),
+        ('d49c31a3ba055792ca9dd779bb8897795aa46fff',
+         'ppt/slideLayouts/slideLayout9.xml'),
+        ('4b0a95fbb9e8680c1e766d0ab7080bd854a3f7bc',
+         'ppt/slideMasters/_rels/slideMaster1.xml.rels'),
+        ('477117c4c1f2189edcfd35a194103bf4fc1245d5',
+         'ppt/slideMasters/slideMaster1.xml'),
+        ('27bb16052608af395a606ce1de16239bef2d86c3',
+         'ppt/tableStyles.xml'),
+        ('ea60a5ff9290d9ec08a1546fc38945afb3057226',
+         'ppt/theme/theme1.xml'),
+        ('5df90b0fdcd12c199b36ae1cd36e7541ab14ed90',
+         'ppt/viewProps.xml'),
+    ]
+    expected_manifest = _Manifest(expected_sha1_list)
+    assertManifestsMatch(
+        actual_manifest, expected_manifest, 'actual', 'expected'
+    )
 
 
 @then('the package rels diff appears on stdout')

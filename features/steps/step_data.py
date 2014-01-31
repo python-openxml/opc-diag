@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # encoding: utf-8
 
 import hashlib
@@ -23,7 +22,7 @@ def Manifest(path):
 class _Manifest(object):
     """
     A sorted sequence of SHA1, name 2-tuples that unambiguously characterize
-    the contents of an OPC package, providing a suitable basis for asserting
+    the contents of an OPC package, providing a basis for asserting
     equivalence of two packages, whether stored as a zip archive or a package
     extracted into a directory.
     """
