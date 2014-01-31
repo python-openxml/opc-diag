@@ -188,7 +188,11 @@ class PkgItem(object):
         Reformat the XML in this package item to indented, human-readable
         form. Does nothing if this package item does not contain XML.
         """
-        raise NotImplementedError
+        if self.is_content_types or self.is_xml_part or self.is_rels_item:
+            self._blob = etree.tostring(
+                self.element, encoding='UTF-8', standalone=True,
+                pretty_print=True
+            )
 
     @property
     def uri(self):

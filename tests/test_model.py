@@ -236,3 +236,14 @@ class DescribePkgItem(object):
         expected_path = ('root_uri\\uri' if sys.platform.startswith('win')
                          else 'root_uri/uri')
         assert pkg_item.path == expected_path
+
+    def it_can_prettify_its_xml(self):
+        blob = '<foo><bar/></foo>'
+        pkg_item = PkgItem(None, 'foo.xml', blob)
+        pkg_item.prettify_xml()
+        assert pkg_item.blob == (
+            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
+            '<foo>\n'
+            '  <bar/>\n'
+            '</foo>\n'
+        )
