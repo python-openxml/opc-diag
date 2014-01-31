@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-# controller.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
 
-"""Command-line application controller for opc-diag"""
+"""
+Command-line application controller for opc-diag
+"""
 
 from opcdiag.model import Package
 from opcdiag.presenter import DiffPresenter, ItemPresenter
@@ -68,6 +63,7 @@ class OpcController(object):
         files in a directory at *extract_dirpath*.
         """
         package = Package.read(package_path)
+        package.prettify_xml()
         package.save_to_dir(extract_dirpath)
 
     def repackage(self, package_path, new_package_path):

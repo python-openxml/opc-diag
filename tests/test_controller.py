@@ -72,6 +72,7 @@ class DescribeOpcController(object):
         OpcController().extract_package(PKG_PATH, DIRPATH)
         # verify -----------------------
         Package_.read.assert_called_once_with(PKG_PATH)
+        package_.prettify_xml.assert_called_once_with()
         package_.save_to_dir.assert_called_once_with(DIRPATH)
 
     def it_can_execute_a_repackage_command(self, Package_, package_):

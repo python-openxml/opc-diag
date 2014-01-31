@@ -50,6 +50,14 @@ class Package(object):
                 return self._pkg_items[uri]
         raise KeyError("No item with name '%s'" % uri_tail)
 
+    def prettify_xml(self):
+        """
+        Reformat the XML in all package items having XML content to indented,
+        human-readable format. If viewed after this method is called, the XML
+        appears "pretty printed".
+        """
+        raise NotImplementedError
+
     @property
     def rels_items(self):
         """
