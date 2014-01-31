@@ -2,7 +2,7 @@
 opc-diag
 ########
 
-Release v0.9.0 (:ref:`Installation <install>`)
+Release v\ |version| (:ref:`Installation <install>`)
 
 .. include:: ../README.rst
 
