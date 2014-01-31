@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-# test_controller.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
 
-"""Unit tests for controller module"""
+"""
+Unit tests for controller module
+"""
 
 from opcdiag.controller import OpcController
 from opcdiag.model import Package, PkgItem
@@ -27,85 +22,6 @@ PKG_2_PATH = 'pkg_2_path'
 PKG_3_PATH = 'pkg_3_path'
 URI_CONTENT_TYPES = '[Content_Types].xml'
 URI_TAIL = 'uri_tail'
-
-
-@pytest.fixture
-def DiffPresenter_(request, item_diff_, rels_diffs_, xml_part_diffs_):
-    DiffPresenter_ = class_mock('opcdiag.controller.DiffPresenter', request)
-    DiffPresenter_.named_item_diff.return_value = item_diff_
-    DiffPresenter_.rels_diffs.return_value = rels_diffs_
-    DiffPresenter_.xml_part_diffs.return_value = xml_part_diffs_
-    return DiffPresenter_
-
-
-@pytest.fixture
-def ItemPresenter_(request, item_presenter_):
-    ItemPresenter_ = class_mock('opcdiag.controller.ItemPresenter', request)
-    ItemPresenter_.return_value = item_presenter_
-    return ItemPresenter_
-
-
-@pytest.fixture
-def item_diff_(request):
-    item_diff_ = instance_mock(str, request)
-    return item_diff_
-
-
-@pytest.fixture
-def item_presenter_(request):
-    item_presenter_ = instance_mock(ItemPresenter, request)
-    return item_presenter_
-
-
-@pytest.fixture
-def OpcView_(request):
-    OpcView_ = class_mock('opcdiag.controller.OpcView', request)
-    return OpcView_
-
-
-@pytest.fixture
-def Package_(request, package_, package_2_):
-    Package_ = class_mock('opcdiag.controller.Package', request)
-    Package_.read.side_effect = (package_, package_2_)
-    return Package_
-
-
-@pytest.fixture
-def package_(request, pkg_item_):
-    package_ = instance_mock(Package, request)
-    package_.find_item_by_uri_tail.return_value = pkg_item_
-    return package_
-
-
-@pytest.fixture
-def package_2_(request, pkg_item_2_):
-    package_2_ = instance_mock(Package, request)
-    package_2_.find_item_by_uri_tail.return_value = pkg_item_2_
-    return package_2_
-
-
-@pytest.fixture
-def pkg_item_(request):
-    pkg_item_ = instance_mock(PkgItem, request)
-    return pkg_item_
-
-
-@pytest.fixture
-def pkg_item_2_(request):
-    pkg_item_2_ = instance_mock(PkgItem, request)
-    return pkg_item_2_
-
-
-@pytest.fixture
-def rels_diffs_(request):
-    rels_diffs_ = instance_mock(list, request)
-    return rels_diffs_
-
-
-@pytest.fixture
-def xml_part_diffs_(request):
-    xml_part_diffs_ = instance_mock(list, request)
-    return xml_part_diffs_
 
 
 class DescribeOpcController(object):
@@ -178,3 +94,77 @@ class DescribeOpcController(object):
         package_2_.save.assert_called_once_with(PKG_3_PATH)
         OpcView_.substitute.assert_called_once_with(
             pkg_item_.uri, PKG_PATH, PKG_2_PATH, PKG_3_PATH)
+
+    # fixtures -------------------------------------------------------------
+
+    @pytest.fixture
+    def DiffPresenter_(
+            self, request, item_diff_, rels_diffs_, xml_part_diffs_):
+        DiffPresenter_ = class_mock(
+            'opcdiag.controller.DiffPresenter', request
+        )
+        DiffPresenter_.named_item_diff.return_value = item_diff_
+        DiffPresenter_.rels_diffs.return_value = rels_diffs_
+        DiffPresenter_.xml_part_diffs.return_value = xml_part_diffs_
+        return DiffPresenter_
+
+    @pytest.fixture
+    def ItemPresenter_(self, request, item_presenter_):
+        ItemPresenter_ = class_mock(
+            'opcdiag.controller.ItemPresenter', request
+        )
+        ItemPresenter_.return_value = item_presenter_
+        return ItemPresenter_
+
+    @pytest.fixture
+    def item_diff_(self, request):
+        item_diff_ = instance_mock(str, request)
+        return item_diff_
+
+    @pytest.fixture
+    def item_presenter_(self, request):
+        item_presenter_ = instance_mock(ItemPresenter, request)
+        return item_presenter_
+
+    @pytest.fixture
+    def OpcView_(self, request):
+        OpcView_ = class_mock('opcdiag.controller.OpcView', request)
+        return OpcView_
+
+    @pytest.fixture
+    def Package_(self, request, package_, package_2_):
+        Package_ = class_mock('opcdiag.controller.Package', request)
+        Package_.read.side_effect = (package_, package_2_)
+        return Package_
+
+    @pytest.fixture
+    def package_(self, request, pkg_item_):
+        package_ = instance_mock(Package, request)
+        package_.find_item_by_uri_tail.return_value = pkg_item_
+        return package_
+
+    @pytest.fixture
+    def package_2_(self, request, pkg_item_2_):
+        package_2_ = instance_mock(Package, request)
+        package_2_.find_item_by_uri_tail.return_value = pkg_item_2_
+        return package_2_
+
+    @pytest.fixture
+    def pkg_item_(self, request):
+        pkg_item_ = instance_mock(PkgItem, request)
+        return pkg_item_
+
+    @pytest.fixture
+    def pkg_item_2_(self, request):
+        pkg_item_2_ = instance_mock(PkgItem, request)
+        return pkg_item_2_
+
+    @pytest.fixture
+    def rels_diffs_(self, request):
+        rels_diffs_ = instance_mock(list, request)
+        return rels_diffs_
+
+    @pytest.fixture
+    def xml_part_diffs_(self, request):
+        xml_part_diffs_ = instance_mock(list, request)
+        return xml_part_diffs_
