@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-# model.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
 
-"""Package and package items model"""
+"""
+Package and package items model
+"""
 
 import os
 
@@ -56,7 +51,8 @@ class Package(object):
         human-readable format. If viewed after this method is called, the XML
         appears "pretty printed".
         """
-        raise NotImplementedError
+        for pkg_item in self._pkg_items.itervalues():
+            pkg_item.prettify_xml()
 
     @property
     def rels_items(self):
@@ -186,6 +182,13 @@ class PkgItem(object):
         """
         uri_part = os.path.normpath(self._uri)
         return os.path.join(self._root_uri, uri_part)
+
+    def prettify_xml(self):
+        """
+        Reformat the XML in this package item to indented, human-readable
+        form. Does nothing if this package item does not contain XML.
+        """
+        raise NotImplementedError
 
     @property
     def uri(self):

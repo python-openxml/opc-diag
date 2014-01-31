@@ -56,6 +56,12 @@ class DescribePackage(object):
         with pytest.raises(KeyError):
             package.find_item_by_uri_tail('head')
 
+    def it_can_pretty_format_its_xml_pkg_items(self, prettify_fixture):
+        package, pkg_item_, pkg_item_2_ = prettify_fixture
+        package.prettify_xml()
+        pkg_item_.prettify_xml.assert_called_once_with()
+        pkg_item_2_.prettify_xml.assert_called_once_with()
+
     def it_can_provide_a_list_of_rels_items_in_the_package(
             self, pkg_item_, pkg_item_2_, pkg_item_3_):
         # fixture ----------------------
@@ -185,6 +191,12 @@ class DescribePackage(object):
     @pytest.fixture
     def pkg_item_dict_(self, request, uri_, uri_2_, pkg_item_, pkg_item_2_):
         return {uri_: pkg_item_, uri_2_: pkg_item_2_}
+
+    @pytest.fixture
+    def prettify_fixture(self, pkg_item_, pkg_item_2_):
+        pkg_items = {1: pkg_item_, 2: pkg_item_2_}
+        package = Package(pkg_items)
+        return package, pkg_item_, pkg_item_2_
 
     @pytest.fixture
     def root_uri_(self, request):
