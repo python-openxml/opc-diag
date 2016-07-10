@@ -20,8 +20,9 @@ def _write(text):
     """
     Write *text* to stdout
     """
-    bytes_out = text.encode('utf-8')
-    print(bytes_out, end='', file=sys.stdout)
+    if sys.version_info[0] == 2:
+        text = text.encode('utf-8')
+    print(text, end='', file=sys.stdout)
 
 
 class OpcView(object):
