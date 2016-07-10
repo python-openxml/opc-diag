@@ -50,7 +50,7 @@ class CommandController(object):
         args = self._parser.parse_args(argv)
         command = args.command
         command.validate(args)
-        command.execute(args, self._app_controller)
+        return command.execute(args, self._app_controller)
 
 
 class Command(object):
@@ -145,7 +145,7 @@ class DiffCommand(Command):
         return parser
 
     def execute(self, args, app_controller):
-        app_controller.diff_pkg(args.pkg_1_path, args.pkg_2_path)
+        return app_controller.diff_pkg(args.pkg_1_path, args.pkg_2_path)
 
     def validate(self, args):
         paths_that_should_exist = (
@@ -301,4 +301,4 @@ class SubstituteCommand(Command):
 
 def main(argv=None):
     command_controller = CommandController.new()
-    command_controller.execute(argv)
+    return command_controller.execute(argv)
