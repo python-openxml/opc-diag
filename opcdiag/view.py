@@ -17,11 +17,8 @@ import sys
 
 
 def _write(text):
-    """
-    Write *text* to stdout
-    """
-    bytes_out = text.encode("utf-8")
-    print(bytes_out, end="", file=sys.stdout)
+    """Write *text* to stdout."""
+    sys.stdout.write(text)
 
 
 class OpcView(object):

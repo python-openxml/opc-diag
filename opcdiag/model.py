@@ -47,12 +47,12 @@ class Package(object):
         raise KeyError("No item with name '%s'" % uri_tail)
 
     def prettify_xml(self):
+        """Reformat package XML content to human-readable format.
+
+        All package items having XML content are mutated to a multi-line, indented
+        format. If viewed after this method is called, the XML appears "pretty printed".
         """
-        Reformat the XML in all package items having XML content to indented,
-        human-readable format. If viewed after this method is called, the XML
-        appears "pretty printed".
-        """
-        for pkg_item in self._pkg_items.itervalues():
+        for pkg_item in self._pkg_items.values():
             pkg_item.prettify_xml()
 
     @property
@@ -186,9 +186,9 @@ class PkgItem(object):
         return os.path.join(self._root_uri, uri_part)
 
     def prettify_xml(self):
-        """
-        Reformat the XML in this package item to indented, human-readable
-        form. Does nothing if this package item does not contain XML.
+        """Reformat XML in this package item to indented, human-readable form.
+
+        Does nothing if this package item does not contain XML.
         """
         if self.is_content_types or self.is_xml_part or self.is_rels_item:
             self._blob = etree.tostring(

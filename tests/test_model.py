@@ -251,8 +251,8 @@ class DescribePkgItem(object):
         pkg_item = PkgItem(None, "foo.xml", blob)
         pkg_item.prettify_xml()
         assert pkg_item.blob == (
-            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
-            "<foo>\n"
-            "  <bar/>\n"
-            "</foo>\n"
+            b"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            b"<foo>\n"
+            b"  <bar/>\n"
+            b"</foo>\n"
         )

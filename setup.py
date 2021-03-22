@@ -9,7 +9,7 @@ from ez_setup import use_setuptools
 
 use_setuptools()
 
-from setuptools import setup
+from setuptools import setup  # noqa
 
 MAIN_PKG = "opcdiag"
 
@@ -69,7 +69,7 @@ CLASSIFIERS = [
 
 # read version from main package __init__.py
 init_py = _read_from_file(os.path.join(MAIN_PKG, "__init__.py"))
-VERSION = re.search("__version__ = '([^']+)'", init_py).group(1)
+VERSION = re.search(r'__version__ = "([^"]+)"', init_py).group(1)
 
 # license is documented in LICENSE file
 LICENSE = _read_from_file("LICENSE")
