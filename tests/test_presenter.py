@@ -21,11 +21,15 @@ import pytest
 from mock import call, PropertyMock
 
 from .unitutil import (
-    class_mock, function_mock, instance_mock, loose_mock, property_mock
+    class_mock,
+    function_mock,
+    instance_mock,
+    loose_mock,
+    property_mock,
 )
 
 
-URI_TAIL = 'uri_tail'
+URI_TAIL = "uri_tail"
 
 
 @pytest.fixture
@@ -48,7 +52,7 @@ def content_types_item_(request):
 
 @pytest.fixture
 def DiffPresenter_(request, pkg_item_diffs_):
-    DiffPresenter_ = class_mock('opcdiag.presenter.DiffPresenter', request)
+    DiffPresenter_ = class_mock("opcdiag.presenter.DiffPresenter", request)
     DiffPresenter_._pkg_item_diff.side_effect = pkg_item_diffs_
     DiffPresenter_._pkg_item_diffs.return_value = pkg_item_diffs_
     return DiffPresenter_
@@ -56,7 +60,7 @@ def DiffPresenter_(request, pkg_item_diffs_):
 
 @pytest.fixture
 def diff_(request, diff_text_):
-    diff_ = function_mock('opcdiag.presenter.diff', request)
+    diff_ = function_mock("opcdiag.presenter.diff", request)
     diff_.return_value = diff_text_
     return diff_
 
@@ -78,14 +82,14 @@ def filename_2_(request):
 
 @pytest.fixture
 def ItemPresenter_(request, item_presenter_, item_presenter_2_):
-    ItemPresenter_ = class_mock('opcdiag.presenter.ItemPresenter', request)
+    ItemPresenter_ = class_mock("opcdiag.presenter.ItemPresenter", request)
     ItemPresenter_.side_effect = (item_presenter_, item_presenter_2_)
     return ItemPresenter_
 
 
 @pytest.fixture
 def ItemPresenter_xml_(request):
-    return property_mock('opcdiag.presenter.ItemPresenter.xml', request)
+    return property_mock("opcdiag.presenter.ItemPresenter.xml", request)
 
 
 @pytest.fixture
@@ -151,12 +155,12 @@ def pkg_items_(request, pkg_item_, pkg_item_2_):
 
 @pytest.fixture
 def pkg_item_diff_(request):
-    return 'diff_'
+    return "diff_"
 
 
 @pytest.fixture
 def pkg_item_diff_2_(request):
-    return 'diff_2_'
+    return "diff_2_"
 
 
 @pytest.fixture
@@ -181,22 +185,22 @@ def rels_items_(request):
 
 @pytest.fixture
 def text_(request):
-    return 'text_'
+    return "text_"
 
 
 @pytest.fixture
 def text_2_(request):
-    return 'text_2_'
+    return "text_2_"
 
 
 @pytest.fixture
 def uri_(request):
-    return '/word/document.xml'
+    return "/word/document.xml"
 
 
 @pytest.fixture
 def uri_2_(request):
-    return '/_rels/.rels'
+    return "/_rels/.rels"
 
 
 @pytest.fixture
@@ -215,24 +219,23 @@ def xml_part_(request):
 
 
 class DescribeDiff(object):
-
     def it_calculates_a_diff_between_two_texts(self):
         """Integrates with difflib"""
         # fixture ----------------------
-        text = 'foobar\nnoobar\nzoobar'
-        text_2 = 'foobar\ngoobar\nnoobar'
-        filename, filename_2 = 'filename', 'filename_2'
+        text = "foobar\nnoobar\nzoobar"
+        text_2 = "foobar\ngoobar\nnoobar"
+        filename, filename_2 = "filename", "filename_2"
         expected_diff_text = (
-            '--- filename\n'
-            '\n'
-            '+++ filename_2\n'
-            '\n'
-            '@@ -1,3 +1,3 @@\n'
-            '\n'
-            ' foobar\n'
-            '+goobar\n'
-            ' noobar\n'
-            '-zoobar'
+            "--- filename\n"
+            "\n"
+            "+++ filename_2\n"
+            "\n"
+            "@@ -1,3 +1,3 @@\n"
+            "\n"
+            " foobar\n"
+            "+goobar\n"
+            " noobar\n"
+            "-zoobar"
         )
         # exercise ---------------------
         diff_text = diff(text, text_2, filename, filename_2)
@@ -246,22 +249,30 @@ class DescribeDiff(object):
 
 
 class DescribeDiffPresenter(object):
-
     def it_can_diff_a_named_item_between_two_packages(
-            self, package_, package_2_, DiffPresenter_, pkg_item_,
-            pkg_item_2_):
+        self, package_, package_2_, DiffPresenter_, pkg_item_, pkg_item_2_
+    ):
         # exercise ---------------------
         DiffPresenter.named_item_diff(package_, package_2_, URI_TAIL)
         # verify -----------------------
         package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
         package_2_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
-        DiffPresenter_._pkg_item_diff.assert_called_once_with(
-            pkg_item_, pkg_item_2_)
+        DiffPresenter_._pkg_item_diff.assert_called_once_with(pkg_item_, pkg_item_2_)
 
     def it_can_diff_two_package_items(
-            self, pkg_item_, pkg_item_2_, ItemPresenter_,
-            item_presenter_text_, item_presenter_2_text_, diff_, text_,
-            text_2_, filename_, filename_2_, diff_text_):
+        self,
+        pkg_item_,
+        pkg_item_2_,
+        ItemPresenter_,
+        item_presenter_text_,
+        item_presenter_2_text_,
+        diff_,
+        text_,
+        text_2_,
+        filename_,
+        filename_2_,
+        diff_text_,
+    ):
         # exercise ---------------------
         item_diff = DiffPresenter._pkg_item_diff(pkg_item_, pkg_item_2_)
         # expected values --------------
@@ -274,79 +285,92 @@ class DescribeDiffPresenter(object):
         assert item_diff is diff_text_
 
     def it_can_gather_rels_diffs_between_two_packages(
-            self, package_, package_2_, DiffPresenter_, rels_items_,
-            pkg_item_diffs_):
+        self, package_, package_2_, DiffPresenter_, rels_items_, pkg_item_diffs_
+    ):
         # exercise ---------------------
         rels_diffs = DiffPresenter.rels_diffs(package_, package_2_)
         # verify -----------------------
-        DiffPresenter_._pkg_item_diffs.assert_called_once_with(
-            rels_items_, package_2_)
+        DiffPresenter_._pkg_item_diffs.assert_called_once_with(rels_items_, package_2_)
         assert rels_diffs is pkg_item_diffs_
 
     def it_can_gather_xml_part_diffs_between_two_packages(
-            self, package_, package_2_, DiffPresenter_, xml_parts_,
-            pkg_item_diffs_):
+        self, package_, package_2_, DiffPresenter_, xml_parts_, pkg_item_diffs_
+    ):
         # exercise ---------------------
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_, package_2_)
         # verify -----------------------
-        DiffPresenter_._pkg_item_diffs.assert_called_once_with(
-            xml_parts_, package_2_)
+        DiffPresenter_._pkg_item_diffs.assert_called_once_with(xml_parts_, package_2_)
         assert xml_part_diffs is pkg_item_diffs_
 
     def it_can_diff_a_list_of_pkg_items_against_another_package(
-            self, pkg_items_, package_2_, uri_, uri_2_, DiffPresenter_,
-            pkg_item_, pkg_item_2_, pkg_item_diff_, pkg_item_diff_2_):
+        self,
+        pkg_items_,
+        package_2_,
+        uri_,
+        uri_2_,
+        DiffPresenter_,
+        pkg_item_,
+        pkg_item_2_,
+        pkg_item_diff_,
+        pkg_item_diff_2_,
+    ):
         # exercise ---------------------
         diffs = DiffPresenter._pkg_item_diffs(pkg_items_, package_2_)
         # verify -----------------------
         assert package_2_.find_item_by_uri_tail.call_args_list == [
-            call(uri_), call(uri_2_)
+            call(uri_),
+            call(uri_2_),
         ]
         assert DiffPresenter_._pkg_item_diff.call_args_list == [
-            call(pkg_item_, pkg_item_2_), call(pkg_item_2_, pkg_item_)]
+            call(pkg_item_, pkg_item_2_),
+            call(pkg_item_2_, pkg_item_),
+        ]
         assert diffs == [pkg_item_diff_, pkg_item_diff_2_]
 
 
 class DescribeItemPresenter(object):
 
     FOOBAR_XML = (
-        '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
-        '<foobar>\n'
+        "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+        "<foobar>\n"
         '  <foo val="bar"/>\n'
         '  <bar val="foo"/>\n'
-        '</foobar>'
+        "</foobar>"
     )
 
     @pytest.fixture
     def foobar_elm_(self):
-        foobar_xml_bytes = self.FOOBAR_XML.encode('utf-8')
+        foobar_xml_bytes = self.FOOBAR_XML.encode("utf-8")
         return etree.fromstring(foobar_xml_bytes)
 
     def it_constructs_subclass_based_on_item_type(
-            self, content_types_item_, rels_item_, xml_part_, binary_part_):
+        self, content_types_item_, rels_item_, xml_part_, binary_part_
+    ):
         cases = (
-            (content_types_item_, 'ContentTypesPresenter'),
-            (rels_item_,          'RelsItemPresenter'),
-            (xml_part_,           'XmlPartPresenter'),
-            (binary_part_,        'ItemPresenter'),
+            (content_types_item_, "ContentTypesPresenter"),
+            (rels_item_, "RelsItemPresenter"),
+            (xml_part_, "XmlPartPresenter"),
+            (binary_part_, "ItemPresenter"),
         )
         for pkg_item, expected_type_name in cases:
             item_presenter = ItemPresenter(pkg_item)
             assert type(item_presenter).__name__ == expected_type_name
 
     def it_provides_a_normalized_path_string_for_the_pkg_item(self, pkg_item_):
-        pkg_item_.path = 'foo\\bar'
+        pkg_item_.path = "foo\\bar"
         item_presenter = ItemPresenter(pkg_item_)
-        assert item_presenter.filename == 'foo/bar'
+        assert item_presenter.filename == "foo/bar"
 
     def it_should_raise_if_text_property_not_implemented_on_subclass(
-            self, binary_part_):
+        self, binary_part_
+    ):
         item_presenter = object.__new__(ItemPresenter)
         with pytest.raises(NotImplementedError):
             item_presenter.text
 
     def it_can_pretty_format_the_xml_of_its_item(
-            self, content_types_item_, foobar_elm_):
+        self, content_types_item_, foobar_elm_
+    ):
         """Note: tests integration with lxml.etree"""
         content_types_item_.element = foobar_elm_
         item_presenter = ItemPresenter(content_types_item_)
@@ -354,79 +378,79 @@ class DescribeItemPresenter(object):
 
 
 class DescribeContentTypesPresenter(object):
-
     def it_can_format_cti_xml(self, ItemPresenter_xml_, content_types_item_):
         # fixture ----------------------
         ItemPresenter_xml_.return_value = (
-            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
-            '<Types>\n'
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            "<Types>\n"
             '  <Default Extension="foo" ContentType="bar"/>\n'
             '  <Override PartName="foobar" ContentType="barfoo"/>\n'
             '  <Default Extension="bar" ContentType="foo"/>\n'
             '  <Override PartName="barfoo" ContentType="foobar"/>\n'
-            '</Types>'
+            "</Types>"
         )
         content_types_presenter = ItemPresenter(content_types_item_)
         # verify -----------------------
         expected_text = (
-            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
-            '<Types>\n'
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            "<Types>\n"
             '  <Default Extension="bar" ContentType="foo"/>\n'
             '  <Default Extension="foo" ContentType="bar"/>\n'
             '  <Override PartName="barfoo" ContentType="foobar"/>\n'
             '  <Override PartName="foobar" ContentType="barfoo"/>\n'
-            '</Types>'
+            "</Types>"
         )
         assert content_types_presenter.text == expected_text
 
 
 class DescribeRelsItemPresenter(object):
-
     def it_can_format_rels_xml(self, ItemPresenter_xml_, rels_item_):
         # fixture ----------------------
         ItemPresenter_xml_.return_value = (
-            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
-            '<Relationships>\n'
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            "<Relationships>\n"
             '  <Relationship Id="rId1" Type="xyz" Target="foo"/>\n'
             '  <Relationship Id="rId2" Type="abc" Target="bar"/>\n'
             '  <Relationship Id="rId3" Type="mno" Target="baz"/>\n'
-            '</Relationships>'
+            "</Relationships>"
         )
         rels_presenter = ItemPresenter(rels_item_)
         # verify -----------------------
         expected_text = (
-            '<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?>\n'
-            '<Relationships>\n'
+            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
+            "<Relationships>\n"
             '  <Relationship Id="x" Type="abc" Target="bar"/>\n'
             '  <Relationship Id="x" Type="mno" Target="baz"/>\n'
             '  <Relationship Id="x" Type="xyz" Target="foo"/>\n'
-            '</Relationships>'
+            "</Relationships>"
         )
         assert rels_presenter.text == expected_text
 
 
 class DescribeXmlPartPresenter(object):
-
     def it_can_format_part_xml(self, ItemPresenter_xml_, xml_part_):
         # fixture ----------------------
         cases = (
             # root w/no attrs is unchanged -----------------
-            (('<?xml?>\n'
-              '<foobar/>'),
-             ('<?xml?>\n'
-              '<foobar/>')),
+            (("<?xml?>\n" "<foobar/>"), ("<?xml?>\n" "<foobar/>")),
             # sort order: def_ns, nsdecls, attrs -----------
-            (('<?xml?>\n'
-              '<foobar foo="bar" xmlns:f="foo" xmlns:b="bar" xmlns="zoo" boo'
-              '="far"/>'),
-             ('<?xml?>\n'
-              '<foobar\n'
-              '    xmlns="zoo"\n'
-              '    xmlns:b="bar"\n'
-              '    xmlns:f="foo"\n'
-              '    boo="far"\n'
-              '    foo="bar"\n'
-              '    />')),
+            (
+                (
+                    "<?xml?>\n"
+                    '<foobar foo="bar" xmlns:f="foo" xmlns:b="bar" xmlns="zoo" boo'
+                    '="far"/>'
+                ),
+                (
+                    "<?xml?>\n"
+                    "<foobar\n"
+                    '    xmlns="zoo"\n'
+                    '    xmlns:b="bar"\n'
+                    '    xmlns:f="foo"\n'
+                    '    boo="far"\n'
+                    '    foo="bar"\n'
+                    "    />"
+                ),
+            ),
         )
         # verify -----------------------
         for part_xml, expected_xml in cases:

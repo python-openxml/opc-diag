@@ -26,6 +26,7 @@ class _Manifest(object):
     equivalence of two packages, whether stored as a zip archive or a package
     extracted into a directory.
     """
+
     def __init__(self, sha_names):
         """
         *sha_names* is a list of SHA1, name 2-tuples, each of which describes
@@ -69,7 +70,7 @@ class _Manifest(object):
         """
         tmpl = "    ('%s',\n     '%s'),"
         lines = [tmpl % (sha, name) for sha, name in self.sha_names]
-        return 'manifest = [\n%s\n]' % '\n'.join(lines)
+        return "manifest = [\n%s\n]" % "\n".join(lines)
 
     def diff(self, other, filename_1, filename_2):
         """
@@ -77,10 +78,10 @@ class _Manifest(object):
         this manifest and *other*.
         """
         text_1, text_2 = str(self), str(other)
-        lines_1 = text_1.split('\n')
-        lines_2 = text_2.split('\n')
+        lines_1 = text_1.split("\n")
+        lines_2 = text_2.split("\n")
         diff = unified_diff(lines_1, lines_2, filename_1, filename_2)
-        return '\n'.join([line for line in diff])
+        return "\n".join([line for line in diff])
 
     @staticmethod
     def from_dir(dirpath):
@@ -90,10 +91,10 @@ class _Manifest(object):
         """
         sha_names = []
         for filepath in sorted(_Manifest._filepaths_in_dir(dirpath)):
-            with open(filepath, 'rb') as f:
+            with open(filepath, "rb") as f:
                 blob = f.read()
             sha = hashlib.sha1(blob).hexdigest()
-            name = os.path.relpath(filepath, dirpath).replace('\\', '/')
+            name = os.path.relpath(filepath, dirpath).replace("\\", "/")
             sha_names.append((sha, name))
         return _Manifest(sha_names)
 

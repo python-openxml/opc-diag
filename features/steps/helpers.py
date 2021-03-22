@@ -22,7 +22,7 @@ def absjoin(*paths):
 
 
 def ref_pkg_path(filename):
-    ref_pkg_dir = absjoin(test_file_dir, 'reference_pkgs')
+    ref_pkg_dir = absjoin(test_file_dir, "reference_pkgs")
     return os.path.relpath(absjoin(ref_pkg_dir, filename))
 
 
@@ -31,8 +31,8 @@ def scratch_path(name):
 
 
 thisdir = os.path.split(__file__)[0]
-scratch_dir = absjoin(thisdir, '../_scratch')
-test_file_dir = absjoin(thisdir, '../test_files')
+scratch_dir = absjoin(thisdir, "../_scratch")
+test_file_dir = absjoin(thisdir, "../test_files")
 
 
 def assertManifestsMatch(manifest1, manifest2, name1, name2):
@@ -40,8 +40,9 @@ def assertManifestsMatch(manifest1, manifest2, name1, name2):
     Raise |AssertionError| if *manifest1* does not exactly match *manifest2*.
     *name1* and *name2* appear in the diff printed if the assertion fails.
     """
-    msg = ("Package manifests don't match\n\n%s" %
-           manifest1.diff(manifest2, name1, name2))
+    msg = "Package manifests don't match\n\n%s" % manifest1.diff(
+        manifest2, name1, name2
+    )
     assert manifest1 == manifest2, msg
 
 
@@ -51,8 +52,9 @@ def assertPackagesMatch(path1, path2):
     match that of package at *path2*.
     """
     manifest1, manifest2 = Manifest(path1), Manifest(path2)
-    msg = ("Package manifests don't match\n\n%s" %
-           manifest1.diff(manifest2, path1, path2))
+    msg = "Package manifests don't match\n\n%s" % manifest1.diff(
+        manifest2, path1, path2
+    )
     assert manifest1 == manifest2, msg
 
 
@@ -60,6 +62,7 @@ class OpcCommand(object):
     """
     Executes opc-diag command as configured and makes results available.
     """
+
     def __init__(self, subcommand, *args):
         self.subcommand = subcommand
         self.args = args
@@ -70,7 +73,7 @@ class OpcCommand(object):
         the captured output.
         """
         tmpl = "Unexpected output on stderr\n'%s'\n"
-        assert self.std_err == '', tmpl % self.std_err
+        assert self.std_err == "", tmpl % self.std_err
 
     def assert_stdout_empty(self):
         """
@@ -78,7 +81,7 @@ class OpcCommand(object):
         the captured output.
         """
         tmpl = "Unexpected output on stdout\n'%s'\n"
-        assert self.std_out == '', tmpl % self.std_out
+        assert self.std_out == "", tmpl % self.std_out
 
     def assert_stdout_matches(self, filename):
         """
@@ -87,9 +90,11 @@ class OpcCommand(object):
         *filename* in known directory.
         """
         expected_stdout = self._expected_output(filename)
-        msg = ("\n\nexpected output:\n'%s'\n\nactual output:\n'%s'" %
-               (expected_stdout, self.std_out))
-        std_out = self.std_out.replace('\r\n', '\n')  # normalize line endings
+        msg = "\n\nexpected output:\n'%s'\n\nactual output:\n'%s'" % (
+            expected_stdout,
+            self.std_out,
+        )
+        std_out = self.std_out.replace("\r\n", "\n")  # normalize line endings
         assert std_out == expected_stdout, msg
 
     def execute(self):
@@ -97,15 +102,15 @@ class OpcCommand(object):
         Execute the configured command in a subprocess and capture the
         results.
         """
-        args = ['python', 'opc-stub']
+        args = ["python", "opc-stub"]
         args.append(self.subcommand)
         args.extend(self.args)
         self.proc = subprocess.Popen(
             args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         std_out_bytes, std_err_bytes = self.proc.communicate()
-        self.std_out = std_out_bytes.decode('utf-8')
-        self.std_err = std_err_bytes.decode('utf-8')
+        self.std_out = std_out_bytes.decode("utf-8")
+        self.std_err = std_err_bytes.decode("utf-8")
         return self
 
     @staticmethod
@@ -113,8 +118,8 @@ class OpcCommand(object):
         """
         Return contents of file with *filename* in known directory as text.
         """
-        path = absjoin(test_file_dir, 'expected_output', filename)
-        with open(path, 'rb') as f:
+        path = absjoin(test_file_dir, "expected_output", filename)
+        with open(path, "rb") as f:
             expected_bytes = f.read()
-        expected_text = expected_bytes.decode('utf-8')
+        expected_text = expected_bytes.decode("utf-8")
         return expected_text

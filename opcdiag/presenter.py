@@ -22,8 +22,8 @@ def diff(text_1, text_2, filename_1, filename_2):
     Return a ``diff`` style unified diff listing between *text_1* and
     *text_2*.
     """
-    lines_1 = text_1.split('\n')
-    lines_2 = text_2.split('\n')
+    lines_1 = text_1.split("\n")
+    lines_2 = text_2.split("\n")
     diff_lines = unified_diff(lines_1, lines_2, filename_1, filename_2)
     # this next bit is needed to work around Python 2.6 difflib bug that left
     # in a trailing space after the filename if no date was provided. The
@@ -31,10 +31,10 @@ def diff(text_1, text_2, filename_1, filename_2):
     # like '+foobar'. The space needs to be removed but the linefeed preserved.
     trimmed_lines = []
     for line in diff_lines:
-        if line.endswith(' \n'):
-            line = '%s\n' % line.rstrip()
+        if line.endswith(" \n"):
+            line = "%s\n" % line.rstrip()
         trimmed_lines.append(line)
-    return '\n'.join(trimmed_lines)
+    return "\n".join(trimmed_lines)
 
 
 def prettify_nsdecls(xml):
@@ -52,11 +52,9 @@ def prettify_nsdecls(xml):
         ('<p:sld', ['xmlns:p="html://..."', 'name="Office Theme>"'], '>').
         """
         attr_re = re.compile(r'([-a-zA-Z0-9_:.]+="[^"]*" *)')
-        substrs = [substr.strip() for substr in attr_re.split(rootline)
-                   if substr]
+        substrs = [substr.strip() for substr in attr_re.split(rootline) if substr]
         head = substrs[0]
-        attrs, tail = ((substrs[1:-1], substrs[-1]) if len(substrs) > 1
-                       else ([], ''))
+        attrs, tail = (substrs[1:-1], substrs[-1]) if len(substrs) > 1 else ([], "")
         return (head, attrs, tail)
 
     def sequence_attrs(attributes):
@@ -67,9 +65,9 @@ def prettify_nsdecls(xml):
         """
         def_nsdecls, nsdecls, attrs = [], [], []
         for attr in attributes:
-            if attr.startswith('xmlns='):
+            if attr.startswith("xmlns="):
                 def_nsdecls.append(attr)
-            elif attr.startswith('xmlns:'):
+            elif attr.startswith("xmlns:"):
                 nsdecls.append(attr)
             else:
                 attrs.append(attr)
@@ -81,11 +79,11 @@ def prettify_nsdecls(xml):
         first line, *attrs* indented on following lines, and *tail* indented
         on the last line.
         """
-        indent = 4 * ' '
+        indent = 4 * " "
         newrootline = head
         for attr in attrs:
-            newrootline += '\n%s%s' % (indent, attr)
-        newrootline += '\n%s%s' % (indent, tail) if tail else ''
+            newrootline += "\n%s%s" % (indent, attr)
+        newrootline += "\n%s%s" % (indent, tail) if tail else ""
         return newrootline
 
     lines = xml.splitlines()
@@ -93,13 +91,14 @@ def prettify_nsdecls(xml):
     head, attributes, tail = parse_attrs(rootline)
     attributes = sequence_attrs(attributes)
     lines[1] = pretty_rootline(head, attributes, tail)
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 class DiffPresenter(object):
     """
     Forms diffs between packages and their elements.
     """
+
     @staticmethod
     def named_item_diff(package_1, package_2, uri_tail):
         """
@@ -165,6 +164,7 @@ class ItemPresenter(object):
     Base class and factory class for package item presenter classes; also
     serves as presenter for binary classes, e.g. .bin and .jpg.
     """
+
     def __new__(cls, pkg_item):
         """
         Factory for package item presenter objects, choosing one of
@@ -191,7 +191,7 @@ class ItemPresenter(object):
         Effective path for this package item, normalized to always use
         forward slashes as the path separator.
         """
-        return self._pkg_item.path.replace('\\', '/')
+        return self._pkg_item.path.replace("\\", "/")
 
     @property
     def text(self):
@@ -200,8 +200,9 @@ class ItemPresenter(object):
         property, returning a text representation of the package item,
         generally a formatted version of the item contents.
         """
-        msg = ("'.text' property must be implemented by all subclasses of It"
-               "emPresenter")
+        msg = (
+            "'.text' property must be implemented by all subclasses of It" "emPresenter"
+        )
         raise NotImplementedError(msg)
 
     @property
@@ -211,14 +212,13 @@ class ItemPresenter(object):
         blob.
         """
         xml_bytes = etree.tostring(
-            self._pkg_item.element, encoding='UTF-8', pretty_print=True,
-            standalone=True).strip()
-        xml_text = xml_bytes.decode('utf-8')
+            self._pkg_item.element, encoding="UTF-8", pretty_print=True, standalone=True
+        ).strip()
+        xml_text = xml_bytes.decode("utf-8")
         return xml_text
 
 
 class ContentTypesPresenter(ItemPresenter):
-
     def __init__(self, pkg_item):
         super(ContentTypesPresenter, self).__init__(pkg_item)
 
@@ -229,16 +229,15 @@ class ContentTypesPresenter(ItemPresenter):
         minimal diffs. The <Default> and <Override> child elements are sorted
         to remove arbitrary ordering between package saves.
         """
-        lines = self.xml.split('\n')
-        defaults = sorted([l for l in lines if l.startswith('  <D')])
-        overrides = sorted([l for l in lines if l.startswith('  <O')])
+        lines = self.xml.split("\n")
+        defaults = sorted([l for l in lines if l.startswith("  <D")])
+        overrides = sorted([l for l in lines if l.startswith("  <O")])
         out_lines = lines[:2] + defaults + overrides + lines[-1:]
-        out = '\n'.join(out_lines)
+        out = "\n".join(out_lines)
         return out
 
 
 class RelsItemPresenter(ItemPresenter):
-
     def __init__(self, pkg_item):
         super(RelsItemPresenter, self).__init__(pkg_item)
 
@@ -251,19 +250,19 @@ class RelsItemPresenter(ItemPresenter):
         'x' so internal renumbering between saves doesn't affect the
         ordering.
         """
+
         def anon(rel):
             return re.sub(r' Id="[^"]+" ', r' Id="x" ', rel)
 
-        lines = self.xml.split('\n')
-        relationships = [l for l in lines if l.startswith('  <R')]
+        lines = self.xml.split("\n")
+        relationships = [l for l in lines if l.startswith("  <R")]
         anon_rels = sorted([anon(r) for r in relationships])
         out_lines = lines[:2] + anon_rels + lines[-1:]
-        out = '\n'.join(out_lines)
+        out = "\n".join(out_lines)
         return out
 
 
 class XmlPartPresenter(ItemPresenter):
-
     def __init__(self, pkg_item):
         super(XmlPartPresenter, self).__init__(pkg_item)
 

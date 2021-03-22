@@ -9,7 +9,7 @@ from opcdiag.presenter import DiffPresenter, ItemPresenter
 from opcdiag.view import OpcView
 
 
-_CONTENT_TYPES_URI = '[Content_Types].xml'
+_CONTENT_TYPES_URI = "[Content_Types].xml"
 
 
 class OpcController(object):
@@ -19,6 +19,7 @@ class OpcController(object):
     entity objects, delegating work to them, and using the appropriate view
     object to format the results to be displayed.
     """
+
     def browse(self, pkg_path, uri_tail):
         """
         Display pretty-printed XML contained in package item with URI ending
@@ -52,7 +53,8 @@ class OpcController(object):
         package_1 = Package.read(package_1_path)
         package_2 = Package.read(package_2_path)
         content_types_diff = DiffPresenter.named_item_diff(
-            package_1, package_2, _CONTENT_TYPES_URI)
+            package_1, package_2, _CONTENT_TYPES_URI
+        )
         rels_diffs = DiffPresenter.rels_diffs(package_1, package_2)
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_1, package_2)
         OpcView.package_diff(content_types_diff, rels_diffs, xml_part_diffs)
@@ -87,5 +89,4 @@ class OpcController(object):
         pkg_item = package_1.find_item_by_uri_tail(uri_tail)
         package_2.substitute_item(pkg_item)
         package_2.save(new_pkg_path)
-        OpcView.substitute(pkg_item.uri, src_pkg_path, tgt_pkg_path,
-                           new_pkg_path)
+        OpcView.substitute(pkg_item.uri, src_pkg_path, tgt_pkg_path, new_pkg_path)

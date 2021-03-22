@@ -30,6 +30,7 @@ class PhysPkg(object):
     |PhysPkg| objects are iterable, generating a (uri, blob) 2-tuple for each
     item in the package.
     """
+
     def __init__(self, blobs, root_uri):
         super(PhysPkg, self).__init__()
         self._blobs = blobs
@@ -75,7 +76,7 @@ class PhysPkg(object):
         Write "files" in |BlobCollection| instance *blobs* to a zip archive
         at *pkg_zip_path*.
         """
-        zipf = ZipFile(pkg_zip_path, 'w', ZIP_DEFLATED)
+        zipf = ZipFile(pkg_zip_path, "w", ZIP_DEFLATED)
         for uri in sorted(blobs.keys()):
             blob = blobs[uri]
             zipf.writestr(uri, blob)
@@ -112,7 +113,7 @@ class PhysPkg(object):
         dirpath, filename = os.path.split(fullpath)
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
-        with open(fullpath, 'wb') as f:
+        with open(fullpath, "wb") as f:
             f.write(blob)
 
 
@@ -121,6 +122,7 @@ class DirPhysPkg(PhysPkg):
     An OPC physical package that has been expanded into individual files in
     a directory structure that mirrors the pack URI.
     """
+
     def __init__(self, blobs, root_uri):
         super(DirPhysPkg, self).__init__(blobs, root_uri)
 
@@ -130,10 +132,10 @@ class DirPhysPkg(PhysPkg):
         Return a |BlobCollection| instance loaded from *pkg_dir*.
         """
         blobs = BlobCollection()
-        pfx_len = len(pkg_dir)+1
+        pfx_len = len(pkg_dir) + 1
         for filepath in cls._filepaths_in_dir(pkg_dir):
-            uri = filepath[pfx_len:].replace('\\', '/')
-            with open(filepath, 'rb') as f:
+            uri = filepath[pfx_len:].replace("\\", "/")
+            with open(filepath, "rb") as f:
                 blob = f.read()
             blobs[uri] = blob
         root_uri = pkg_dir
@@ -157,6 +159,7 @@ class ZipPhysPkg(PhysPkg):
     """
     An OPC physical package in the typically encountered form, a zip archive.
     """
+
     def __init__(self, blobs, root_uri):
         super(ZipPhysPkg, self).__init__(blobs, root_uri)
 
@@ -166,7 +169,7 @@ class ZipPhysPkg(PhysPkg):
         Return a |BlobCollection| instance loaded from *pkg_zip_path*.
         """
         blobs = BlobCollection()
-        zipf = ZipFile(pkg_zip_path, 'r')
+        zipf = ZipFile(pkg_zip_path, "r")
         for name in zipf.namelist():
             blobs[name] = zipf.read(name)
         zipf.close()

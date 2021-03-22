@@ -11,13 +11,14 @@ from lxml import etree
 from opcdiag.phys_pkg import BlobCollection, PhysPkg
 
 
-_CONTENT_TYPES_URI = '[Content_Types].xml'
+_CONTENT_TYPES_URI = "[Content_Types].xml"
 
 
 class Package(object):
     """
     Root of package graph and main model API class.
     """
+
     def __init__(self, pkg_items):
         super(Package, self).__init__()
         self._pkg_items = pkg_items
@@ -124,6 +125,7 @@ class PkgItem(object):
     """
     Individual item (file, roughly) within an OPC package.
     """
+
     def __init__(self, root_uri, uri, blob):
         super(PkgItem, self).__init__()
         self._blob = blob
@@ -164,7 +166,7 @@ class PkgItem(object):
         True if this item is a relationships item, i.e. its uri ends with
         ``.rels``, False otherwise.
         """
-        return self._uri.endswith('.rels')
+        return self._uri.endswith(".rels")
 
     @property
     def is_xml_part(self):
@@ -172,7 +174,7 @@ class PkgItem(object):
         True if the URI of this item ends with '.xml', except if it is the
         content types item. False otherwise.
         """
-        return self._uri.endswith('.xml') and not self.is_content_types
+        return self._uri.endswith(".xml") and not self.is_content_types
 
     @property
     def path(self):
@@ -190,8 +192,7 @@ class PkgItem(object):
         """
         if self.is_content_types or self.is_xml_part or self.is_rels_item:
             self._blob = etree.tostring(
-                self.element, encoding='UTF-8', standalone=True,
-                pretty_print=True
+                self.element, encoding="UTF-8", standalone=True, pretty_print=True
             )
 
     @property
