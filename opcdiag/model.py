@@ -51,7 +51,7 @@ class Package(object):
         human-readable format. If viewed after this method is called, the XML
         appears "pretty printed".
         """
-        for pkg_item in self._pkg_items.itervalues():
+        for pkg_item in self._pkg_items.values():
             pkg_item.prettify_xml()
 
     @property
