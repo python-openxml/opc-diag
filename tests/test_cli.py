@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-# test_cli.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
-
-"""Test suite for the cli module."""
+"""Test suite for the `opcdiag.cli` module."""
 
 import argparse
+from unittest.mock import ANY, Mock
+
+import pytest
 
 from opcdiag.cli import (
     BrowseCommand,
@@ -24,12 +18,7 @@ from opcdiag.cli import (
 )
 from opcdiag.controller import OpcController
 
-import pytest
-
-from mock import ANY, Mock
-
 from .unitutil import class_mock, instance_mock, loose_mock, relpath
-
 
 ARG_DIRPATH = "DIRPATH"
 ARG_PKG_PATH = "PKG_PATH"
@@ -167,9 +156,7 @@ def substitute_argv_():
 
 
 class DescribeMain(object):
-    def it_should_execute_the_command_in_argv(
-        self, argv_, CommandController_, command_controller_
-    ):
+    def it_should_execute_the_command_in_argv(self, argv_, CommandController_, command_controller_):
         # exercise ---------------------
         main(argv_)
         # verify -----------------------
@@ -296,15 +283,11 @@ class DescribeDiffCommand(object):
         # exercise ---------------------
         diff_command.execute(args_, app_controller_)
         # verify -----------------------
-        app_controller_.diff_pkg.assert_called_once_with(
-            args_.pkg_1_path, args_.pkg_2_path
-        )
+        app_controller_.diff_pkg.assert_called_once_with(args_.pkg_1_path, args_.pkg_2_path)
 
 
 class DescribeDiffItemCommand(object):
-    def it_should_add_a_diff_item_command_parser(
-        self, diff_item_argv_, parser, subparsers
-    ):
+    def it_should_add_a_diff_item_command_parser(self, diff_item_argv_, parser, subparsers):
         # exercise ---------------------
         subparser = DiffItemCommand.add_command_parser_to(subparsers)
         args = parser.parse_args(diff_item_argv_)
@@ -371,15 +354,11 @@ class DescribeExtractCommand(object):
         # exercise ---------------------
         extract_command.execute(args_, app_controller_)
         # verify -----------------------
-        app_controller_.extract_package.assert_called_once_with(
-            args_.pkg_path, args_.dirpath
-        )
+        app_controller_.extract_package.assert_called_once_with(args_.pkg_path, args_.dirpath)
 
 
 class DescribeRepackageCommand(object):
-    def it_should_add_a_repackage_command_parser(
-        self, repackage_argv_, parser, subparsers
-    ):
+    def it_should_add_a_repackage_command_parser(self, repackage_argv_, parser, subparsers):
         # exercise ---------------------
         subparser = RepackageCommand.add_command_parser_to(subparsers)
         args = parser.parse_args(repackage_argv_)
@@ -405,15 +384,11 @@ class DescribeRepackageCommand(object):
         # exercise ---------------------
         repackage_command.execute(args_, app_controller_)
         # verify -----------------------
-        app_controller_.repackage.assert_called_once_with(
-            args_.dirpath, args_.new_package
-        )
+        app_controller_.repackage.assert_called_once_with(args_.dirpath, args_.new_package)
 
 
 class DescribeSubstituteCommand(object):
-    def it_should_add_a_substitute_command_parser(
-        self, substitute_argv_, parser, subparsers
-    ):
+    def it_should_add_a_substitute_command_parser(self, substitute_argv_, parser, subparsers):
         # exercise ---------------------
         subparser = SubstituteCommand.add_command_parser_to(subparsers)
         args = parser.parse_args(substitute_argv_)

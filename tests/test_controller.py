@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
+"""Unit tests for `opcdiag.controller` module."""
 
-"""
-Unit tests for controller module
-"""
+from unittest.mock import call
+
+import pytest
 
 from opcdiag.controller import OpcController
 from opcdiag.model import Package, PkgItem
 from opcdiag.presenter import ItemPresenter
 
-import pytest
-
-from mock import call
-
 from .unitutil import class_mock, instance_mock
-
 
 DIRPATH = "dirpath"
 NEW_PKG_PATH = "new_pkg_path"
@@ -57,9 +52,7 @@ class DescribeOpcController(object):
         )
         DiffPresenter_.rels_diffs.assert_called_once_with(package_, package_2_)
         DiffPresenter_.xml_part_diffs.assert_called_once_with(package_, package_2_)
-        OpcView_.package_diff.assert_called_once_with(
-            item_diff_, rels_diffs_, xml_part_diffs_
-        )
+        OpcView_.package_diff.assert_called_once_with(item_diff_, rels_diffs_, xml_part_diffs_)
 
     def it_can_execute_a_diff_item_command(
         self, Package_, package_, package_2_, DiffPresenter_, item_diff_, OpcView_
@@ -70,9 +63,7 @@ class DescribeOpcController(object):
         expected_Package_read_calls = [call(PKG_PATH), call(PKG_2_PATH)]
         # verify -----------------------
         Package_.read.assert_has_calls(expected_Package_read_calls)
-        DiffPresenter_.named_item_diff.assert_called_once_with(
-            package_, package_2_, URI_TAIL
-        )
+        DiffPresenter_.named_item_diff.assert_called_once_with(package_, package_2_, URI_TAIL)
         OpcView_.item_diff.assert_called_once_with(item_diff_)
 
     def it_can_execute_an_extract_package_command(self, Package_, package_):
@@ -101,9 +92,7 @@ class DescribeOpcController(object):
         package_.find_item_by_uri_tail.assert_called_once_with(URI_TAIL)
         package_2_.substitute_item.assert_called_once_with(pkg_item_)
         package_2_.save.assert_called_once_with(PKG_3_PATH)
-        OpcView_.substitute.assert_called_once_with(
-            pkg_item_.uri, PKG_PATH, PKG_2_PATH, PKG_3_PATH
-        )
+        OpcView_.substitute.assert_called_once_with(pkg_item_.uri, PKG_PATH, PKG_2_PATH, PKG_3_PATH)
 
     # fixtures -------------------------------------------------------------
 

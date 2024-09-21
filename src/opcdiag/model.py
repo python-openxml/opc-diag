@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
+"""Package and package items model."""
 
-"""
-Package and package items model
-"""
+from __future__ import annotations
 
 import os
 
 from lxml import etree
 
 from opcdiag.phys_pkg import BlobCollection, PhysPkg
-
 
 _CONTENT_TYPES_URI = "[Content_Types].xml"
 

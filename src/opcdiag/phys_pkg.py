@@ -1,17 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-# phys_pkg.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
+"""Interface to a physical OPC package, either a zip archive or directory."""
 
-"""Interface to a physical OPC package, either a zip archive or directory"""
+from __future__ import annotations
 
 import os
 import shutil
-
 from zipfile import ZIP_DEFLATED, ZipFile
 
 

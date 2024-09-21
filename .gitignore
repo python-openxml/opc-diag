@@ -1,7 +1,7 @@
 /.coverage
 /dist/
 /docs/.build/
-/*.egg-info
+/src/*.egg-info
 *.pyc
 _scratch/
 Session.vim

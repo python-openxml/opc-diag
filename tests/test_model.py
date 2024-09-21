@@ -1,24 +1,17 @@
-# -*- coding: utf-8 -*-
-
-"""
-Unit tests for model module
-"""
+"""Unit tests for `opcdiag.model` module."""
 
 from __future__ import unicode_literals
 
 import sys
+from unittest.mock import call
 
+import pytest
 from lxml import etree
 
 from opcdiag.model import Package, PkgItem
 from opcdiag.phys_pkg import PhysPkg
 
-import pytest
-
-from mock import call
-
 from .unitutil import class_mock, instance_mock
-
 
 DIRPATH = "dirpath"
 PACKAGE_PATH = "package_path"
@@ -241,9 +234,7 @@ class DescribePkgItem(object):
 
     def it_can_calculate_its_effective_path(self):
         pkg_item = PkgItem("root_uri", "uri", None)
-        expected_path = (
-            "root_uri\\uri" if sys.platform.startswith("win") else "root_uri/uri"
-        )
+        expected_path = "root_uri\\uri" if sys.platform.startswith("win") else "root_uri/uri"
         assert pkg_item.path == expected_path
 
     def it_can_prettify_its_xml(self):

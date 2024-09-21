@@ -1,17 +1,6 @@
-# -*- coding: utf-8 -*-
-#
-# view.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
+"""Objects that fulfill the view role in opc-diag, interfacing to the console."""
 
-"""
-Objects that fulfill the view role in opc-diag, interfacing to the console
-"""
-
-from __future__ import print_function, unicode_literals
+from __future__ import annotations
 
 import sys
 
@@ -64,9 +53,11 @@ class OpcView(object):
         Display a confirmation method detailing the package item substitution
         that was executed.
         """
-        msg = (
-            "substituted '%s' from '%s' into '%s' and saved the result as"
-            " '%s'\n" % (uri, src_pkg_path, tgt_pkg_path, new_pkg_path)
+        msg = "substituted '%s' from '%s' into '%s' and saved the result as" " '%s'\n" % (
+            uri,
+            src_pkg_path,
+            tgt_pkg_path,
+            new_pkg_path,
         )
         msg = msg.replace("\\", "/")  # normalize directory separator
         _write(msg)

@@ -1,19 +1,10 @@
-# -*- coding: utf-8 -*-
-#
-# presenter.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
+"""Presenter classes for opc-diag model classes."""
 
-"""Presenter classes for opc-diag model classes"""
-
-from __future__ import unicode_literals
+from __future__ import annotations
 
 import re
-
 from difflib import unified_diff
+
 from lxml import etree
 
 
@@ -200,9 +191,7 @@ class ItemPresenter(object):
         property, returning a text representation of the package item,
         generally a formatted version of the item contents.
         """
-        msg = (
-            "'.text' property must be implemented by all subclasses of It" "emPresenter"
-        )
+        msg = "'.text' property must be implemented by all subclasses of It" "emPresenter"
         raise NotImplementedError(msg)
 
     @property

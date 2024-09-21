@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
+"""Command-line application controller for opc-diag."""
 
-"""
-Command-line application controller for opc-diag
-"""
+from __future__ import annotations
 
 from opcdiag.model import Package
 from opcdiag.presenter import DiffPresenter, ItemPresenter
 from opcdiag.view import OpcView
-
 
 _CONTENT_TYPES_URI = "[Content_Types].xml"
 
@@ -52,9 +49,7 @@ class OpcController(object):
         """
         package_1 = Package.read(package_1_path)
         package_2 = Package.read(package_2_path)
-        content_types_diff = DiffPresenter.named_item_diff(
-            package_1, package_2, _CONTENT_TYPES_URI
-        )
+        content_types_diff = DiffPresenter.named_item_diff(package_1, package_2, _CONTENT_TYPES_URI)
         rels_diffs = DiffPresenter.rels_diffs(package_1, package_2)
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_1, package_2)
         OpcView.package_diff(content_types_diff, rels_diffs, xml_part_diffs)

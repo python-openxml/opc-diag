@@ -1,27 +1,15 @@
-# -*- coding: utf-8 -*-
-#
-# test_phys_pkg.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
-
-"""Unit tests for phys_pkg module"""
+"""Unit tests for `opcdiag.phys_pkg` module."""
 
 import os
 import shutil
-
+from unittest.mock import call
 from zipfile import ZIP_DEFLATED, ZipFile
-
-from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
 import pytest
 
-from mock import call
+from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
 from .unitutil import class_mock, instance_mock, relpath
-
 
 DIRPATH = "DIRPATH"
 DELETEME_DIR = relpath("test_files/deleteme")
@@ -109,9 +97,7 @@ class DescribePhysPkg(object):
         ZipFile_.assert_called_once_with("foobar", "w", ZIP_DEFLATED)
         zip_file_.close.assert_called_with()
 
-    def it_can_write_a_blob_collection_to_a_directory(
-        self, uri_, uri_2_, blob_, blob_2_, PhysPkg_
-    ):
+    def it_can_write_a_blob_collection_to_a_directory(self, uri_, uri_2_, blob_, blob_2_, PhysPkg_):
         # fixture ----------------------
         blobs = BlobCollection(((uri_, blob_), (uri_2_, blob_2_)))
         # exercise ---------------------

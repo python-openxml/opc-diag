@@ -1,17 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-# unitutil.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
-
 """Utility functions for unit testing"""
 
 import os
-
-from mock import create_autospec, Mock, patch, PropertyMock
+from unittest.mock import Mock, PropertyMock, create_autospec, patch
 
 
 def abspath(relpath):

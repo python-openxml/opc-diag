@@ -1,24 +1,14 @@
-# -*- coding: utf-8 -*-
-#
-# test_presenter.py
-#
-# Copyright (C) 2013 Steve Canny scanny@cisco.com
-#
-# This module is part of opc-diag and is released under the MIT License:
-# http://www.opensource.org/licenses/mit-license.php
-
-"""Unit tests for presenter module"""
+"""Unit tests for `opcdiag.presenter` module."""
 
 from __future__ import unicode_literals
 
+from unittest.mock import PropertyMock, call
+
+import pytest
 from lxml import etree
 
 from opcdiag.model import Package, PkgItem
-from opcdiag.presenter import DiffPresenter, diff, ItemPresenter
-
-import pytest
-
-from mock import call, PropertyMock
+from opcdiag.presenter import DiffPresenter, ItemPresenter, diff
 
 from .unitutil import (
     class_mock,
@@ -27,7 +17,6 @@ from .unitutil import (
     loose_mock,
     property_mock,
 )
-
 
 URI_TAIL = "uri_tail"
 
@@ -361,16 +350,12 @@ class DescribeItemPresenter(object):
         item_presenter = ItemPresenter(pkg_item_)
         assert item_presenter.filename == "foo/bar"
 
-    def it_should_raise_if_text_property_not_implemented_on_subclass(
-        self, binary_part_
-    ):
+    def it_should_raise_if_text_property_not_implemented_on_subclass(self, binary_part_):
         item_presenter = object.__new__(ItemPresenter)
         with pytest.raises(NotImplementedError):
             item_presenter.text
 
-    def it_can_pretty_format_the_xml_of_its_item(
-        self, content_types_item_, foobar_elm_
-    ):
+    def it_can_pretty_format_the_xml_of_its_item(self, content_types_item_, foobar_elm_):
         """Note: tests integration with lxml.etree"""
         content_types_item_.element = foobar_elm_
         item_presenter = ItemPresenter(content_types_item_)

@@ -1,15 +1,10 @@
 #!/usr/bin/env python
-# encoding: utf-8
 
-# opc.py
-#
-# Command-line interface for operations on one or more Open Packaging
-# Convention (OPC) files, such as .docx, .pptx, and .xlsx files.
+from __future__ import annotations
 
 import argparse
 import os
 import sys
-
 
 from opcdiag.controller import OpcController
 
@@ -105,9 +100,7 @@ class BrowseCommand(Command):
         parser = subparsers.add_parser(
             "browse", help="List pretty-printed XML for a specified package part"
         )
-        parser.add_argument(
-            "pkg_path", metavar="PKG_PATH", help="Path to OPC package file"
-        )
+        parser.add_argument("pkg_path", metavar="PKG_PATH", help="Path to OPC package file")
         parser.add_argument(
             "filename",
             metavar="FILENAME",
@@ -135,12 +128,8 @@ class DiffCommand(Command):
         parser = subparsers.add_parser(
             "diff", help="Show differences between two OPC package files"
         )
-        parser.add_argument(
-            "pkg_1_path", metavar="PKG_1_PATH", help="first package to compare"
-        )
-        parser.add_argument(
-            "pkg_2_path", metavar="PKG_2_PATH", help="second package to compare"
-        )
+        parser.add_argument("pkg_1_path", metavar="PKG_1_PATH", help="first package to compare")
+        parser.add_argument("pkg_2_path", metavar="PKG_2_PATH", help="second package to compare")
         return parser
 
     def execute(self, args, app_controller):
@@ -167,8 +156,7 @@ class DiffItemCommand(Command):
     def add_command_parser_to(subparsers):
         parser = subparsers.add_parser(
             "diff-item",
-            help="Show differences between a specified item in two OPC "
-            "package files",
+            help="Show differences between a specified item in two OPC " "package files",
         )
         parser.add_argument("pkg_1_path", metavar="PKG_1_PATH", help="first package")
         parser.add_argument("pkg_2_path", metavar="PKG_2_PATH", help="second package")
