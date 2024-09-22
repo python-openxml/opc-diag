@@ -2,12 +2,35 @@ version = 1
 requires-python = ">=3.9"
 
 [[package]]
+name = "behave"
+version = "1.2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "parse" },
+    { name = "parse-type" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c8/4b/d0a8c23b6c8985e5544ea96d27105a273ea22051317f850c2cdbf2029fe4/behave-1.2.6.tar.gz", hash = "sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86", size = 701696 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/6c/ec9169548b6c4cb877aaa6773408ca08ae2a282805b958dbc163cb19822d/behave-1.2.6-py2.py3-none-any.whl", hash = "sha256:ebda1a6c9e5bfe95c5f9f0a2794e01c7098b3dde86c10a95d8621c5907ff6f1c", size = 136779 },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d8/53/6f443c9a4a8358a93a6792e2acffb9d9d5cb0a5cfd8802644b7b1c9a02e4/colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44", size = 27697 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6", size = 25335 },
+]
+
+[[package]]
+name = "cssselect"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/91/d51202cc41fbfca7fa332f43a5adac4b253962588c7cc5a54824b019081c/cssselect-1.2.0.tar.gz", hash = "sha256:666b19839cfaddb9ce9d36bfe4c969132c647b92fc9088c4e23f786b30f1b3dc", size = 41423 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/06/a9/2da08717a6862c48f1d61ef957a7bba171e7eefa6c0aa0ceb96a140c2a6b/cssselect-1.2.0-py2.py3-none-any.whl", hash = "sha256:da1885f0c10b60c03ed5eccbb6b68d6eff248d91976fcde348f395d54c9fd35e", size = 18687 },
 ]
 
 [[package]]
@@ -152,9 +175,11 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "behave" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "types-lxml" },
 ]
 
 [package.metadata]
@@ -165,9 +190,11 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "behave", specifier = ">=1.2.6" },
     { name = "pyright", specifier = ">=1.1.381" },
     { name = "pytest", specifier = ">=8.3.3" },
     { name = "ruff", specifier = ">=0.6.7" },
+    { name = "types-lxml", specifier = ">=2024.9.16" },
 ]
 
 [[package]]
@@ -177,6 +204,28 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/51/65/50db4dda066951078f0a96cf12f4b9ada6e4b811516bf0262c0f4f7064d4/packaging-24.1.tar.gz", hash = "sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002", size = 148788 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl", hash = "sha256:5b8f2217dbdbd2f7f384c41c628544e6d52f2d0f53c6d0c3ea61aa5d1d7ff124", size = 53985 },
+]
+
+[[package]]
+name = "parse"
+version = "1.20.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/78/d9b09ba24bb36ef8b83b71be547e118d46214735b6dfb39e4bfde0e9b9dd/parse-1.20.2.tar.gz", hash = "sha256:b41d604d16503c79d81af5165155c0b20f6c8d6c559efa66b4b695c3e5a0a0ce", size = 29391 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d0/31/ba45bf0b2aa7898d81cbbfac0e88c267befb59ad91a19e36e1bc5578ddb1/parse-1.20.2-py2.py3-none-any.whl", hash = "sha256:967095588cb802add9177d0c0b6133b5ba33b1ea9007ca800e526f42a85af558", size = 20126 },
+]
+
+[[package]]
+name = "parse-type"
+version = "0.6.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "parse" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/f4/176019f0f1aee502602d02bbe11a63211d7b031a42c0cd305a53765156c2/parse_type-0.6.3.tar.gz", hash = "sha256:8e99d2f52fab2f0f1f3d68ba9d026060140bf0e53680aada0111fb27b2f0e93a", size = 78224 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/82/1c/47b51f5d8e6eefaaf46027ca08586f2d96ccfd4137645d98ef9bcd79ac1a/parse_type-0.6.3-py2.py3-none-any.whl", hash = "sha256:8d94a52e0197fbad63fee8f70df16e6ed689e5e4f105b705c9afa7a30397a5aa", size = 27061 },
 ]
 
 [[package]]
@@ -243,10 +292,63 @@ wheels = [
 ]
 
 [[package]]
+name = "six"
+version = "1.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/71/39/171f1c67cd00715f190ba0b100d606d440a28c93c7714febeca8b79af85e/six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926", size = 34041 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/5a/e7c31adbe875f2abbb91bd84cf2dc52d792b5a01506781dbcf25c91daf11/six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254", size = 11053 },
+]
+
+[[package]]
 name = "tomli"
 version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c0/3f/d7af728f075fb08564c5949a9c95e44352e23dee646869fa104a3b2060a3/tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f", size = 15164 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc", size = 12757 },
+]
+
+[[package]]
+name = "types-beautifulsoup4"
+version = "4.12.0.20240907"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "types-html5lib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/e3/138900d35df4e673935239f0259f4b984f11db32c99ceb4f6819c47a7cfc/types-beautifulsoup4-4.12.0.20240907.tar.gz", hash = "sha256:8d023b86530922070417a1d4c4d91678ab0ff2439b3b2b2cffa3b628b49ebab1", size = 11525 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/78/ce/bea8ea21414287b7fc0ad2fccdb571ad8e2f438d1a1d486d146e906ea041/types_beautifulsoup4-4.12.0.20240907-py3-none-any.whl", hash = "sha256:32f5ac48514b488f15241afdd7d2f73f0baf3c54e874e23b66708503dd288489", size = 12081 },
+]
+
+[[package]]
+name = "types-html5lib"
+version = "1.1.11.20240806"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/ac/a2ca5366f0337ae9c947d611c19116bd56e845976782aaa35247e2a699e8/types-html5lib-1.1.11.20240806.tar.gz", hash = "sha256:8060dc98baf63d6796a765bbbc809fff9f7a383f6e3a9add526f814c086545ef", size = 11269 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/df/ee52df5c2cb7f40f6b9d45fc11cc9256d3e237e04d57e2d797b448815fc7/types_html5lib-1.1.11.20240806-py3-none-any.whl", hash = "sha256:575c4fd84ba8eeeaa8520c7e4c7042b7791f5ec3e9c0a5d5c418124c42d9e7e4", size = 17260 },
+]
+
+[[package]]
+name = "types-lxml"
+version = "2024.9.16"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cssselect" },
+    { name = "types-beautifulsoup4" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/f8/0773e385464af12bc047e38e15bf2c3c9b8602a85b3b6677ba44b8c72e22/types_lxml-2024.9.16.tar.gz", hash = "sha256:1005984c8da5ceb929b5f168a804b8b7217c8e0c6459fa205aa19fd8d75571ab", size = 113822 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e9/a9/3e28019b43f7cc621aa4133cdb72166603dadfc22afd6b54241dcec6b960/types_lxml-2024.9.16-py3-none-any.whl", hash = "sha256:bde062b76e701555aa84c23ba1cc6b22a3855dc1bf6970f48c04f2aab3ba806d", size = 79110 },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.12.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8", size = 85321 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d", size = 37438 },
 ]

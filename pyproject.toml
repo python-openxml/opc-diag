@@ -36,11 +36,77 @@ Documentation = "https://opc-diag.readthedocs.org/en/latest/"
 Homepage = "https://github.com/python-openxml/opc-diag"
 Repository = "https://github.com/python-openxml/opc-diag"
 
+[tool.pyright]
+include = ["src/opcdiag", "tests"]
+pythonPlatform = "All"
+pythonVersion = "3.9"
+reportImportCycles = true
+reportUnnecessaryCast = true
+reportUnnecessaryTypeIgnoreComment = true
+stubPath = "./typings"
+typeCheckingMode = "strict"
+verboseOutput = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # -- exit on any warning not explicitly ignored here --
+    "error",
+
+    # -- pytest-xdist plugin may warn about `looponfailroots` deprecation --
+    "ignore::DeprecationWarning:xdist",
+
+    # -- pytest complains when pytest-xdist is not installed --
+    "ignore:Unknown config option. looponfailroots:pytest.PytestConfigWarning",
+]
+looponfailroots = ["src", "tests"]
+norecursedirs = [
+    ".git",
+    "dist",
+    "docs",
+    "features",
+    "src",
+]
+python_files = ["test_*.py"]
+python_classes = ["Test", "Describe"]
+python_functions = ["it_", "its_", "they_", "and_", "but_"]
+
+[tool.ruff]
+exclude = []
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+ignore = [
+    "COM812",   # -- over-aggressively insists on trailing commas where not desired --
+    "PT001",    # -- wants @pytest.fixture() instead of @pytest.fixture --
+    "PT005",    # -- wants @pytest.fixture() instead of @pytest.fixture --
+]
+select = [
+    "C4",       # -- flake8-comprehensions --
+    "COM",      # -- flake8-commas --
+    "E",        # -- pycodestyle errors --
+    "F",        # -- pyflakes --
+    "I",        # -- isort (imports) --
+    "PLR0402",  # -- Name compared with itself like `foo == foo` --
+    "PT",       # -- flake8-pytest-style --
+    "SIM",      # -- flake8-simplify --
+    "UP015",    # -- redundant `open()` mode parameter (like "r" is default) --
+    "UP018",    # -- Unnecessary {literal_type} call like `str("abc")`. (rewrite as a literal) --
+    "UP032",    # -- Use f-string instead of `.format()` call --
+    "UP034",    # -- Avoid extraneous parentheses --
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["opcdiag"]
+known-local-folder = ["helpers"]
+
 [tool.uv]
 dev-dependencies = [
+    "behave>=1.2.6",
     "pyright>=1.1.381",
     "pytest>=8.3.3",
     "ruff>=0.6.7",
+    "types-lxml>=2024.9.16",
 ]
 
 [tool.uv.sources]

@@ -1,5 +1,7 @@
 """Unit tests for `opcdiag.phys_pkg` module."""
 
+# pyright: reportPrivateUsage=false
+
 import os
 import shutil
 from unittest.mock import call
@@ -9,57 +11,57 @@ import pytest
 
 from opcdiag.phys_pkg import BlobCollection, DirPhysPkg, PhysPkg, ZipPhysPkg
 
-from .unitutil import class_mock, instance_mock, relpath
+from .unitutil import FixtureRequest, Mock, class_mock, instance_mock, relpath
 
 DIRPATH = "DIRPATH"
-DELETEME_DIR = relpath("test_files/deleteme")
-FOOBAR_DIR = relpath("test_files/deleteme/foobar_dir")
-FOOBAR_FILEPATH = relpath("test_files/deleteme/foobar_dir/foobar_file")
-MINI_DIR_PKG_PATH = relpath("test_files/mini_pkg")
-MINI_ZIP_PKG_PATH = relpath("test_files/mini_pkg.zip")
-ROOT_URI = relpath("test_files/mini_pkg")
+DELETEME_DIR = relpath("test-files/deleteme")
+FOOBAR_DIR = relpath("test-files/deleteme/foobar_dir")
+FOOBAR_FILEPATH = relpath("test-files/deleteme/foobar_dir/foobar_file")
+MINI_DIR_PKG_PATH = relpath("test-files/mini_pkg")
+MINI_ZIP_PKG_PATH = relpath("test-files/mini_pkg.zip")
+ROOT_URI = relpath("test-files/mini_pkg")
 
 
 @pytest.fixture
-def blob_(request):
+def blob_(request: FixtureRequest):
     return instance_mock(str, request)
 
 
 @pytest.fixture
-def blob_2_(request):
+def blob_2_(request: FixtureRequest):
     return instance_mock(str, request)
 
 
 @pytest.fixture
-def PhysPkg_(request):
+def PhysPkg_(request: FixtureRequest):
     PhysPkg_ = class_mock("opcdiag.phys_pkg.PhysPkg", request)
     return PhysPkg_
 
 
 @pytest.fixture
-def uri_(request):
+def uri_(request: FixtureRequest):
     return instance_mock(str, request)
 
 
 @pytest.fixture
-def uri_2_(request):
+def uri_2_(request: FixtureRequest):
     return instance_mock(str, request)
 
 
 @pytest.fixture
-def ZipFile_(request, zip_file_):
+def ZipFile_(request: FixtureRequest, zip_file_: Mock):
     ZipFile_ = class_mock("opcdiag.phys_pkg.ZipFile", request)
     ZipFile_.return_value = zip_file_
     return ZipFile_
 
 
 @pytest.fixture
-def zip_file_(request):
+def zip_file_(request: FixtureRequest):
     zip_file_ = instance_mock(ZipFile, request)
     return zip_file_
 
 
-class DescribePhysPkg(object):
+class DescribePhysPkg:
     def it_should_construct_the_appropriate_subclass(self):
         pkg = PhysPkg.read(MINI_ZIP_PKG_PATH)
         assert isinstance(pkg, ZipPhysPkg)
@@ -68,36 +70,38 @@ class DescribePhysPkg(object):
 
     def it_can_iterate_over_pkg_blobs(self):
         # fixture ----------------------
-        blobs = BlobCollection((("foo", "bar"), ("baz", "zam")))
-        phys_pkg = PhysPkg(blobs, None)
+        blobs = BlobCollection((("foo", b"bar"), ("baz", b"zam")))
+        phys_pkg = PhysPkg(blobs, "")
         # exercise ---------------------
-        actual_blobs = dict([item for item in phys_pkg])
+        actual_blobs = dict(item for item in phys_pkg)
         # verify -----------------------
         assert actual_blobs == blobs
 
-    def it_can_write_a_blob_collection_to_a_zip(self, tmpdir):
+    def it_can_write_a_blob_collection_to_a_zip(self, tmpdir: str):
         # fixture ----------------------
         uri, uri_2 = "foo/bar.xml", "foo/_rels/bar.xml.rels"
         blob, blob_2 = b"blob", b"blob_2"
-        blobs_in = {uri: blob, uri_2: blob_2}
+        blobs_in = BlobCollection(((uri, blob), (uri_2, blob_2)))
         zip_path = str(tmpdir.join("foobar.xml"))
         # exercise ---------------------
         PhysPkg.write_to_zip(blobs_in, zip_path)
         # verify -----------------------
         assert os.path.isfile(zip_path)
         zipf = ZipFile(zip_path, "r")
-        blobs_out = dict([(name, zipf.read(name)) for name in zipf.namelist()])
+        blobs_out = {name: zipf.read(name) for name in zipf.namelist()}
         zipf.close()
         assert blobs_out == blobs_in
 
-    def it_should_close_zip_file_after_use(self, ZipFile_, zip_file_):
+    def it_should_close_zip_file_after_use(self, ZipFile_: Mock, zip_file_: Mock):
         # exercise ---------------------
-        PhysPkg.write_to_zip({}, "foobar")
+        PhysPkg.write_to_zip(BlobCollection(()), "foobar")
         # verify -----------------------
         ZipFile_.assert_called_once_with("foobar", "w", ZIP_DEFLATED)
         zip_file_.close.assert_called_with()
 
-    def it_can_write_a_blob_collection_to_a_directory(self, uri_, uri_2_, blob_, blob_2_, PhysPkg_):
+    def it_can_write_a_blob_collection_to_a_directory(
+        self, uri_: Mock, uri_2_: Mock, blob_: Mock, blob_2_: Mock, PhysPkg_: Mock
+    ):
         # fixture ----------------------
         blobs = BlobCollection(((uri_, blob_), (uri_2_, blob_2_)))
         # exercise ---------------------
@@ -134,10 +138,10 @@ class DescribePhysPkg(object):
         os.makedirs(DELETEME_DIR)
         with open(FOOBAR_DIR, "w") as f:
             f.write("foobar file at FOOBAR_DIR path")
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="target path .* is not a directory"):
             PhysPkg._clear_or_make_dir(FOOBAR_DIR)
 
-    def it_can_write_a_blob_to_a_file_in_a_directory(self, tmpdir):
+    def it_can_write_a_blob_to_a_file_in_a_directory(self, tmpdir: str):
         """Note: tests integration with filesystem"""
         # fixture ----------------------
         uri = "foo/bar.xml"
@@ -153,7 +157,7 @@ class DescribePhysPkg(object):
         assert actual_blob == blob
 
 
-class DescribeDirPhysPkg(object):
+class DescribeDirPhysPkg:
     def it_can_construct_from_a_filesystem_package(self):
         """
         Note: integration test, allowing PhysPkg to hit the local filesystem.
@@ -167,7 +171,7 @@ class DescribeDirPhysPkg(object):
         assert isinstance(dir_phys_pkg, DirPhysPkg)
 
 
-class DescribeZipPhysPkg(object):
+class DescribeZipPhysPkg:
     def it_can_construct_from_a_filesystem_package(self):
         """
         Note: integration test, allowing PhysPkg to hit ZipFile on the local
@@ -181,7 +185,7 @@ class DescribeZipPhysPkg(object):
         assert zip_phys_pkg._root_uri == ROOT_URI
         assert isinstance(zip_phys_pkg, ZipPhysPkg)
 
-    def it_should_close_zip_file_after_use(self, ZipFile_, zip_file_):
+    def it_should_close_zip_file_after_use(self, ZipFile_: Mock, zip_file_: Mock):
         # exercise ---------------------
         PhysPkg.read(MINI_ZIP_PKG_PATH)
         # verify -----------------------

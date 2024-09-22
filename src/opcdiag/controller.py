@@ -9,15 +9,14 @@ from opcdiag.view import OpcView
 _CONTENT_TYPES_URI = "[Content_Types].xml"
 
 
-class OpcController(object):
-    """
-    Mediate between the command-line interface and the package model
-    entities, orchestrating the execution of user commands by creating
-    entity objects, delegating work to them, and using the appropriate view
-    object to format the results to be displayed.
+class OpcController:
+    """Mediate between the command-line interface and the package model entities.
+
+    Orchestrates the execution of user commands by creating entity objects, delegating work to
+    them, and using the appropriate view object to format the results to be displayed.
     """
 
-    def browse(self, pkg_path, uri_tail):
+    def browse(self, pkg_path: str, uri_tail: str):
         """
         Display pretty-printed XML contained in package item with URI ending
         with *uri_tail* in package at *pkg_path*.
@@ -27,7 +26,7 @@ class OpcController(object):
         item_presenter = ItemPresenter(pkg_item)
         OpcView.pkg_item(item_presenter)
 
-    def diff_item(self, package_1_path, package_2_path, uri_tail):
+    def diff_item(self, package_1_path: str, package_2_path: str, uri_tail: str):
         """
         Display the meaningful differences between the item identified by
         *uri_tail* in the package at *package_1_path* and its counterpart in
@@ -40,7 +39,7 @@ class OpcController(object):
         diff = DiffPresenter.named_item_diff(package_1, package_2, uri_tail)
         OpcView.item_diff(diff)
 
-    def diff_pkg(self, package_1_path, package_2_path):
+    def diff_pkg(self, package_1_path: str, package_2_path: str):
         """
         Display the meaningful differences between the packages at
         *package_1_path* and *package_2_path*. Each path can be either a
@@ -54,7 +53,7 @@ class OpcController(object):
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_1, package_2)
         OpcView.package_diff(content_types_diff, rels_diffs, xml_part_diffs)
 
-    def extract_package(self, package_path, extract_dirpath):
+    def extract_package(self, package_path: str, extract_dirpath: str):
         """
         Extract the contents of the package at *package_path* to individual
         files in a directory at *extract_dirpath*.
@@ -63,7 +62,7 @@ class OpcController(object):
         package.prettify_xml()
         package.save_to_dir(extract_dirpath)
 
-    def repackage(self, package_path, new_package_path):
+    def repackage(self, package_path: str, new_package_path: str):
         """
         Write the contents of the package found at *package_path* to a new
         zip package at *new_package_path*.
@@ -71,7 +70,7 @@ class OpcController(object):
         package = Package.read(package_path)
         package.save(new_package_path)
 
-    def substitute(self, uri_tail, src_pkg_path, tgt_pkg_path, new_pkg_path):
+    def substitute(self, uri_tail: str, src_pkg_path: str, tgt_pkg_path: str, new_pkg_path: str):
         """
         Substitute the package item identified by *uri_tail* from the package
         at *src_pkg_path* into the package at *tgt_pkg_path* and save the

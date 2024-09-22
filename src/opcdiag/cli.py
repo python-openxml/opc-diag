@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+# pyright: reportPrivateUsage=false
+
 from __future__ import annotations
 
+import abc
 import argparse
 import os
 import sys
@@ -9,33 +12,32 @@ import sys
 from opcdiag.controller import OpcController
 
 
-class CommandController(object):
-    """
-    Orchestrates processing of commands in the form of a list of arguments
-    (*argv*). A new instance is created using the :meth:`new` staticmethod.
-    Once instantiated, it can process any number of commands by calling its
-    :meth:`execute` method, once for each command.
+class CommandController:
+    """Orchestrates processing of commands in the form of a list of arguments (*argv*).
+
+    A new instance is created using the :meth:`new` staticmethod. Once instantiated, it can
+    process any number of commands by calling its :meth:`execute` method, once for each command.
     """
 
-    def __init__(self, parser, app_controller):
+    def __init__(self, parser: argparse.ArgumentParser, app_controller: OpcController):
         self._parser = parser
         self._app_controller = app_controller
 
     @staticmethod
     def new():
-        """
-        Return a newly created instance of |CommandController| fitted with a
-        fully configured parser and an instance of the application controller
-        to dispatch parsed commands to.
+        """A newly created instance of |CommandController|.
+
+        The instance is fitted with a fully configured parser and an instance of the application
+        controller to dispatch parsed commands to.
         """
         parser = Command.parser()
         app_controller = OpcController()
         return CommandController(parser, app_controller)
 
-    def execute(self, argv=None):
-        """
-        Interpret the command indicated by the arguments in *argv* and
-        execute it. If *argv* is |None|, ``sys.argv`` is used.
+    def execute(self, argv: list[str] | None = None):
+        """Interpret the command indicated by the arguments in *argv* and execute it.
+
+        If *argv* is |None|, ``sys.argv`` is used.
         """
         # print help and exit if no args
         arg_count = len(argv if argv else sys.argv)
@@ -49,14 +51,18 @@ class CommandController(object):
         command.execute(args, self._app_controller)
 
 
-class Command(object):
-    """
-    Base class for sub-commands
-    """
+class Command(abc.ABC):
+    """Base class for sub-commands."""
 
-    def __init__(self, parser):
+    def __init__(self, parser: argparse.ArgumentParser):
         super(Command, self).__init__()
         self._parser = parser
+
+    @staticmethod
+    @abc.abstractmethod
+    def add_command_parser_to(
+        subparsers: argparse._SubParsersAction[argparse.ArgumentParser],
+    ) -> argparse.ArgumentParser: ...
 
     @staticmethod
     def parser():
@@ -75,28 +81,18 @@ class Command(object):
             command_parser.set_defaults(command=command)
         return parser
 
-    def execute(self, args, app_controller):
-        """
-        Abstract method, each command must implement
-        """
-        msg = "execute() must be implemented by all subclasses of Command"
-        raise NotImplementedError(msg)
+    @abc.abstractmethod
+    def execute(self, args: argparse.Namespace, app_controller: OpcController) -> None: ...
 
-    def validate(self, args):
-        """
-        Abstract method, each command must implement; just pass if there's
-        nothing to validate.
-        """
-        msg = "validate() must be implemented by all subclasses of Command"
-        raise NotImplementedError(msg)
+    @abc.abstractmethod
+    def validate(self, args: argparse.Namespace) -> None: ...
 
 
 class BrowseCommand(Command):
-    def __init__(self, parser):
-        super(BrowseCommand, self).__init__(parser)
+    """Implements the `browse` sub-command."""
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "browse", help="List pretty-printed XML for a specified package part"
         )
@@ -108,10 +104,10 @@ class BrowseCommand(Command):
         )
         return parser
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.browse(args.pkg_path, args.filename)
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         try:
             msg = "PKG_PATH '%s' does not exist" % args.pkg_path
             assert os.path.exists(args.pkg_path), msg
@@ -120,11 +116,10 @@ class BrowseCommand(Command):
 
 
 class DiffCommand(Command):
-    def __init__(self, parser):
-        super(DiffCommand, self).__init__(parser)
+    """Implements the `diff` sub-command."""
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "diff", help="Show differences between two OPC package files"
         )
@@ -132,10 +127,10 @@ class DiffCommand(Command):
         parser.add_argument("pkg_2_path", metavar="PKG_2_PATH", help="second package to compare")
         return parser
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.diff_pkg(args.pkg_1_path, args.pkg_2_path)
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         paths_that_should_exist = (
             (args.pkg_1_path, "PKG_1_PATH"),
             (args.pkg_2_path, "PKG_2_PATH"),
@@ -149,11 +144,10 @@ class DiffCommand(Command):
 
 
 class DiffItemCommand(Command):
-    def __init__(self, parser):
-        super(DiffItemCommand, self).__init__(parser)
+    """Implements the `diff-item` sub-command."""
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "diff-item",
             help="Show differences between a specified item in two OPC " "package files",
@@ -167,10 +161,10 @@ class DiffItemCommand(Command):
         )
         return parser
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.diff_item(args.pkg_1_path, args.pkg_2_path, args.filename)
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         paths_that_should_exist = (
             (args.pkg_1_path, "PKG_1_PATH"),
             (args.pkg_2_path, "PKG_2_PATH"),
@@ -184,11 +178,11 @@ class DiffItemCommand(Command):
 
 
 class ExtractCommand(Command):
-    def __init__(self, parser):
+    def __init__(self, parser: argparse.ArgumentParser):
         super(ExtractCommand, self).__init__(parser)
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "extract", help="Extract all items in a package to a directory"
         )
@@ -200,23 +194,23 @@ class ExtractCommand(Command):
         )
         return parser
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         try:
             msg = "PKG_PATH '%s' does not exist" % args.pkg_path
             assert os.path.exists(args.pkg_path), msg
         except AssertionError as e:
             self._parser.error(str(e))
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.extract_package(args.pkg_path, args.dirpath)
 
 
 class RepackageCommand(Command):
-    def __init__(self, parser):
+    def __init__(self, parser: argparse.ArgumentParser):
         super(RepackageCommand, self).__init__(parser)
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "repackage", help="Build an OPC package from the contents of a directory"
         )
@@ -232,23 +226,23 @@ class RepackageCommand(Command):
         )
         return parser
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         try:
             msg = "DIRPATH '%s' not found or not a directory" % args.dirpath
             assert os.path.isdir(args.dirpath), msg
         except AssertionError as e:
             self._parser.error(str(e))
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.repackage(args.dirpath, args.new_package)
 
 
 class SubstituteCommand(Command):
-    def __init__(self, parser):
+    def __init__(self, parser: argparse.ArgumentParser):
         super(SubstituteCommand, self).__init__(parser)
 
     @staticmethod
-    def add_command_parser_to(subparsers):
+    def add_command_parser_to(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]):
         parser = subparsers.add_parser(
             "substitute", help="Substitute a part from one package into another"
         )
@@ -274,7 +268,7 @@ class SubstituteCommand(Command):
         )
         return parser
 
-    def validate(self, args):
+    def validate(self, args: argparse.Namespace):
         paths_that_should_exist = (
             (args.src_pkg_path, "SRC_PKG_PATH"),
             (args.tgt_pkg_path, "TGT_PKG_PATH"),
@@ -286,12 +280,12 @@ class SubstituteCommand(Command):
         except AssertionError as e:
             self._parser.error(str(e))
 
-    def execute(self, args, app_controller):
+    def execute(self, args: argparse.Namespace, app_controller: OpcController):
         app_controller.substitute(
             args.filename, args.src_pkg_path, args.tgt_pkg_path, args.result_pkg_path
         )
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None):
     command_controller = CommandController.new()
     command_controller.execute(argv)

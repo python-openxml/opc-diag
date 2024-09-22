@@ -1,5 +1,7 @@
 """Unit tests for `opcdiag.presenter` module."""
 
+# pyright: reportPrivateUsage=false
+
 from __future__ import unicode_literals
 
 from unittest.mock import PropertyMock, call
@@ -11,6 +13,8 @@ from opcdiag.model import Package, PkgItem
 from opcdiag.presenter import DiffPresenter, ItemPresenter, diff
 
 from .unitutil import (
+    FixtureRequest,
+    Mock,
     class_mock,
     function_mock,
     instance_mock,
@@ -21,193 +25,9 @@ from .unitutil import (
 URI_TAIL = "uri_tail"
 
 
-@pytest.fixture
-def binary_part_(request):
-    binary_part_ = instance_mock(PkgItem, request)
-    binary_part_.is_content_types = False
-    binary_part_.is_rels_item = False
-    binary_part_.is_xml_part = False
-    return binary_part_
+class Describe_diff:
+    """Unit-test suite for `opcdiag.presenter.diff()` function."""
 
-
-@pytest.fixture
-def content_types_item_(request):
-    content_types_item_ = instance_mock(PkgItem, request)
-    content_types_item_.is_content_types = True
-    content_types_item_.is_rels_item = False
-    content_types_item_.is_xml_part = False
-    return content_types_item_
-
-
-@pytest.fixture
-def DiffPresenter_(request, pkg_item_diffs_):
-    DiffPresenter_ = class_mock("opcdiag.presenter.DiffPresenter", request)
-    DiffPresenter_._pkg_item_diff.side_effect = pkg_item_diffs_
-    DiffPresenter_._pkg_item_diffs.return_value = pkg_item_diffs_
-    return DiffPresenter_
-
-
-@pytest.fixture
-def diff_(request, diff_text_):
-    diff_ = function_mock("opcdiag.presenter.diff", request)
-    diff_.return_value = diff_text_
-    return diff_
-
-
-@pytest.fixture
-def diff_text_(request):
-    return loose_mock(request)
-
-
-@pytest.fixture
-def filename_(request):
-    return loose_mock(request)
-
-
-@pytest.fixture
-def filename_2_(request):
-    return loose_mock(request)
-
-
-@pytest.fixture
-def ItemPresenter_(request, item_presenter_, item_presenter_2_):
-    ItemPresenter_ = class_mock("opcdiag.presenter.ItemPresenter", request)
-    ItemPresenter_.side_effect = (item_presenter_, item_presenter_2_)
-    return ItemPresenter_
-
-
-@pytest.fixture
-def ItemPresenter_xml_(request):
-    return property_mock("opcdiag.presenter.ItemPresenter.xml", request)
-
-
-@pytest.fixture
-def item_presenter_(request, filename_, item_presenter_text_):
-    item_presenter_ = instance_mock(ItemPresenter, request)
-    item_presenter_.filename = filename_
-    type(item_presenter_).text = item_presenter_text_
-    return item_presenter_
-
-
-@pytest.fixture
-def item_presenter_2_(request, filename_2_, item_presenter_2_text_):
-    item_presenter_2_ = instance_mock(ItemPresenter, request)
-    item_presenter_2_.filename = filename_2_
-    type(item_presenter_2_).text = item_presenter_2_text_
-    return item_presenter_2_
-
-
-@pytest.fixture
-def item_presenter_text_(request, text_):
-    return PropertyMock(name=request.fixturename, return_value=text_)
-
-
-@pytest.fixture
-def item_presenter_2_text_(request, text_2_):
-    return PropertyMock(name=request.fixturename, return_value=text_2_)
-
-
-@pytest.fixture
-def package_(request, pkg_item_, rels_items_, xml_parts_):
-    package_ = instance_mock(Package, request)
-    package_.find_item_by_uri_tail.return_value = pkg_item_
-    package_.rels_items = rels_items_
-    package_.xml_parts = xml_parts_
-    return package_
-
-
-@pytest.fixture
-def package_2_(request, pkg_item_, pkg_item_2_):
-    package_2_ = instance_mock(Package, request)
-    package_2_.find_item_by_uri_tail.side_effect = (pkg_item_2_, pkg_item_)
-    return package_2_
-
-
-@pytest.fixture
-def pkg_item_(request, uri_):
-    pkg_item_ = instance_mock(PkgItem, request)
-    pkg_item_.uri = uri_
-    return pkg_item_
-
-
-@pytest.fixture
-def pkg_item_2_(request, uri_2_):
-    pkg_item_2_ = instance_mock(PkgItem, request)
-    pkg_item_2_.uri = uri_2_
-    return pkg_item_2_
-
-
-@pytest.fixture
-def pkg_items_(request, pkg_item_, pkg_item_2_):
-    return [pkg_item_, pkg_item_2_]
-
-
-@pytest.fixture
-def pkg_item_diff_(request):
-    return "diff_"
-
-
-@pytest.fixture
-def pkg_item_diff_2_(request):
-    return "diff_2_"
-
-
-@pytest.fixture
-def pkg_item_diffs_(request, pkg_item_diff_, pkg_item_diff_2_):
-    return [pkg_item_diff_, pkg_item_diff_2_]
-
-
-@pytest.fixture
-def rels_item_(request):
-    rels_item_ = instance_mock(PkgItem, request)
-    rels_item_.is_content_types = False
-    rels_item_.is_rels_item = True
-    rels_item_.is_xml_part = False
-    return rels_item_
-
-
-@pytest.fixture
-def rels_items_(request):
-    rels_items_ = instance_mock(list, request)
-    return rels_items_
-
-
-@pytest.fixture
-def text_(request):
-    return "text_"
-
-
-@pytest.fixture
-def text_2_(request):
-    return "text_2_"
-
-
-@pytest.fixture
-def uri_(request):
-    return "/word/document.xml"
-
-
-@pytest.fixture
-def uri_2_(request):
-    return "/_rels/.rels"
-
-
-@pytest.fixture
-def xml_parts_(request):
-    xml_parts_ = instance_mock(list, request)
-    return xml_parts_
-
-
-@pytest.fixture
-def xml_part_(request):
-    xml_part_ = instance_mock(PkgItem, request)
-    xml_part_.is_content_types = False
-    xml_part_.is_rels_item = False
-    xml_part_.is_xml_part = True
-    return xml_part_
-
-
-class DescribeDiff(object):
     def it_calculates_a_diff_between_two_texts(self):
         """Integrates with difflib"""
         # fixture ----------------------
@@ -237,9 +57,16 @@ class DescribeDiff(object):
         assert diff_text == expected_diff_text
 
 
-class DescribeDiffPresenter(object):
+class DescribeDiffPresenter:
+    """Unit-test suite for `opcdiag.presenter.DiffPresenter` objects."""
+
     def it_can_diff_a_named_item_between_two_packages(
-        self, package_, package_2_, DiffPresenter_, pkg_item_, pkg_item_2_
+        self,
+        package_: Mock,
+        package_2_: Mock,
+        DiffPresenter_: Mock,
+        pkg_item_: Mock,
+        pkg_item_2_: Mock,
     ):
         # exercise ---------------------
         DiffPresenter.named_item_diff(package_, package_2_, URI_TAIL)
@@ -250,17 +77,17 @@ class DescribeDiffPresenter(object):
 
     def it_can_diff_two_package_items(
         self,
-        pkg_item_,
-        pkg_item_2_,
-        ItemPresenter_,
-        item_presenter_text_,
-        item_presenter_2_text_,
-        diff_,
-        text_,
-        text_2_,
-        filename_,
-        filename_2_,
-        diff_text_,
+        pkg_item_: Mock,
+        pkg_item_2_: Mock,
+        ItemPresenter_: Mock,
+        item_presenter_text_: Mock,
+        item_presenter_2_text_: Mock,
+        diff_: Mock,
+        text_: Mock,
+        text_2_: Mock,
+        filename_: Mock,
+        filename_2_: Mock,
+        diff_text_: Mock,
     ):
         # exercise ---------------------
         item_diff = DiffPresenter._pkg_item_diff(pkg_item_, pkg_item_2_)
@@ -274,7 +101,12 @@ class DescribeDiffPresenter(object):
         assert item_diff is diff_text_
 
     def it_can_gather_rels_diffs_between_two_packages(
-        self, package_, package_2_, DiffPresenter_, rels_items_, pkg_item_diffs_
+        self,
+        package_: Mock,
+        package_2_: Mock,
+        DiffPresenter_: Mock,
+        rels_items_: Mock,
+        pkg_item_diffs_: Mock,
     ):
         # exercise ---------------------
         rels_diffs = DiffPresenter.rels_diffs(package_, package_2_)
@@ -283,7 +115,12 @@ class DescribeDiffPresenter(object):
         assert rels_diffs is pkg_item_diffs_
 
     def it_can_gather_xml_part_diffs_between_two_packages(
-        self, package_, package_2_, DiffPresenter_, xml_parts_, pkg_item_diffs_
+        self,
+        package_: Mock,
+        package_2_: Mock,
+        DiffPresenter_: Mock,
+        xml_parts_: Mock,
+        pkg_item_diffs_: Mock,
     ):
         # exercise ---------------------
         xml_part_diffs = DiffPresenter.xml_part_diffs(package_, package_2_)
@@ -293,15 +130,15 @@ class DescribeDiffPresenter(object):
 
     def it_can_diff_a_list_of_pkg_items_against_another_package(
         self,
-        pkg_items_,
-        package_2_,
-        uri_,
-        uri_2_,
-        DiffPresenter_,
-        pkg_item_,
-        pkg_item_2_,
-        pkg_item_diff_,
-        pkg_item_diff_2_,
+        pkg_items_: Mock,
+        package_2_: Mock,
+        uri_: Mock,
+        uri_2_: Mock,
+        DiffPresenter_: Mock,
+        pkg_item_: Mock,
+        pkg_item_2_: Mock,
+        pkg_item_diff_: Mock,
+        pkg_item_diff_2_: Mock,
     ):
         # exercise ---------------------
         diffs = DiffPresenter._pkg_item_diffs(pkg_items_, package_2_)
@@ -317,7 +154,8 @@ class DescribeDiffPresenter(object):
         assert diffs == [pkg_item_diff_, pkg_item_diff_2_]
 
 
-class DescribeItemPresenter(object):
+class DescribeItemPresenter:
+    """Unit-test suite for `opcdiag.presenter.ItemPresenter` objects."""
 
     FOOBAR_XML = (
         "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
@@ -333,7 +171,7 @@ class DescribeItemPresenter(object):
         return etree.fromstring(foobar_xml_bytes)
 
     def it_constructs_subclass_based_on_item_type(
-        self, content_types_item_, rels_item_, xml_part_, binary_part_
+        self, content_types_item_: Mock, rels_item_: Mock, xml_part_: Mock, binary_part_: Mock
     ):
         cases = (
             (content_types_item_, "ContentTypesPresenter"),
@@ -345,25 +183,29 @@ class DescribeItemPresenter(object):
             item_presenter = ItemPresenter(pkg_item)
             assert type(item_presenter).__name__ == expected_type_name
 
-    def it_provides_a_normalized_path_string_for_the_pkg_item(self, pkg_item_):
+    def it_provides_a_normalized_path_string_for_the_pkg_item(self, pkg_item_: Mock):
         pkg_item_.path = "foo\\bar"
         item_presenter = ItemPresenter(pkg_item_)
         assert item_presenter.filename == "foo/bar"
 
-    def it_should_raise_if_text_property_not_implemented_on_subclass(self, binary_part_):
+    def it_should_raise_if_text_property_not_implemented_on_subclass(self, binary_part_: Mock):
         item_presenter = object.__new__(ItemPresenter)
         with pytest.raises(NotImplementedError):
             item_presenter.text
 
-    def it_can_pretty_format_the_xml_of_its_item(self, content_types_item_, foobar_elm_):
+    def it_can_pretty_format_the_xml_of_its_item(
+        self, content_types_item_: Mock, foobar_elm_: Mock
+    ):
         """Note: tests integration with lxml.etree"""
         content_types_item_.element = foobar_elm_
         item_presenter = ItemPresenter(content_types_item_)
         assert item_presenter.xml == self.FOOBAR_XML
 
 
-class DescribeContentTypesPresenter(object):
-    def it_can_format_cti_xml(self, ItemPresenter_xml_, content_types_item_):
+class DescribeContentTypesPresenter:
+    """Unit-test suite for `opcdiag.presenter.ContentTypesPresenter` objects."""
+
+    def it_can_format_cti_xml(self, ItemPresenter_xml_: Mock, content_types_item_: Mock):
         # fixture ----------------------
         ItemPresenter_xml_.return_value = (
             "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
@@ -388,8 +230,10 @@ class DescribeContentTypesPresenter(object):
         assert content_types_presenter.text == expected_text
 
 
-class DescribeRelsItemPresenter(object):
-    def it_can_format_rels_xml(self, ItemPresenter_xml_, rels_item_):
+class DescribeRelsItemPresenter:
+    """Unit-test suite for `opcdiag.presenter.RelsItemPresenter` objects."""
+
+    def it_can_format_rels_xml(self, ItemPresenter_xml_: Mock, rels_item_: Mock):
         # fixture ----------------------
         ItemPresenter_xml_.return_value = (
             "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n"
@@ -412,8 +256,10 @@ class DescribeRelsItemPresenter(object):
         assert rels_presenter.text == expected_text
 
 
-class DescribeXmlPartPresenter(object):
-    def it_can_format_part_xml(self, ItemPresenter_xml_, xml_part_):
+class DescribeXmlPartPresenter:
+    """Unit-test suite for `opcdiag.presenter.XmlPartPresenter` objects."""
+
+    def it_can_format_part_xml(self, ItemPresenter_xml_: Mock, xml_part_: Mock):
         # fixture ----------------------
         cases = (
             # root w/no attrs is unchanged -----------------
@@ -442,3 +288,194 @@ class DescribeXmlPartPresenter(object):
             ItemPresenter_xml_.return_value = part_xml
             part_presenter = ItemPresenter(xml_part_)
             assert part_presenter.text == expected_xml
+
+
+# ================================================================================================
+# MODULE-LEVEL FIXTURES
+# ================================================================================================
+
+
+@pytest.fixture
+def binary_part_(request: FixtureRequest):
+    binary_part_ = instance_mock(PkgItem, request)
+    binary_part_.is_content_types = False
+    binary_part_.is_rels_item = False
+    binary_part_.is_xml_part = False
+    return binary_part_
+
+
+@pytest.fixture
+def content_types_item_(request: FixtureRequest):
+    content_types_item_ = instance_mock(PkgItem, request)
+    content_types_item_.is_content_types = True
+    content_types_item_.is_rels_item = False
+    content_types_item_.is_xml_part = False
+    return content_types_item_
+
+
+@pytest.fixture
+def DiffPresenter_(request: FixtureRequest, pkg_item_diffs_: Mock):
+    DiffPresenter_ = class_mock("opcdiag.presenter.DiffPresenter", request)
+    DiffPresenter_._pkg_item_diff.side_effect = pkg_item_diffs_
+    DiffPresenter_._pkg_item_diffs.return_value = pkg_item_diffs_
+    return DiffPresenter_
+
+
+@pytest.fixture
+def diff_(request: FixtureRequest, diff_text_: Mock):
+    diff_ = function_mock("opcdiag.presenter.diff", request)
+    diff_.return_value = diff_text_
+    return diff_
+
+
+@pytest.fixture
+def diff_text_(request: FixtureRequest):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def filename_(request: FixtureRequest):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def filename_2_(request: FixtureRequest):
+    return loose_mock(request)
+
+
+@pytest.fixture
+def ItemPresenter_(request: FixtureRequest, item_presenter_: Mock, item_presenter_2_: Mock):
+    ItemPresenter_ = class_mock("opcdiag.presenter.ItemPresenter", request)
+    ItemPresenter_.side_effect = (item_presenter_, item_presenter_2_)
+    return ItemPresenter_
+
+
+@pytest.fixture
+def ItemPresenter_xml_(request: FixtureRequest):
+    return property_mock("opcdiag.presenter.ItemPresenter.xml", request)
+
+
+@pytest.fixture
+def item_presenter_(request: FixtureRequest, filename_: Mock, item_presenter_text_: Mock):
+    item_presenter_ = instance_mock(ItemPresenter, request)
+    item_presenter_.filename = filename_
+    type(item_presenter_).text = item_presenter_text_
+    return item_presenter_
+
+
+@pytest.fixture
+def item_presenter_2_(request: FixtureRequest, filename_2_: Mock, item_presenter_2_text_: Mock):
+    item_presenter_2_ = instance_mock(ItemPresenter, request)
+    item_presenter_2_.filename = filename_2_
+    type(item_presenter_2_).text = item_presenter_2_text_
+    return item_presenter_2_
+
+
+@pytest.fixture
+def item_presenter_text_(request: FixtureRequest, text_: Mock):
+    return PropertyMock(name=request.fixturename, return_value=text_)
+
+
+@pytest.fixture
+def item_presenter_2_text_(request: FixtureRequest, text_2_: Mock):
+    return PropertyMock(name=request.fixturename, return_value=text_2_)
+
+
+@pytest.fixture
+def package_(request: FixtureRequest, pkg_item_: Mock, rels_items_: Mock, xml_parts_: Mock):
+    package_ = instance_mock(Package, request)
+    package_.find_item_by_uri_tail.return_value = pkg_item_
+    package_.rels_items = rels_items_
+    package_.xml_parts = xml_parts_
+    return package_
+
+
+@pytest.fixture
+def package_2_(request: FixtureRequest, pkg_item_: Mock, pkg_item_2_: Mock):
+    package_2_ = instance_mock(Package, request)
+    package_2_.find_item_by_uri_tail.side_effect = (pkg_item_2_, pkg_item_)
+    return package_2_
+
+
+@pytest.fixture
+def pkg_item_(request: FixtureRequest, uri_: Mock):
+    pkg_item_ = instance_mock(PkgItem, request)
+    pkg_item_.uri = uri_
+    return pkg_item_
+
+
+@pytest.fixture
+def pkg_item_2_(request: FixtureRequest, uri_2_: Mock):
+    pkg_item_2_ = instance_mock(PkgItem, request)
+    pkg_item_2_.uri = uri_2_
+    return pkg_item_2_
+
+
+@pytest.fixture
+def pkg_items_(request: FixtureRequest, pkg_item_: Mock, pkg_item_2_: Mock):
+    return [pkg_item_, pkg_item_2_]
+
+
+@pytest.fixture
+def pkg_item_diff_(request: FixtureRequest):
+    return "diff_"
+
+
+@pytest.fixture
+def pkg_item_diff_2_(request: FixtureRequest):
+    return "diff_2_"
+
+
+@pytest.fixture
+def pkg_item_diffs_(request: FixtureRequest, pkg_item_diff_: Mock, pkg_item_diff_2_: Mock):
+    return [pkg_item_diff_, pkg_item_diff_2_]
+
+
+@pytest.fixture
+def rels_item_(request: FixtureRequest):
+    rels_item_ = instance_mock(PkgItem, request)
+    rels_item_.is_content_types = False
+    rels_item_.is_rels_item = True
+    rels_item_.is_xml_part = False
+    return rels_item_
+
+
+@pytest.fixture
+def rels_items_(request: FixtureRequest):
+    rels_items_ = instance_mock(list, request)
+    return rels_items_
+
+
+@pytest.fixture
+def text_(request: FixtureRequest):
+    return "text_"
+
+
+@pytest.fixture
+def text_2_(request: FixtureRequest):
+    return "text_2_"
+
+
+@pytest.fixture
+def uri_(request: FixtureRequest):
+    return "/word/document.xml"
+
+
+@pytest.fixture
+def uri_2_(request: FixtureRequest):
+    return "/_rels/.rels"
+
+
+@pytest.fixture
+def xml_parts_(request: FixtureRequest):
+    xml_parts_ = instance_mock(list, request)
+    return xml_parts_
+
+
+@pytest.fixture
+def xml_part_(request: FixtureRequest):
+    xml_part_ = instance_mock(PkgItem, request)
+    xml_part_.is_content_types = False
+    xml_part_.is_rels_item = False
+    xml_part_.is_xml_part = True
+    return xml_part_
