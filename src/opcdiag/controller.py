@@ -17,10 +17,7 @@ class OpcController:
     """
 
     def browse(self, pkg_path: str, uri_tail: str):
-        """
-        Display pretty-printed XML contained in package item with URI ending
-        with *uri_tail* in package at *pkg_path*.
-        """
+        """Display pretty-printed XML of part with *uri_tail* in package at `pkg_path`."""
         pkg = Package.read(pkg_path)
         pkg_item = pkg.find_item_by_uri_tail(uri_tail)
         item_presenter = ItemPresenter(pkg_item)

@@ -15,9 +15,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
+import tomli
 
-from opcdiag import __version__
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- General configuration --------------------------------------------------
 
@@ -46,7 +46,9 @@ copyright = "2013, Steve Canny"
 # built documents.
 #
 # The short X.Y version.
-version = __version__
+with open("../pyproject.toml", "rb") as f:
+    toml = tomli.load(f)
+version = toml["project"]["version"]
 # The full version, including alpha/beta/rc tags.
 release = version
 

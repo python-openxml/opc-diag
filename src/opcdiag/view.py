@@ -15,10 +15,7 @@ def _write(text: str):
 
 
 class OpcView:
-    """
-    Interfaces to the console by formatting command results for proper
-    display.
-    """
+    """Interfaces to the console by formatting command results for proper display."""
 
     @staticmethod
     def item_diff(diff: str):
@@ -43,12 +40,9 @@ class OpcView:
         _write(text)
 
     @staticmethod
-    def pkg_item(pkg_item: ItemPresenter):
-        """
-        Display the text value of pkg_item, adding a linefeed at the end to
-        make the terminal happy.
-        """
-        text = "%s\n" % pkg_item.text
+    def pkg_item(presenter: ItemPresenter):
+        """Display the text value of pkg_item, adding a linefeed at end to make terminal happy."""
+        text = "%s\n" % presenter.text
         _write(text)
 
     @staticmethod

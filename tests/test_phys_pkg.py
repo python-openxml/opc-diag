@@ -116,14 +116,14 @@ class DescribePhysPkg:
         """Note: tests integration with filesystem"""
         # case: created if does not exist
         # ------------------------------
-        if os.path.exists(DELETEME_DIR):
+        if os.path.exists(DELETEME_DIR):  # pragma: no cover
             shutil.rmtree(DELETEME_DIR)
         PhysPkg._clear_or_make_dir(FOOBAR_DIR)
         assert os.path.exists(FOOBAR_DIR)
 
         # case: re-created if exists
         # ------------------------------
-        if os.path.exists(DELETEME_DIR):
+        if os.path.exists(DELETEME_DIR):  # pragma: no cover
             shutil.rmtree(DELETEME_DIR)
         os.makedirs(FOOBAR_DIR)
         with open(FOOBAR_FILEPATH, "w") as f:

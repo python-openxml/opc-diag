@@ -162,7 +162,11 @@ class PkgItem:
     @property
     def element(self) -> etree._Element:
         """Return an lxml.etree Element obtained by parsing the XML in this item's blob."""
-        return etree.fromstring(self._blob)
+        element = etree.fromstring(self._blob)
+        # -- this handles some odd cases where the XML was hand edited and some whitespace
+        # -- tail-text was left.
+        etree.indent(element)
+        return element
 
     @property
     def is_content_types(self) -> bool:

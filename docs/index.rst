@@ -4,7 +4,7 @@ opc-diag
 
 Release v\ |version| (:ref:`Installation <install>`)
 
-.. include:: ../README.rst
+.. include:: ../README.md
 
 
 User Guide
