@@ -162,6 +162,10 @@ into its parts and perhaps to put it back together again later. The ``extract``
 subcommand provides the first half of this process, complemented by the
 ``repackage`` subcommand discussed next.
 
+This is especially useful when you have a pretty good idea how some particular aspect of
+the XML schema works but want to experiment with manual updates directly the the XML to
+see what product behaviors those produce in, say, Microsoft Word or LibreOffice.
+
 The command:
 
 .. code-block:: bash
@@ -175,14 +179,8 @@ workbook will be found at ``example_dir/xl/workbook.xml`` and the thumbnail
 image that may appear in a desktop icon for the file is found at
 ``example_dir/docProps/thumbnail.jpeg``.
 
-Users on a \*nix operating system can accomplish much the same thing with the
-command:
-
-.. code-block:: bash
-
-    $ unzip example.xlsx -d example_dir
-
-but I thought it might be handy from time to time to have it built into |opcd|.
+Importantly, all the files are formatted for human readability. This is particularly
+important when you plan to edit the XML by hand.
 
 
 Use Case 5: ``repackage`` a package directory into a file

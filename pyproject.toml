@@ -1,0 +1,127 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opc-diag"
+version = "1.1.0"
+authors = [{name = "Steve Canny", email = "stcanny@gmail.com"}]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Office Suites",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "lxml>=4",
+    "opc-diag",
+]
+description = "A command-line application for exploring Microsoft Word, Excel, and PowerPoint files from Office 2007 and later."
+keywords = ["docx", "pptx", "xlsx", "office", "openxml", "word", "powerpoint", "excel"]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.9"
+
+[project.scripts]
+opc = "opcdiag.cli:main"
+
+[project.urls]
+Changelog = "https://github.com//opc-diag/blob/master/HISTORY.rst"
+Documentation = "https://opc-diag.readthedocs.org/en/latest/"
+Homepage = "https://github.com/python-openxml/opc-diag"
+Repository = "https://github.com/python-openxml/opc-diag"
+
+[tool.pyright]
+include = ["src/opcdiag", "tests"]
+pythonPlatform = "All"
+pythonVersion = "3.9"
+reportImportCycles = true
+reportUnnecessaryCast = true
+reportUnnecessaryTypeIgnoreComment = true
+stubPath = "./typings"
+typeCheckingMode = "strict"
+verboseOutput = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # -- exit on any warning not explicitly ignored here --
+    "error",
+
+    # -- pytest-xdist plugin may warn about `looponfailroots` deprecation --
+    "ignore::DeprecationWarning:xdist",
+
+    # -- pytest complains when pytest-xdist is not installed --
+    "ignore:Unknown config option. looponfailroots:pytest.PytestConfigWarning",
+]
+looponfailroots = ["src", "tests"]
+norecursedirs = [
+    ".git",
+    ".ruff_cache",
+    "dist",
+    "docs",
+    "features",
+    "src",
+    "typings",
+    ".tox",
+]
+python_files = ["test_*.py"]
+python_classes = ["Test", "Describe"]
+python_functions = ["test_", "it_", "its_", "they_", "and_", "but_"]
+
+[tool.ruff]
+exclude = []
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+ignore = [
+    "COM812",   # -- over-aggressively insists on trailing commas where not desired --
+    "PT001",    # -- wants @pytest.fixture() instead of @pytest.fixture --
+    "PT005",    # -- wants @pytest.fixture() instead of @pytest.fixture --
+]
+select = [
+    "C4",       # -- flake8-comprehensions --
+    "COM",      # -- flake8-commas --
+    "E",        # -- pycodestyle errors --
+    "F",        # -- pyflakes --
+    "I",        # -- isort (imports) --
+    "PLR0402",  # -- Name compared with itself like `foo == foo` --
+    "PT",       # -- flake8-pytest-style --
+    "SIM",      # -- flake8-simplify --
+    "UP015",    # -- redundant `open()` mode parameter (like "r" is default) --
+    "UP018",    # -- Unnecessary {literal_type} call like `str("abc")`. (rewrite as a literal) --
+    "UP032",    # -- Use f-string instead of `.format()` call --
+    "UP034",    # -- Avoid extraneous parentheses --
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["opcdiag"]
+known-local-folder = ["helpers"]
+
+[tool.uv]
+dev-dependencies = [
+    "alabaster<0.7.14",
+    "behave>=1.2.6",
+    "jinja2==2.11.3",
+    "markupsafe==0.23",
+    "pyright>=1.1.381",
+    "pytest-cov>=5.0.0",
+    "pytest>=8.3.3",
+    "ruff>=0.6.7",
+    "sphinx==1.8.6",
+    "tox>=4.20.0",
+    "twine>=5.1.1",
+    "types-lxml>=2024.9.16",
+]
+
+[tool.uv.sources]
+opc-diag = { workspace = true }

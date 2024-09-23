@@ -1,43 +1,53 @@
-BEHAVE  = behave
 PACKAGE = opcdiag
-PYTHON  = python
-SETUP   = $(PYTHON) ./setup.py
 
 .PHONY: accept clean coverage readme register test sdist upload
 
 help:
 	@echo "Please use \`make <target>' where <target> is one or more of"
-	@echo "  accept    run acceptance tests using behave"
-	@echo "  clean     delete intermediate work product and start fresh"
-	@echo "  coverage  run nosetests with coverage"
-	@echo "  readme    update README.html from README.rst"
-	@echo "  register  update metadata (README.rst) on PyPI"
-	@echo "  test      run tests using setup.py"
-	@echo "  sdist     generate a source distribution into dist/"
-	@echo "  upload    upload distribution tarball to PyPI"
+	@echo "  accept      run acceptance tests using behave"
+	@echo "  build       generate a source distribution and wheel into dist/"
+	@echo "  clean       delete intermediate work product and start fresh"
+	@echo "  cleandocs   delete generated HTML documentation"
+	@echo "  coverage    run unit tests with coverage"
+	@echo "  docs        generate HTML documentation with Sphinx"
+	@echo "  test        run unit tests"
+	@echo "  test-upload upload distribution artifacts in dist/ to Test-PyPI"
+	@echo "  upload      upload distribution artifacts in dist/ to PyPI"
 
+.PHONY: accept
 accept:
-	$(BEHAVE) --stop
+	uv run behave --stop
 
+.PHONY: build
+build:
+	rm -rf dist
+	uv build
+
+.PHONY: clean
 clean:
 	find . -type f -name \*.pyc -exec rm {} \;
 	rm -rf dist *.egg-info .coverage .DS_Store
 
+.PHONY: cleandocs
+cleandocs:
+	$(MAKE) -C docs clean
+
+.PHONY: coverage
 coverage:
-	py.test --cov-report term-missing --cov=$(PACKAGE) tests/
+	uv run pytest --cov-report term-missing --cov=$(PACKAGE) --cov=tests tests/
 
-readme:
-	rst2html README.rst >README.html
-	open README.html
+.PHONY: docs
+docs:
+	$(MAKE) -C docs html
 
-register:
-	$(SETUP) register
-
-sdist:
-	$(SETUP) sdist
-
+.PHONY: test
 test:
-	$(SETUP) test
+	uv run pytest tests
 
+.PHONY: test-upload
+test-upload: build
+	uv run twine upload --repository testpypi dist/*
+
+.PHONY: upload
 upload:
-	$(SETUP) sdist upload
+	uv run twine upload dist/*
