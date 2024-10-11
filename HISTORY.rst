@@ -1,6 +1,11 @@
 History
 =======
 
+1.1.1 (2024-10-10)
+------------------
+
+* Remove self-dependency from `pyproject.toml`.
+
 1.1.0 (2024-09-22)
 ------------------
 

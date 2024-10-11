@@ -631,7 +631,7 @@ wheels = [
 
 [[package]]
 name = "opc-diag"
-version = "1.0.1"
+version = "1.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "lxml" },
@@ -654,10 +654,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "lxml", specifier = ">=4" },
-    { name = "opc-diag", editable = "." },
-]
+requires-dist = [{ name = "lxml", specifier = ">=4" }]
 
 [package.metadata.requires-dev]
 dev = [

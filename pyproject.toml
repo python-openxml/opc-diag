@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opc-diag"
-version = "1.1.0"
+version = "1.1.1"
 authors = [{name = "Steve Canny", email = "stcanny@gmail.com"}]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -21,10 +21,7 @@ classifiers = [
     "Topic :: Office/Business :: Office Suites",
     "Topic :: Software Development :: Libraries",
 ]
-dependencies = [
-    "lxml>=4",
-    "opc-diag",
-]
+dependencies = ["lxml>=4"]
 description = "A command-line application for exploring Microsoft Word, Excel, and PowerPoint files from Office 2007 and later."
 keywords = ["docx", "pptx", "xlsx", "office", "openxml", "word", "powerpoint", "excel"]
 license = { text = "MIT" }
